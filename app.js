@@ -43,5 +43,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(
   PORT,
-  console.log('Server Started in Dev mode on Port 5000'.yellow.bold)
+  console.log(
+    `Server Started in ${process.env.NODE_ENV} mode on Port ${PORT}`.yellow.bold
+  )
 );
