@@ -1,0 +1,9 @@
+POST   http://localhost:5000/api/v1/Employee
+Content-Type: application/json
+
+{
+    "Fname" : "Vishal",
+    "Lname" : "Ghadage",
+    "Depname" : "OS",
+    "Salary" : 700000
+}
