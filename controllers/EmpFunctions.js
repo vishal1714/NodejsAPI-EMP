@@ -5,7 +5,7 @@ exports.GetEmployees = async (req, res, next) => {
   try {
     const GetEmployees = await Employee.find();
     return res.status(200).json({
-      Status: 'S',
+      Status: 'Successful',
       Count: GetEmployees.length,
       Data: GetEmployees,
     });
@@ -24,7 +24,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
       next(new Error('Employee not  Found'));
     } else {
       return res.status(200).json({
-        Status: 'S',
+        Status: 'Successful',
         Data: employee,
       });
     }
@@ -40,7 +40,7 @@ exports.AddEmployee = async (req, res, next) => {
     const EmployeeAdd = await Employee.create(req.body);
 
     return res.status(201).json({
-      Status: 'S',
+      Status: 'Successful',
       Data: EmployeeAdd,
     });
   } catch (err) {
@@ -67,7 +67,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
 
       await employee.remove();
       return res.status(200).json({
-        Status: 'S',
+        Status: 'Successful',
         DeletedAt: delDate,
         Data: employee,
       });
@@ -82,6 +82,10 @@ exports.UpdateEmployee = async (req, res, next) => {
   try {
     const { _id, Fname, Lname, Depname, Salary } = req.body;
     console.log(req.body._id);
+    if (req.body._id == null) {
+      res.status(500);
+      next(new Error('_id is not present'));
+    }
     const employee = await Employee.findOneAndUpdate(
       { _id: req.body._id },
       {
@@ -95,8 +99,7 @@ exports.UpdateEmployee = async (req, res, next) => {
     );
 
     return res.status(200).json({
-      Status: 'S',
-      _id: req.body._id,
+      Status: 'Successful',
       Data: req.body,
     });
   } catch (err) {
@@ -113,7 +116,7 @@ exports.GetQEmployeeByID = async (req, res, next) => {
       next(new Error('Employee Not Found'));
     } else {
       return res.status(200).json({
-        Status: 'S',
+        Status: 'Successful',
         Data: employee,
       });
     }
@@ -133,7 +136,7 @@ exports.GetEmployeeByDepartmentCode = async (req, res, next) => {
       next(new Error('Department Not Found'));
     } else {
       return res.status(200).json({
-        Status: 'S',
+        Status: 'Successful',
         Count: employees.length,
         Data: employees,
       });

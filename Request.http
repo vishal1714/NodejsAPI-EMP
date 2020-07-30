@@ -1,9 +1,10 @@
-POST   http://localhost:5000/api/v1/Employee
+PATCH     https://apiraje.herokuapp.com/api/v1/employee
 Content-Type: application/json
 
 {
-    "Fname" : "Vishal",
-    "Lname" : "Ghadage",
-    "Depname" : "OS",
-    "Salary" : 700000
+"_id": "8a237499-0bb5-4344-b182-1c54b45df858",
+"Fname": "Visganeshhal",
+"Lname": "Ghadage",
+"Depname": "OS",
+"Salary": 7000000000
 }
