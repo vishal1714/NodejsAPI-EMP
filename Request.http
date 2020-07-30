@@ -1,4 +1,4 @@
-PATCH     https://apiraje.herokuapp.com/api/v1/employee
+GET     http://localhost:5000/api/v1/employee/
 Content-Type: application/json
 
 {
@@ -6,5 +6,5 @@ Content-Type: application/json
 "Fname": "Visganeshhal",
 "Lname": "Ghadage",
 "Depname": "OS",
-"Salary": 7000000000
+"Salary": 7
 }

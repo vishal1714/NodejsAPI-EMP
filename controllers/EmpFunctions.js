@@ -109,8 +109,10 @@ exports.UpdateEmployee = async (req, res, next) => {
 };
 
 exports.GetQEmployeeByID = async (req, res, next) => {
+  console.log(req.query.EmployeeID);
   try {
     const employee = await Employee.findById(req.query.EmployeeID);
+
     if (!employee) {
       res.status(404);
       next(new Error('Employee Not Found'));

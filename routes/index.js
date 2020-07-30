@@ -17,8 +17,8 @@ route.route('/').get(GetEmployees).post(AddEmployee).patch(UpdateEmployee);
 
 route.route('/:id').get(GetEmployeeByID).delete(DelEmployeeByID);
 
-route.route('/Q/?EmployeeID').get(GetQEmployeeByID);
+route.route('/Q/EmployeeID').get(GetQEmployeeByID);
 
-route.route('/Q/?DepartmentCode').get(GetEmployeeByDepartmentCode);
+route.route('/Q/DepartmentCode').get(GetEmployeeByDepartmentCode);
 
 module.exports = route;
