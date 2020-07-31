@@ -36,7 +36,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
 
 exports.AddEmployee = async (req, res, next) => {
   try {
-    const { Fname, Lname, Depname, Salary } = req.body;
+    const { Fname, Lname, Age, Depname, Salary } = req.body;
     const EmployeeAdd = await Employee.create(req.body);
 
     return res.status(201).json({
@@ -80,7 +80,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
 
 exports.UpdateEmployee = async (req, res, next) => {
   try {
-    const { _id, Fname, Lname, Depname, Salary } = req.body;
+    const { _id, Fname, Lname, Age, Depname, Salary } = req.body;
     console.log(req.body._id);
     if (req.body._id == null) {
       res.status(500);
@@ -92,6 +92,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         $set: {
           Fname: req.body.Fname,
           Lname: req.body.Lname,
+          Age: req.body.Age,
           Depname: req.body.Depname,
           Salary: req.body.Salary,
         },
