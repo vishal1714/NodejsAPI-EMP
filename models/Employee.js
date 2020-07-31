@@ -16,6 +16,10 @@ const EmployeeSchema = new mongoose.Schema({
     trim: true,
     required: [true, 'Please Enter Last Name'],
   },
+  Age: {
+    type: Number,
+    required: [true, 'Please Enter Employee Age'],
+  },
   Depname: {
     type: String,
     trim: true,
