@@ -1,6 +1,5 @@
 const Employee = require('../models/Employee');
 const ValidKey = 'Vishal1714';
-var reqKey = req.header('API-Key');
 
 exports.GetEmployees = async (req, res, next) => {
   try {
