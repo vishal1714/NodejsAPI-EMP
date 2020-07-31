@@ -5,7 +5,7 @@ exports.GetEmployees = async (req, res, next) => {
   try {
     const GetEmployees = await Employee.find().select('-__v');
     return res.status(200).json({
-      Status: 'Successful',
+      Status: 'Success',
       Count: GetEmployees.length,
       Data: GetEmployees,
     });
@@ -21,11 +21,12 @@ exports.GetEmployeeByID = async (req, res, next) => {
     const employee = await Employee.findById(req.params.id).select('-__v');
     if (!employee) {
       res.status(404);
-      next(new Error('Employee not  Found'));
+      next(new Error('Employee not Found'));
     } else {
       return res.status(200).json({
-        Status: 'Successful',
+        Status: 'Success',
         Data: employee,
+        Message: 'Successfully! Record has been fetched.',
       });
     }
   } catch (err) {
@@ -40,8 +41,9 @@ exports.AddEmployee = async (req, res, next) => {
     const EmployeeAdd = await Employee.create(req.body);
 
     return res.status(201).json({
-      Status: 'Successful',
+      Status: 'Success',
       Data: EmployeeAdd,
+      Message: 'Successfully! Record has been inserted.',
     });
   } catch (err) {
     if (err.name == 'ValidationError') {
@@ -67,9 +69,10 @@ exports.DelEmployeeByID = async (req, res, next) => {
 
       await employee.remove();
       return res.status(200).json({
-        Status: 'Successful',
+        Status: 'Success',
         DeletedAt: delDate,
         Data: employee,
+        Message: 'Successfully! Record has been deleted.',
       });
     }
   } catch (err) {
@@ -100,8 +103,9 @@ exports.UpdateEmployee = async (req, res, next) => {
     ).select('-__v');
 
     return res.status(200).json({
-      Status: 'Successful',
+      Status: 'Success',
       Data: req.body,
+      Message: 'Successfully! Record has been updated.',
     });
   } catch (err) {
     res.status(500);
@@ -112,15 +116,18 @@ exports.UpdateEmployee = async (req, res, next) => {
 exports.GetQEmployeeByID = async (req, res, next) => {
   console.log(req.query.EmployeeID);
   try {
-    const employee = await Employee.findById(req.query.EmployeeID).select('-__v');
+    const employee = await Employee.findById(req.query.EmployeeID).select(
+      '-__v'
+    );
 
     if (!employee) {
       res.status(404);
       next(new Error('Employee Not Found'));
     } else {
       return res.status(200).json({
-        Status: 'Successful',
+        Status: 'Success',
         Data: employee,
+        Message: 'Successfully! Record has been fetched.',
       });
     }
   } catch (err) {
@@ -139,9 +146,10 @@ exports.GetEmployeeByDepartmentCode = async (req, res, next) => {
       next(new Error('Department Not Found'));
     } else {
       return res.status(200).json({
-        Status: 'Successful',
+        Status: 'Success',
         Count: employees.length,
         Data: employees,
+        Message: 'Successfully! Record has been fetched.',
       });
     }
   } catch (err) {
