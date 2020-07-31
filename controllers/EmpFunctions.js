@@ -37,7 +37,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
 exports.AddEmployee = async (req, res, next) => {
   try {
     const { Fname, Lname, Depname, Salary } = req.body;
-    const EmployeeAdd = await Employee.create(req.body).select('-__v');
+    const EmployeeAdd = await Employee.create(req.body);
 
     return res.status(201).json({
       Status: 'Successful',
@@ -96,7 +96,7 @@ exports.UpdateEmployee = async (req, res, next) => {
           Salary: req.body.Salary,
         },
       }
-    );
+    ).select('-__v');
 
     return res.status(200).json({
       Status: 'Successful',
@@ -111,7 +111,7 @@ exports.UpdateEmployee = async (req, res, next) => {
 exports.GetQEmployeeByID = async (req, res, next) => {
   console.log(req.query.EmployeeID);
   try {
-    const employee = await Employee.findById(req.query.EmployeeID);
+    const employee = await Employee.findById(req.query.EmployeeID).select('-__v');
 
     if (!employee) {
       res.status(404);
@@ -132,7 +132,7 @@ exports.GetEmployeeByDepartmentCode = async (req, res, next) => {
   try {
     const employees = await Employee.findById({
       Depname: req.query.DepartmentCode,
-    });
+    }).select('-__v');
     if (!employee) {
       res.status(404);
       next(new Error('Department Not Found'));
