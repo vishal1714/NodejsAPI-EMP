@@ -129,9 +129,9 @@ exports.UpdateEmployee = async (req, res, next) => {
       const { _id, Fname, Lname, Age, Depname, Salary } = req.body;
       console.log(req.body._id);
       if (req.body._id == null) {
-        res.status(500).json({
+        res.status(400).json({
           Error: {
-            message: '_id not present',
+            message: '_id not present in request body',
           },
         });
       }
@@ -162,7 +162,7 @@ exports.UpdateEmployee = async (req, res, next) => {
       });
     }
   } else {
-    res.status(500).json({
+    res.status(401).json({
       Error: {
         message: 'Unauthorized',
       },
