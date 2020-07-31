@@ -3,7 +3,7 @@ const uuid = require('uuid');
 
 exports.GetEmployees = async (req, res, next) => {
   try {
-    const GetEmployees = await Employee.find();
+    const GetEmployees = await Employee.find().select('-__v');
     return res.status(200).json({
       Status: 'Successful',
       Count: GetEmployees.length,
@@ -18,7 +18,7 @@ exports.GetEmployees = async (req, res, next) => {
 
 exports.GetEmployeeByID = async (req, res, next) => {
   try {
-    const employee = await Employee.findById(req.params.id);
+    const employee = await Employee.findById(req.params.id).select('-__v');
     if (!employee) {
       res.status(404);
       next(new Error('Employee not  Found'));
@@ -37,7 +37,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
 exports.AddEmployee = async (req, res, next) => {
   try {
     const { Fname, Lname, Depname, Salary } = req.body;
-    const EmployeeAdd = await Employee.create(req.body);
+    const EmployeeAdd = await Employee.create(req.body).select('-__v');
 
     return res.status(201).json({
       Status: 'Successful',
@@ -58,7 +58,7 @@ exports.AddEmployee = async (req, res, next) => {
 
 exports.DelEmployeeByID = async (req, res, next) => {
   try {
-    const employee = await Employee.findById(req.params.id);
+    const employee = await Employee.findById(req.params.id).select('-__v');
     if (!employee) {
       return res.status(404);
       next(new Error('Employee Not Found'));
