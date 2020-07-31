@@ -11,8 +11,12 @@ exports.GetEmployees = async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500);
-    next(new Error('Internal Server Error'));
+    res.status(500).json({
+      Error: {
+        message: 'Internal Server Error',
+        info: err,
+      },
+    });
   }
 };
 
@@ -20,8 +24,11 @@ exports.GetEmployeeByID = async (req, res, next) => {
   try {
     const employee = await Employee.findById(req.params.id).select('-__v');
     if (!employee) {
-      res.status(404);
-      next(new Error('Employee not Found'));
+      res.status(404).json({
+        Error: {
+          message: 'Employee not found',
+        },
+      });
     } else {
       return res.status(200).json({
         Status: 'Success',
@@ -30,8 +37,12 @@ exports.GetEmployeeByID = async (req, res, next) => {
       });
     }
   } catch (err) {
-    res.status(500);
-    next(new Error('Internal Server Error'));
+    res.status(500).json({
+      Error: {
+        message: 'Internal Server Error',
+        info: err,
+      },
+    });
   }
 };
 
@@ -50,17 +61,25 @@ exports.AddEmployee = async (req, res, next) => {
     } catch (err) {
       if (err.name == 'ValidationError') {
         const messages = Object.values(err.errors).map((val) => val.message);
-
-        res.status(400);
-        next(new Error(messages));
+        res.status(400).json({
+          Error: {
+            message: messages,
+          },
+        });
       } else {
-        res.status(500);
-        next(new Error('Internal Server Error'));
+        res.status(500).json({
+          Error: {
+            message: 'Internal Server Error',
+          },
+        });
       }
     }
   } else {
-    res.status(401);
-    next(new Error('Unauthorized'));
+    res.status(401).json({
+      Error: {
+        message: 'Unauthorized',
+      },
+    });
   }
 };
 
@@ -70,8 +89,11 @@ exports.DelEmployeeByID = async (req, res, next) => {
     try {
       const employee = await Employee.findById(req.params.id).select('-__v');
       if (!employee) {
-        return res.status(404);
-        next(new Error('Employee Not Found'));
+        res.status(404).json({
+          Error: {
+            message: 'Employee Not Found',
+          },
+        });
       } else {
         const delDate = new Date().toISOString();
 
@@ -84,12 +106,19 @@ exports.DelEmployeeByID = async (req, res, next) => {
         });
       }
     } catch (err) {
-      res.status(500);
-      next(new Error(err));
+      res.status(500).json({
+        Error: {
+          message: 'Internal Server Error',
+          info: err,
+        },
+      });
     }
   } else {
-    res.status(401);
-    next(new Error('Unauthorized'));
+    res.status(401).json({
+      Error: {
+        message: 'Unauthorized',
+      },
+    });
   }
 };
 
@@ -100,8 +129,11 @@ exports.UpdateEmployee = async (req, res, next) => {
       const { _id, Fname, Lname, Age, Depname, Salary } = req.body;
       console.log(req.body._id);
       if (req.body._id == null) {
-        res.status(500);
-        next(new Error('_id is not present'));
+        res.status(500).json({
+          Error: {
+            message: '_id not present',
+          },
+        });
       }
       const employee = await Employee.findOneAndUpdate(
         { _id: req.body._id },
@@ -122,11 +154,18 @@ exports.UpdateEmployee = async (req, res, next) => {
         Message: 'Successfully! Record has been updated.',
       });
     } catch (err) {
-      res.status(500);
-      next(new Error(err));
+      res.status(500).json({
+        Error: {
+          message: 'Internal Server Error',
+          info: err,
+        },
+      });
     }
   } else {
-    res.status(401);
-    next(new Error('Unauthorized'));
+    res.status(500).json({
+      Error: {
+        message: 'Unauthorized',
+      },
+    });
   }
 };
