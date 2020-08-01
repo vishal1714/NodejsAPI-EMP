@@ -1,10 +1,11 @@
-GET     http://localhost:5000/api/v1/employee/
+POST      http://localhost:5000/api/v1/employee/
 Content-Type: application/json
 
 {
 "_id": "8a237499-0bb5-4344-b182-1c54b45df858",
 "Fname": "Visganeshhal",
 "Lname": "Ghadage",
+"Age" : 25,
 "Depname": "OS",
 "Salary": 7
 }
