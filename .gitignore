@@ -72,7 +72,7 @@ typings/
 
 # Yarn Integrity file
 .yarn-integrity
-
+Request.http
 # dotenv environment variables file
 .env
 .env.test

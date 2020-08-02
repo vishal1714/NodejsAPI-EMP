@@ -10,7 +10,10 @@ ConnectDB();
 
 const app = express();
 app.use(express.json());
-app.use(morgan('dev'));
+
+if (process.env.NODE_ENV == 'Development') {
+  app.use(morgan('dev'));
+}
 
 app.use((req, resp, next) => {
   resp.setHeader('Access-Control-Allow-Headers', '*');
@@ -44,6 +47,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(
   PORT,
   console.log(
-    `Server Started in ${process.env.NODE_ENV} mode on Port ${PORT}`.yellow.bold
+    `Server Started in ${process.env.NODE_ENV} mode on Port ${PORT}`.white.bold
   )
 );
