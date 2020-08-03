@@ -6,12 +6,27 @@ const {
   UpdateEmployee,
   DelEmployeeByID,
 } = require('../controllers/EmpFunctions');
+const {
+  GetRenderEmployees,
+  AddRenderEmployee,
+  UpdateRenderEmployee,
+} = require('../controllers/EmpRenderFunctions');
 
 const Employee = require('../models/Employee');
 
 const route = express.Router();
 
-route.route('/').get(GetEmployees).post(AddEmployee).patch(UpdateEmployee);
+route
+  .route('/')
+  .get(GetRenderEmployees)
+  .post(AddRenderEmployee)
+  .patch(UpdateRenderEmployee);
+
+route
+  .route('/api/employee')
+  .get(GetEmployees)
+  .post(AddEmployee)
+  .patch(UpdateEmployee);
 
 route.route('/:id').get(GetEmployeeByID).delete(DelEmployeeByID);
 

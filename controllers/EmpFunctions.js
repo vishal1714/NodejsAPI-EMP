@@ -169,3 +169,63 @@ exports.UpdateEmployee = async (req, res, next) => {
     });
   }
 };
+
+// Render Methods
+exports.GetRenderEmployees = async (req, res, next) => {
+  try {
+    const GetEmployees = await Employee.find().select('-__v');
+
+    res.render('index', { GetEmployees });
+    /*;
+     return res.status(200).json({
+      Status: 'Success',
+      Count: GetEmployees.length,
+      Data: GetEmployees,
+    }); */
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      Error: {
+        message: 'Internal Server Error',
+        info: err,
+      },
+    });
+  }
+};
+
+exports.AddEmployee = async (req, res, next) => {
+  var reqKey = req.header('API-Key');
+  if (reqKey == ValidKey) {
+    try {
+      const { Fname, Lname, Age, Depname, Salary } = req.body;
+      const EmployeeAdd = await Employee.create(req.body);
+
+      return res.status(201).json({
+        Status: 'Success',
+        Data: EmployeeAdd,
+        Message: 'Successfully! Record has been inserted.',
+      });
+    } catch (err) {
+      if (err.name == 'ValidationError') {
+        const messages = Object.values(err.errors).map((val) => val.message);
+        res.status(400).json({
+          Error: {
+            message: messages,
+          },
+        });
+      } else {
+        res.status(500).json({
+          Error: {
+            message: 'Internal Server Error',
+          },
+        });
+      }
+    }
+  } else {
+    res.status(401).json({
+      Error: {
+        message: 'Unauthorized',
+      },
+    });
+  }
+};

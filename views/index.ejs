@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>My Employee Management App</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <style>
+      table,
+      th,
+      td {
+        border: 2px solid black;
+        column-width: auto;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 align="center">My Employee Management App</h1>
+      <div class="row" style="padding-top: 10px;">
+        <div class="col">
+          <h2>Add Employee</h2>
+          <form>
+            <div class="form-group">
+              <label for="Fname">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter First Name"
+                name="Fname"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Lname">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Last Name"
+                name="Lname"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Depname">Department Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Department name"
+                name="Depname"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Age">Age</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Age"
+                name="age"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Salary">Salary</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Salary"
+                name="Salary"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+
+        <div class="col">
+          <h2>Update Employee</h2>
+          <form>
+            <div class="form-group">
+              <label for="Fname">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter First Name"
+                name="Fname"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Lname">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Last Name"
+                name="Lname"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Depname">Department Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Department name"
+                name="Depname"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Age">Age</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Age"
+                name="age"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Salary">Salary</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Salary"
+                name="Salary"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+      </div>
+      <div>
+        <h4 align="center">Employee Table</h4>
+        <table align="center" class=".table-bordered">
+          <tr>
+            <th>ID</th>
+            <th>Employee ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Department Name</th>
+            <th>Age</th>
+            <th>Salary</th>
+          </tr>
+
+          <% for (var i = 0; i < GetEmployees.length; /* I save the data in a
+          variable 'quotation', I don't know how you named your variable */ i++)
+          { %>
+          <tr>
+            <td><%= i %></td>
+            <td><%= GetEmployees[i]._id %></td>
+            <td><%= GetEmployees[i].Fname %></td>
+            <td><%= GetEmployees[i].Lname %></td>
+            <td><%= GetEmployees[i].Depname %></td>
+            <td><%= GetEmployees[i].Age %></td>
+            <td><%= GetEmployees[i].Salary %></td>
+          </tr>
+          <% } %>
+        </table>
+        >
+      </div>
+    </div>
+  </body>
+</html>

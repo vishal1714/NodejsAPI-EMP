@@ -1,39 +1,11 @@
-//List all Employees details
-//GET https://rajeapi.herokuapp.com/api/v1/employee
-GET http://localhost:5000/api/v1/employee/
-
-//List Employee by ID
-//GET  https://rajeapi.herokuapp.com/api/v1/employee/{ID}
-GET http://localhost:5000/api/v1/employee/6e1db625-efef-45cd-a01f-8004604d8f89
-
-//Add Employee detail
-//POST https://rajeapi.herokuapp.com/api/v1/employee/
-POST http://localhost:5000/api/v1/employee/
+POST http://localhost:5000/api/employee
 Content-Type: application/json
 API-Key: Vishal1714
+
 {
-    "Fname" : "Vishal",
-    "Lname" : "Ghadage",
-    "Age" : 25,
-    "Depname" : "OS",
-    "Salary" : 450000
+"Fname": "Lol",
+"Lname": "Raje",
+"Age": 25,
+"Depname": "IT",
+"Salary": 240000
 }
-
-//Update Employee Detail
-//PATCH https://rajeapi.herokuapp.com/api/v1/employee/
-PATCH http://localhost:5000/api/v1/employee/
-API-Key: Vishal1714
-{
-    "_id" : "6e1db625-efef-45cd-a01f-8004604d8f89", //"Employee ID is Required"
-    "Fname" : "Vishu",
-    "Lname" : "Ghadage",
-    "Age" : 26,
-    "Depname" : "OS",
-    "Salary" : 750000
-}
-
-//Delete Employee Detail by ID
-//DELETE https://rajeapi.herokuapp.com/api/v1/employee/{ID}
-DELETE  http://localhost:5000/api/v1/employee/6e1db625-efef-45cd-a01f-8004604d8f89
-API-Key: Vishal1714
-
