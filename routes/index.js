@@ -10,6 +10,7 @@ const {
   GetRenderEmployees,
   AddRenderEmployee,
   UpdateRenderEmployee,
+  DelRenderEmployeeByID,
 } = require('../controllers/EmpRenderFunctions');
 
 const Employee = require('../models/Employee');
@@ -20,7 +21,8 @@ route
   .route('/')
   .get(GetRenderEmployees)
   .post(AddRenderEmployee)
-  .patch(UpdateRenderEmployee);
+  .patch(UpdateRenderEmployee)
+  .get(DelRenderEmployeeByID);
 
 route
   .route('/api/v1/employee')
@@ -28,6 +30,9 @@ route
   .post(AddEmployee)
   .patch(UpdateEmployee);
 
-route.route('/:id').get(GetEmployeeByID).delete(DelEmployeeByID);
+route
+  .route('/api/v1/employee/:id')
+  .get(GetEmployeeByID)
+  .delete(DelEmployeeByID);
 
 module.exports = route;
