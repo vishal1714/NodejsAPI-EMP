@@ -23,7 +23,7 @@ route
   .patch(UpdateRenderEmployee);
 
 route
-  .route('/api/employee')
+  .route('/api/v1/employee')
   .get(GetEmployees)
   .post(AddEmployee)
   .patch(UpdateEmployee);

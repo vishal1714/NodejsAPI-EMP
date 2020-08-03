@@ -4,6 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <script>
+      var getJSON = function (url) {
+        return new Promise(function (resolve, reject) {
+          var xhr = new XMLHttpRequest();
+          xhr.open('get', url, true);
+          xhr.responseType = 'json';
+          xhr.onload = function () {
+            var status = xhr.status;
+            if (status == 200) {
+              resolve(xhr.response);
+            } else {
+              reject(status);
+            }
+          };
+          xhr.send();
+        });
+      };
+
+      getJSON(
+        'https://api.travelpayouts.com/data/routes.json?token=mytoken'
+      ).then(
+        function (data) {
+          alert('Your Json result is:  ' + data.result);
+
+          result.innerText = data.result;
+        },
+        function (status) {
+          alert('Something went wrong.');
+        }
+      );
+    </script>
     <title>My Employee Management App</title>
     <link
       rel="stylesheet"
@@ -28,7 +59,7 @@
       <div class="row" style="padding-top: 10px;">
         <div class="col">
           <h2>Add Employee</h2>
-          <form>
+          <form method="post" action="/">
             <div class="form-group">
               <label for="Fname">First Name</label>
               <input
@@ -57,12 +88,12 @@
               />
             </div>
             <div class="form-group">
-              <label for="Age">Age</label>
+              <label for="age">Age</label>
               <input
                 type="number"
                 class="form-control"
                 placeholder="Age"
-                name="age"
+                name="Age"
               />
             </div>
             <div class="form-group">
@@ -74,7 +105,9 @@
                 name="Salary"
               />
             </div>
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-primary" value="Add">
+              Add
+            </button>
           </form>
         </div>
 
@@ -147,7 +180,7 @@
           variable 'quotation', I don't know how you named your variable */ i++)
           { %>
           <tr>
-            <td><%= i %></td>
+            <td><%= i+1 %></td>
             <td><%= GetEmployees[i]._id %></td>
             <td><%= GetEmployees[i].Fname %></td>
             <td><%= GetEmployees[i].Lname %></td>

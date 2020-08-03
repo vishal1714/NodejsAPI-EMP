@@ -25,7 +25,7 @@ exports.GetRenderEmployees = async (req, res, next) => {
 
 exports.AddRenderEmployee = async (req, res, next) => {
   try {
-    const { Fname, Lname, Age, Depname, Salary } = req.body;
+    const { Fname, Lname, Depname, Age, Salary } = req.body;
     const EmployeeAdd = await Employee.create(req.body);
     res.redirect('/');
   } catch (err) {
@@ -75,6 +75,31 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
       Data: req.body,
       Message: 'Successfully! Record has been updated.',
     });
+  } catch (err) {
+    res.status(500).json({
+      Error: {
+        message: 'Internal Server Error',
+        info: err,
+      },
+    });
+  }
+};
+
+exports.DelEmployeeByID = async (req, res, next) => {
+  try {
+    const employee = await Employee.findById(req.params.id).select('-__v');
+    if (!employee) {
+      res.status(404).json({
+        Error: {
+          message: 'Employee Not Found',
+        },
+      });
+    } else {
+      const delDate = new Date().toISOString();
+
+      await employee.remove();
+      res.redirect('/');
+    }
   } catch (err) {
     res.status(500).json({
       Error: {
