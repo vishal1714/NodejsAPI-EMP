@@ -30,9 +30,6 @@ route
   .post(AddEmployee)
   .patch(UpdateEmployee);
 
-route
-  .route('/api/v1/employee/:id')
-  .get(GetEmployeeByID)
-  .delete(DelEmployeeByID);
+route.route('/:id').get(DelRenderEmployeeByID);
 
 module.exports = route;
