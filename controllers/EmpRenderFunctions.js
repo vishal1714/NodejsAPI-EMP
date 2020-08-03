@@ -86,25 +86,26 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
 };
 
 exports.DelRenderEmployeeByID = async (req, res, next) => {
-      try {
-        const employee = await Employee.findById(req.params.id).select('-__v');
-        if (!employee) {
-          res.status(404).json({
-            Error: {
-              message: 'Employee Not Found',
-            },
-          });
-        } else {
-          const delDate = new Date().toISOString();
-  
-          await employee.remove();
-          res.redirect("/");
-        }
-      } catch (err) {
-        res.status(500).json({
-          Error: {
-            message: 'Internal Server Error',
-            info: err,
-          },
-        });
-      }
+  try {
+    const employee = await Employee.findById(req.params.id).select('-__v');
+    if (!employee) {
+      res.status(404).json({
+        Error: {
+          message: 'Employee Not Found',
+        },
+      });
+    } else {
+      const delDate = new Date().toISOString();
+
+      await employee.remove();
+      res.redirect('/');
+    }
+  } catch (err) {
+    res.status(500).json({
+      Error: {
+        message: 'Internal Server Error',
+        info: err,
+      },
+    });
+  }
+};
