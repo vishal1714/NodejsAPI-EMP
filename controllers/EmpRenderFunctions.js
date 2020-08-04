@@ -31,11 +31,7 @@ exports.AddRenderEmployee = async (req, res, next) => {
   } catch (err) {
     if (err.name == 'ValidationError') {
       const messages = Object.values(err.errors).map((val) => val.message);
-      res.status(400).json({
-        Error: {
-          message: messages,
-        },
-      });
+      res.render('index', { messages });
     } else {
       res.status(500).json({
         Error: {
