@@ -17,19 +17,22 @@ const Employee = require('../models/Employee');
 
 const route = express.Router();
 
+//* Route for Web Application *\\
 route
   .route('/')
   .get(GetRenderEmployees)
   .post(AddRenderEmployee)
-  .patch(UpdateRenderEmployee)
-  .get(DelRenderEmployeeByID);
+  .patch(UpdateRenderEmployee);
 
+route.route('/:id').get(DelRenderEmployeeByID);
+
+//* Route for JSON base response API*\\
 route
   .route('/api/v1/employee')
   .get(GetEmployees)
   .post(AddEmployee)
   .patch(UpdateEmployee);
 
-route.route('/:id').get(DelRenderEmployeeByID);
+route.route('/api/v1/employee/:id').get(DelEmployeeByID);
 
 module.exports = route;
