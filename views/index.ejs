@@ -82,7 +82,16 @@
 
         <div class="col">
           <h2>Update Employee</h2>
-          <form>
+          <form method="patch" action="/">
+            <div class="form-group">
+              <label for="_id">Employee _id</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Employee _id"
+                name="_id"
+              />
+            </div>
             <div class="form-group">
               <label for="Fname">First Name</label>
               <input
