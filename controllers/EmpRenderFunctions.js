@@ -13,13 +13,8 @@ exports.GetRenderEmployees = async (req, res, next) => {
         Data: GetEmployees,
       }); */
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      Error: {
-        message: 'Internal Server Error',
-        info: err,
-      },
-    });
+    console.log(messages);
+    res.render('index', { messages: 'Internal Server Error' });
   }
 };
 
@@ -33,25 +28,16 @@ exports.AddRenderEmployee = async (req, res, next) => {
       const messages = Object.values(err.errors).map((val) => val.message);
       res.render('index', { messages });
     } else {
-      res.status(500).json({
-        Error: {
-          message: 'Internal Server Error',
-        },
-      });
+      res.render('index', { messages: 'Internal Server Error' });
     }
   }
 };
 
 exports.UpdateRenderEmployee = async (req, res, next) => {
   try {
-    const { _id, Fname, Lname, Age, Depname, Salary } = req.body;
-    console.log(req.body._id);
+    const { _id, Fname, Lname, Depname, Age, Salary } = req.body;
     if (req.body._id == null) {
-      res.status(400).json({
-        Error: {
-          message: '_id not present in request body',
-        },
-      });
+      res.render('index', { messages: 'Employee _id is not found' });
     }
     const employee = await Employee.findOneAndUpdate(
       { _id: req.body._id },
@@ -59,25 +45,15 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
         $set: {
           Fname: req.body.Fname,
           Lname: req.body.Lname,
-          Age: req.body.Age,
           Depname: req.body.Depname,
+          Age: req.body.Age,
           Salary: req.body.Salary,
         },
       }
     ).select('-__v');
-
-    return res.status(200).json({
-      Status: 'Success',
-      Data: req.body,
-      Message: 'Successfully! Record has been updated.',
-    });
-  } catch (err) {
-    res.status(500).json({
-      Error: {
-        message: 'Internal Server Error',
-        info: err,
-      },
-    });
+    res.redirect('/');
+  } catch (messages) {
+    res.render('index', { messages });
   }
 };
 
@@ -85,23 +61,12 @@ exports.DelRenderEmployeeByID = async (req, res, next) => {
   try {
     const employee = await Employee.findById(req.params.id).select('-__v');
     if (!employee) {
-      res.status(404).json({
-        Error: {
-          message: 'Employee Not Found',
-        },
-      });
+      res.render('index', { messages: 'Employee _id is not found' });
     } else {
-      const delDate = new Date().toISOString();
-
       await employee.remove();
       res.redirect('/');
     }
-  } catch (err) {
-    res.status(500).json({
-      Error: {
-        message: 'Internal Server Error',
-        info: err,
-      },
-    });
+  } catch (messages) {
+    res.render('index', { messages });
   }
 };
