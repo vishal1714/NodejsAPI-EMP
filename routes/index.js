@@ -22,7 +22,7 @@ const route = express.Router();
 route.route('/').get(GetRenderEmployees);
 route.route('/add').post(AddRenderEmployee);
 route.route('/update').post(UpdateRenderEmployee);
-route.route('/del/:id').get(DelRenderEmployeeByID);
+route.route('/del').get(DelRenderEmployeeByID);
 
 //* Route for JSON base response API*\\
 route
