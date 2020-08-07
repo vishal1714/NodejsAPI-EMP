@@ -29,7 +29,7 @@ route
   .route('/api/v1/employee')
   .get(GetEmployees)
   .post(AddEmployee)
-  .patch(UpdateEmployee);
+  .delete(UpdateEmployee);
 
 route.route('/api/v1/employee/:id').get(DelEmployeeByID);
 
