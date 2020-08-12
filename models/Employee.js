@@ -6,21 +6,21 @@ const EmployeeSchema = new mongoose.Schema({
     type: String,
     default: uuid.v4,
   },
-  Fname: {
+  Name: {
     type: String,
     trim: true,
-    required: [true, 'Please Enter First Name'],
+    required: [true, 'Please Enter Name'],
   },
-  Lname: {
+  DOB: {
     type: String,
     trim: true,
-    required: [true, 'Please Enter Last Name'],
+    required: [true, 'Please Enter Date Of Birth'],
   },
   Age: {
     type: Number,
     required: [true, 'Please Enter Employee Age'],
   },
-  Depname: {
+  Department: {
     type: String,
     trim: true,
     required: [true, 'Please Enter Department Name'],
