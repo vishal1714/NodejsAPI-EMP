@@ -30,30 +30,30 @@
           <h2>Add Employee</h2>
           <form method="post" action="/add">
             <div class="form-group">
-              <label for="Fname">First Name</label>
+              <label for="Name">Name</label>
               <input
                 type="text"
                 class="form-control"
-                placeholder="Enter First Name"
-                name="Fname"
+                placeholder="Enter Your Name"
+                name="Name"
               />
             </div>
             <div class="form-group">
-              <label for="Lname">Last Name</label>
+              <label for="DOB">DOB</label>
               <input
                 type="text"
                 class="form-control"
                 placeholder="Last Name"
-                name="Lname"
+                name="DOB"
               />
             </div>
             <div class="form-group">
-              <label for="Depname">Department Name</label>
+              <label for="Department">Department Name</label>
               <input
                 type="text"
                 class="form-control"
                 placeholder="Department name"
-                name="Depname"
+                name="Department"
               />
             </div>
             <div class="form-group">
@@ -93,30 +93,30 @@
               />
             </div>
             <div class="form-group">
-              <label for="Fname">First Name</label>
+              <label for="Name">Name</label>
               <input
                 type="text"
                 class="form-control"
                 placeholder="Enter First Name"
-                name="Fname"
+                name="Name"
               />
             </div>
             <div class="form-group">
-              <label for="Lname">Last Name</label>
+              <label for="DOB">DOB</label>
               <input
                 type="text"
                 class="form-control"
-                placeholder="Last Name"
-                name="Lname"
+                placeholder="Date of Birth"
+                name="DOB"
               />
             </div>
             <div class="form-group">
-              <label for="Depname">Department Name</label>
+              <label for="Department">Department Name</label>
               <input
                 type="text"
                 class="form-control"
                 placeholder="Department name"
-                name="Depname"
+                name="Department"
               />
             </div>
             <div class="form-group">
@@ -170,9 +170,9 @@
           <tr>
             <th class="w-5">ID</th>
             <th>Employee ID</th>
-            <th class="w-25">First Name</th>
-            <th class="w-25">Last Name</th>
-            <th>Department Name</th>
+            <th class="w-25">Name</th>
+            <th class="w-25">DOB</th>
+            <th>Department</th>
             <th>Age</th>
             <th>Salary</th>
           </tr>
@@ -180,9 +180,9 @@
           <tr>
             <td><%= i+1 %></td>
             <td><%= GetEmployees[i]._id %></td>
-            <td><%= GetEmployees[i].Fname %></td>
-            <td><%= GetEmployees[i].Lname %></td>
-            <td><%= GetEmployees[i].Depname %></td>
+            <td><%= GetEmployees[i].Name %></td>
+            <td><%= GetEmployees[i].DOB %></td>
+            <td><%= GetEmployees[i].Department %></td>
             <td><%= GetEmployees[i].Age %></td>
             <td><%= GetEmployees[i].Salary %></td>
           </tr>
