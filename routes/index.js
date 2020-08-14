@@ -31,6 +31,6 @@ route
   .post(AddEmployee)
   .patch(UpdateEmployee);
 
-route.route('/api/v1/employee/:id').get(DelEmployeeByID);
+route.route('/api/v1/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
 
 module.exports = route;
