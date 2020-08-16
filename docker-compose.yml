@@ -1,7 +1,7 @@
 version: '3'
 services:
-  weba:
-    container_name: nodeapp
+  webapp:
+    container_name: empapi
     build: .
     ports:
       - '5000:5000'
