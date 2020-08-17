@@ -2,9 +2,10 @@ const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
-const ConnectDB = require('./config/db');
+const bodyParser = require('body-parser');
 
 dotenv.config({ path: './config/config.env' });
+const ConnectDB = require('./config/db');
 
 ConnectDB();
 
@@ -14,6 +15,8 @@ app.use(express.json());
 if (process.env.NODE_ENV == 'Development') {
   app.use(morgan('dev'));
 }
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, resp, next) => {
   resp.setHeader('Access-Control-Allow-Headers', '*');
@@ -24,7 +27,7 @@ app.use((req, resp, next) => {
 });
 
 const route = require('./routes/index');
-app.use('/api/v1/employee/', route);
+app.use('/', route);
 
 // Error handling 🔥
 app.use((req, resp, next) => {
