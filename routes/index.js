@@ -26,11 +26,11 @@ route.route('/del').get(DelRenderEmployeeByID);
 
 //* Route for JSON base response API*\\
 route
-  .route('/api/v1/employee')
+  .route('/api/v2/employee')
   .get(GetEmployees)
   .post(AddEmployee)
   .patch(UpdateEmployee);
 
-route.route('/api/v1/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
+route.route('/api/v2/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
 
 module.exports = route;
