@@ -3,7 +3,7 @@ const colors = require('colors');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
-
+//mongodb+srv://admin:admin@rajecluster.o4zia.mongodb.net/EMP?retryWrites=true&w=majority
 const ConnectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGOURI, {

@@ -53,7 +53,7 @@ exports.AddEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   if (reqKey == ValidKey) {
     try {
-      const { Fname, Lname, Age, Depname, Salary } = req.body;
+      const { Name, DOB, Age, Department, Salary } = req.body;
       const EmployeeAdd = await Employee.create(req.body);
 
       return res.status(201).json({
@@ -127,7 +127,7 @@ exports.UpdateEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   if (reqKey == ValidKey) {
     try {
-      const { _id, Fname, Lname, Age, Depname, Salary } = req.body;
+      const { _id, Name, DOB, Age, Department, Salary } = req.body;
       console.log(req.body._id);
       if (req.body._id == null) {
         res.status(400).json({
@@ -140,10 +140,10 @@ exports.UpdateEmployee = async (req, res, next) => {
         { _id: req.body._id },
         {
           $set: {
-            Fname: req.body.Fname,
-            Lname: req.body.Lname,
+            Name: req.body.Name,
+            DOB: req.body.DOB,
             Age: req.body.Age,
-            Depname: req.body.Depname,
+            Department: req.body.Department,
             Salary: req.body.Salary,
           },
         }

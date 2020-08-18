@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>My Employee Management App</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <style>
+      table,
+      th,
+      td {
+        border: 2px solid black;
+        column-width: auto;
+        text-align: center;
+      }
+    </style>
+    <!--  jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<!-- Bootstrap Date-Picker Plugin -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 align="center">My Employee Management App</h1>
+      <div class="row" style="padding-top: 10px;">
+        <div class="col">
+          <h2>Add Employee</h2>
+          <form method="post" action="/add">
+            <div class="form-group">
+              <label for="Name">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Your Name"
+                name="Name"
+              />
+            </div>
+            <div class="datepicker form-group">
+              <label for="DOB">DOB</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Last Name"
+                name="DOB"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Department">Department Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Department name"
+                name="Department"
+              />
+            </div>
+            <div class="form-group">
+              <label for="age">Age</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Age"
+                name="Age"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Salary">Salary</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Salary"
+                name="Salary"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary" value="Add">
+              Add
+            </button>
+          </form>
+        </div>
+
+        <div class="col">
+          <h2>Update Employee</h2>
+          <form method="post" action="/update">
+            <div class="form-group">
+              <label for="_id">Employee _id</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Employee _id"
+                name="_id"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Name">Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter First Name"
+                name="Name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="DOB">DOB</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Date of Birth"
+                name="DOB"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Department">Department Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Department name"
+                name="Department"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Age">Age</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Age"
+                name="Age"
+              />
+            </div>
+            <div class="form-group">
+              <label for="Salary">Salary</label>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Salary"
+                name="Salary"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+      </div>
+      <div style="padding-top: 5%; align-content: center;">
+        <form method="get" action="/del" class="form-inline">
+          <div class="form-group">
+            <label for="id">Employee ID</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Employee ID"
+              name="id"
+            />
+          </div>
+          <button type="submit" class="btn btn-primary mb-2">
+            Delete Employee
+          </button>
+        </form>
+      </div>
+
+      <div style="padding-top: 5%; padding-bottom: 5%;">
+        <% if(locals.messages) { %>
+        <h4 align="center">Error</h4>
+        <ul>
+          <%= messages %>
+        </ul>
+        <% } if(locals.GetEmployees) {%>
+        <h4 align="center">Employee Table</h4>
+        <table align="center" class=".table-bordered">
+          <tr>
+            <th class="w-5">ID</th>
+            <th>Employee ID</th>
+            <th class="w-25">Name</th>
+            <th class="w-25">DOB</th>
+            <th>Department</th>
+            <th>Age</th>
+            <th>Salary</th>
+          </tr>
+          <% for (var i = 0; i < GetEmployees.length;i++) { %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= GetEmployees[i]._id %></td>
+            <td><%= GetEmployees[i].Name %></td>
+            <td><%= GetEmployees[i].DOB %></td>
+            <td><%= GetEmployees[i].Department %></td>
+            <td><%= GetEmployees[i].Age %></td>
+            <td><%= GetEmployees[i].Salary %></td>
+          </tr>
+          <% } %>
+        </table>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>
