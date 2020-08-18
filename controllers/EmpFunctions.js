@@ -1,5 +1,8 @@
 const Employee = require('../models/Employee');
 const ValidKey = 'Vishal1714';
+const moment = require('moment');
+
+m=moment().format("MMMM Do YYYY, hh:mm:ss a");
 
 exports.GetEmployees = async (req, res, next) => {
   try {
@@ -95,12 +98,10 @@ exports.DelEmployeeByID = async (req, res, next) => {
           },
         });
       } else {
-        const delDate = new Date().toISOString();
-
         await employee.remove();
         return res.status(200).json({
           Status: 'Success',
-          DeletedAt: delDate,
+          DeletedAt: m,
           Data: employee,
           Message: 'Successfully! Record has been deleted.',
         });
