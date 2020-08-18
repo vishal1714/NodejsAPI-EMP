@@ -31,7 +31,7 @@ const EmployeeSchema = new mongoose.Schema({
     required: [true, 'Please Enter Employee Salary PA'],
   },
   CreatedAt: {
-    type: String,
+    type: Date,
     default: function() {return moment().format("MMMM Do YYYY, hh:mm:ss a")},
   },
   __v: { type: Number, versionKey: false },
