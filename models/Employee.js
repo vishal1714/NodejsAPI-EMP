@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
+const moment = require('moment');
 
 const EmployeeSchema = new mongoose.Schema({
   _id: {
@@ -30,8 +31,8 @@ const EmployeeSchema = new mongoose.Schema({
     required: [true, 'Please Enter Employee Salary PA'],
   },
   CreatedAt: {
-    type: Date,
-    default: Date.now(),
+    type: String,
+    default: function() {return moment().format("MMMM Do YYYY, hh:mm:ss a")},
   },
   __v: { type: Number, versionKey: false },
 });
