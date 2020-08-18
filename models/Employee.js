@@ -32,7 +32,7 @@ const EmployeeSchema = new mongoose.Schema({
   },
   CreatedAt: {
     type: String,
-    default: function() {return moment().format("MMMM Do YYYY, hh:mm:ss a")},
+    default: function() {return moment().format("MMMM Do YYYY, hh:mm:ss A")},
   },
   __v: { type: Number, versionKey: false },
 });
