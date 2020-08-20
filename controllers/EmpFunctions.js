@@ -98,7 +98,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
         });
       } else {
         await employee.remove();
-var m=moment().format("MMMM Do YYYY, hh:mm:ss a");
+var m=moment().tz('Asia/Kolkata').format("MMMM Do YYYY, hh:mm:ss A");
         return res.status(200).json({
           Status: 'Success',
           DeletedAt: m,
