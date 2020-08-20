@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 const EmployeeSchema = new mongoose.Schema({
   _id: {
@@ -32,7 +32,7 @@ const EmployeeSchema = new mongoose.Schema({
   },
   CreatedAt: {
     type: String,
-    default: function() {return moment().format("MMMM Do YYYY, hh:mm:ss A")},
+    default: function() { return moment().tz('Asia/Kolkata').format("MMMM Do YYYY, hh:mm:ss A")},
   },
   __v: { type: Number, versionKey: false },
 });
