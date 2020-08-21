@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 const moment = require('moment-timezone');
-const autoIncrement = require('mongoose-auto-increment');
-const ConnectDB = require('../config/db');
+//const autoIncrement = require('mongoose-auto-increment');
+//const ConnectDB = require('../config/db');
 
-autoIncrement.initialize(ConnectDB);
+//autoIncrement.initialize(ConnectDB);
 
 const EmployeeSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: uuid.v4,
+  },
   Name: {
     type: String,
     trim: true,
@@ -38,6 +42,6 @@ const EmployeeSchema = new mongoose.Schema({
 });
 
 
-EmployeeSchema.plugin(autoIncrement.plugin, 'Employee');
+//EmployeeSchema.plugin(autoIncrement.plugin, 'Employee');
 
 module.exports = mongoose.model('Employee', EmployeeSchema);
