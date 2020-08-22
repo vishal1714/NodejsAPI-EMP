@@ -14,25 +14,25 @@ const EmployeeSchema = new mongoose.Schema({
   Name: {
     type: String,
     trim: true,
-    required: [true, 'Please Enter Name'],
+    required: [true, 'Please Enter Your Name'],
   },
-  DOB: {
+  Zip: {
     type: String,
     trim: true,
-    required: [true, 'Please Enter Date Of Birth'],
+    required: [true, 'Please Enter Your Zip Code'],
   },
   Age: {
     type: Number,
-    required: [true, 'Please Enter Employee Age'],
+    required: [true, 'Please Enter Your Employee Age'],
   },
   Department: {
     type: String,
     trim: true,
-    required: [true, 'Please Enter Department Name'],
+    required: [true, 'Please Enter Your Department Name'],
   },
   Salary: {
     type: Number,
-    required: [true, 'Please Enter Employee Salary PA'],
+    required: [true, 'Please Enter Your Employee Salary PA'],
   },
   CreatedAt: {
     type: String,
