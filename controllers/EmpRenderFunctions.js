@@ -20,7 +20,7 @@ exports.GetRenderEmployees = async (req, res, next) => {
 
 exports.AddRenderEmployee = async (req, res, next) => {
   try {
-    const { Name, DOB, Department, Age, Salary } = req.body;
+    const { Name, Zip, Department, Age, Salary } = req.body;
     const EmployeeAdd = await Employee.create(req.body);
     res.redirect('/');
   } catch (err) {
@@ -35,7 +35,7 @@ exports.AddRenderEmployee = async (req, res, next) => {
 
 exports.UpdateRenderEmployee = async (req, res, next) => {
   try {
-    const { _id, Name, DOB, Department, Age, Salary } = req.body;
+    const { _id, Name, Zip, Department, Age, Salary } = req.body;
     if (req.body._id == null) {
       res.render('index', { messages: 'Employee _id is not found' });
     }
@@ -44,7 +44,7 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
       {
         $set: {
           Name: req.body.Name,
-          DOB: req.body.DOB,
+          Zip: req.body.Zip,
           Department: req.body.Department,
           Age: req.body.Age,
           Salary: req.body.Salary,
