@@ -4,15 +4,10 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
 
-if (process.env.NODE_ENV == 'Development') {
-  const MongoURI = process.env.MONGOURIDev;
-}else{
-const MongoURI = process.env.MONGOURI;
-}
 
 const ConnectDB = async () => {
   try {
-    const conn = await mongoose.connect(MongoURI, {
+    const conn = await mongoose.connect(process.env.MONGOURI, {
       useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true,
