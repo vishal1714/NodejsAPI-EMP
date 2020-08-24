@@ -3,10 +3,16 @@ const colors = require('colors');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
-//mongodb+srv://admin:admin@rajecluster.o4zia.mongodb.net/EMP?retryWrites=true&w=majority
+
+if (process.env.NODE_ENV == 'Development') {
+  const MongoURI = process.env.MONGOURIDev;
+}else{
+const MongoURI = process.env.MONGOURI;
+}
+
 const ConnectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGOURI, {
+    const conn = await mongoose.connect(MongoURI, {
       useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true,
