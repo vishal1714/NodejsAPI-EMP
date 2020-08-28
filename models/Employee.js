@@ -38,8 +38,15 @@ const EmployeeSchema = new mongoose.Schema({
     type: String,
     default: function() { return moment().tz('Asia/Kolkata').format("MMMM Do YYYY, hh:mm:ss A")},
   },
-  __v: { type: Number, versionKey: false },
 });
+
+EmployeeSchema.set('toObject', {
+  transform: function (doc, ret) {
+    ret.id = ret._id
+    delete ret._id
+    delete ret.__v
+  }
+})
 
 
 //EmployeeSchema.plugin(autoIncrement.plugin, 'Employee');
