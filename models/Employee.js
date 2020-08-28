@@ -7,10 +7,6 @@ const moment = require('moment-timezone');
 //autoIncrement.initialize(ConnectDB);
 
 const EmployeeSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: uuid.v4,
-  },
   Name: {
     type: String,
     trim: true,
