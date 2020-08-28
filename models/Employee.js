@@ -7,6 +7,10 @@ const moment = require('moment-timezone');
 //autoIncrement.initialize(ConnectDB);
 
 const EmployeeSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: uuid.v4,
+  },
   Name: {
     type: String,
     trim: true,
@@ -35,15 +39,6 @@ const EmployeeSchema = new mongoose.Schema({
     default: function() { return moment().tz('Asia/Kolkata').format("MMMM Do YYYY, hh:mm:ss A")},
   },
 });
-
-EmployeeSchema.set('toObject', {
-  transform: function (doc, ret) {
-    ret.id = ret._id
-    delete ret._id
-    delete ret.__v
-  }
-})
-
 
 //EmployeeSchema.plugin(autoIncrement.plugin, 'Employee');
 
