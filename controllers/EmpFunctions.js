@@ -29,6 +29,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
     const getemployeebyid = await Employee.findById(req.params.id).select(
       '-__v'
     );
+
     //id Employee not found in DB
     if (!getemployeebyid) {
       res.status(404).json({

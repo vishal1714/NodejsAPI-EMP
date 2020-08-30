@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 //List all Employees details
 GET https://api.rajeapi.tk/api/v1/employee
 
@@ -86,4 +86,3 @@ API-Key: Vishal1714
 // DELETE https://rajeapi.herokuapp.com/api/v1/employee/{ID}
 DELETE  https://api.rajeapi.tk/api/v1/employee/3b96b75f-adf7-4d86-97f9-ad3d61a68773
 API-Key: Vishal1714
->>>>>>> b8f3cab1d32254cc71c9843b0e2c60ab12120393

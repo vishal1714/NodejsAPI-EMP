@@ -6,6 +6,8 @@ services:
     ports:
       - '5000:5000'
     restart: always
+    volumes:
+      - /root/APILog:/home/node/app/APILog
     depends_on:
       - mongo
   mongo:

@@ -15,7 +15,6 @@ app.use(express.json());
 if (process.env.NODE_ENV == 'Development') {
   app.use(morgan('dev'));
 }
-app.set('trust proxy', true);
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 
