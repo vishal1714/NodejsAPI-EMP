@@ -13,24 +13,25 @@ const {
   DelRenderEmployeeByID,
 } = require('../controllers/EmpRenderFunctions');
 
-const Employee = require('../models/Employee');
+const Employee = require('../models/EmployeeSchema');
 
-const route = express.Router();
+const Route = express.Router();
 
 //* Route for Web Application *\\
 
-route.route('/').get(GetRenderEmployees);
-route.route('/add').post(AddRenderEmployee);
-route.route('/update').post(UpdateRenderEmployee);
-route.route('/del').get(DelRenderEmployeeByID);
+Route.route('/').get(GetRenderEmployees);
+Route.route('/add').post(AddRenderEmployee);
+Route.route('/update').post(UpdateRenderEmployee);
+Route.route('/del').get(DelRenderEmployeeByID);
 
 //* Route for JSON base response API*\\
-route
-  .route('/api/v1/employee')
+Route.route('/api/v1/employee')
   .get(GetEmployees)
   .post(AddEmployee)
   .patch(UpdateEmployee);
 
-route.route('/api/v1/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
+Route.route('/api/v1/employee/:id')
+  .delete(DelEmployeeByID)
+  .get(GetEmployeeByID);
 
-module.exports = route;
+module.exports = Route;

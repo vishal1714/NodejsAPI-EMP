@@ -36,11 +36,11 @@ const EmployeeSchema = new mongoose.Schema({
   },
   CreatedAt: {
     type: String,
-    default: function() { return moment().tz('Asia/Kolkata').format("MMMM Do YYYY, hh:mm:ss A")},
+    default: function () {
+      return moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+    },
   },
-  __v: { type: Number, versionKey: false },
 });
-
 
 //EmployeeSchema.plugin(autoIncrement.plugin, 'Employee');
 

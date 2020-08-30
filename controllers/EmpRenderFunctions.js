@@ -1,6 +1,7 @@
-const Employee = require('../models/Employee');
+const Employee = require('../models/EmployeeSchema');
 
 // Render Methods
+
 exports.GetRenderEmployees = async (req, res, next) => {
   try {
     const GetEmployees = await Employee.find().select('-__v');
