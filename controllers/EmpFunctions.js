@@ -1,4 +1,5 @@
 const Employee = require('../models/EmployeeSchema');
+const APILog = require('../models/APISchemaLog');
 const Log = require('./EmployeeAPILog');
 
 const ValidKey = 'Vishal1714';
@@ -213,6 +214,37 @@ exports.UpdateEmployee = async (req, res, next) => {
     res.status(401).json({
       Error: {
         message: 'Unauthorized',
+      },
+    });
+  }
+};
+
+exports.GetEmployeelog = async (req, res, next) => {
+  var adminreqKey = req.header('Admin-API-Key');
+  if (reqKey == ValidKey) {
+    try {
+      const getemployeelog = await APILog.find().select('-__v');
+      //Send Success Response
+      res.status(200).json({
+        Status: 'Success',
+        Count: getemployeelog.length,
+        Log: getemployeelog,
+      });
+    } catch (err) {
+      console.log(err);
+      //Send Error
+      res.status(500).json({
+        Error: {
+          message: 'Internal Server Error',
+          info: err,
+        },
+      });
+    }
+  } else {
+    //API-Key is not valid
+    res.status(401).json({
+      Error: {
+        message: 'Unauthorized User',
       },
     });
   }
