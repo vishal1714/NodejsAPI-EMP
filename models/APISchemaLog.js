@@ -1,12 +1,8 @@
 const mongoose = require('mongoose');
-const uuid = require('uuid');
+//const uuid = require('uuid');
 const moment = require('moment-timezone');
 
 const APISchemaLog = new mongoose.Schema({
-  _id: {
-    type: String,
-    default: uuid.v4,
-  },
   Method: {
     type: 'String',
   },
