@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //List all Employees details
 GET https://api.rajeapi.tk/api/v1/employee
 
@@ -41,3 +42,48 @@ API-Key: Vishal1714
 // DELETE https://rajeapi.herokuapp.com/api/v1/employee/{ID}
 DELETE  https://api.rajeapi.tk/api/v1/employee/3b96b75f-adf7-4d86-97f9-ad3d61a68773
 API-Key: Vishal1714
+=======
+//List all Employees details
+GET https://api.rajeapi.tk/api/v1/employee
+
+// List Employee by ID
+//GET  https://rajeapi.herokuapp.com/api/v1/employee/{ID} 
+###
+GET https://api.rajeapi.tk/api/v1/employee/6e1db625-efef-45cd-a01f-8004604d8f89
+
+###
+//Add Employee detail
+//POST https://rajeapi.herokuapp.com/api/v1/employee/
+POST https://api.rajeapi.tk/api/v1/employee
+Content-Type: application/json
+API-Key: Vishal1714
+
+{
+    "Name" : "Vishal",
+    "Zip" : "400022",
+    "Age" : 25,
+    "Department" : "OS",
+    "Salary" : 450000
+}
+
+###
+//Update Employee Detail
+//PATCH https://rajeapi.herokuapp.com/api/v1/employee/
+PATCH  https://api.rajeapi.tk/api/v1/employee
+API-Key: Vishal1714
+
+{
+    "_id" : "1334b739-89dd-4c83-a079-b424fc3eccd4", 
+    "Name" : "Vishu",
+    "Zip" : "Ghadage",
+    "Age" : 26,
+    "Department" : "OS",
+    "Salary" : 750000
+}
+
+###
+//Delete Employee Detail by ID
+// DELETE https://rajeapi.herokuapp.com/api/v1/employee/{ID}
+DELETE  https://api.rajeapi.tk/api/v1/employee/3b96b75f-adf7-4d86-97f9-ad3d61a68773
+API-Key: Vishal1714
+>>>>>>> b8f3cab1d32254cc71c9843b0e2c60ab12120393
