@@ -59,6 +59,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
 
 exports.AddEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
+  var IP = req.header('X-Real-IP');
   // Validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -77,6 +78,7 @@ exports.AddEmployee = async (req, res, next) => {
         Method: 'Add Employee',
         reqBody: req.body,
         resBody: Response,
+        ClientIP: IP,
       };
       Log(ReqRes);
     } catch (err) {
@@ -109,6 +111,7 @@ exports.AddEmployee = async (req, res, next) => {
 
 exports.DelEmployeeByID = async (req, res, next) => {
   var reqKey = req.header('API-Key');
+  var IP = req.header('X-Real-IP');
   //Validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -135,6 +138,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
           Method: 'Delete Employee',
           reqBody: { _id: req.params.id },
           resBody: Response,
+          ClientIP: IP,
         };
         Log(ReqRes);
       }
@@ -159,6 +163,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
 
 exports.UpdateEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
+  var IP = req.header('X-Real-IP');
   //validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -198,6 +203,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         Method: 'Update Employee',
         reqBody: req.body,
         resBody: Response,
+        ClientIP: IP,
       };
       Log(ReqRes);
     } catch (err) {
