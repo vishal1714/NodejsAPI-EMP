@@ -5,12 +5,12 @@ const ValidKey = 'Vishal1714';
 
 exports.GetEmployees = async (req, res, next) => {
   try {
-    const employee = await Employee.find().select('-__v');
+    const getemployee = await Employee.find().select('-__v');
     //Send Success Response
     res.status(200).json({
       Status: 'Success',
-      Count: employee.length,
-      Data: employee,
+      Count: getemployee.length,
+      Data: getemployee,
     });
   } catch (err) {
     console.log(err);
@@ -26,9 +26,11 @@ exports.GetEmployees = async (req, res, next) => {
 
 exports.GetEmployeeByID = async (req, res, next) => {
   try {
-    const employee = await Employee.findById(req.params.id).select('-__v');
+    const getemployeebyid = await Employee.findById(req.params.id).select(
+      '-__v'
+    );
     //id Employee not found in DB
-    if (!employee) {
+    if (!getemployeebyid) {
       res.status(404).json({
         Error: {
           message: 'Employee not found',
@@ -38,7 +40,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
       //Send Success Response
       return res.status(200).json({
         Status: 'Success',
-        Data: employee,
+        Data: getemployeebyid,
         Message: 'Successfully! Record has been fetched.',
       });
     }
@@ -60,10 +62,10 @@ exports.AddEmployee = async (req, res, next) => {
     try {
       //Copturaing API Request
       const { Name, Zip, Age, Department, Salary } = req.body;
-      const employee = await Employee.create(req.body);
+      const addemployee = await Employee.create(req.body);
       const Response = {
         Status: 'Success',
-        Data: employee,
+        Data: addemployee,
         Message: 'Successfully! Record has been inserted.',
       };
       //Send Response
@@ -108,9 +110,9 @@ exports.DelEmployeeByID = async (req, res, next) => {
   //Validate API-Key
   if (reqKey == ValidKey) {
     try {
-      const employee = await Employee.findById(req.params.id).select('-__v');
+      const delemployee = await Employee.findById(req.params.id).select('-__v');
       //if Employee not found in DB
-      if (!employee) {
+      if (!delemployee) {
         res.status(404).json({
           Error: {
             message: 'Employee Not Found',
@@ -121,7 +123,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
         await Employee.remove();
         const Response = {
           Status: 'Success',
-          Data: employee,
+          Data: delemployee,
           Message: 'Successfully! Record has been deleted.',
         };
         //Send Response
@@ -170,7 +172,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         });
       }
       //Update Emplyee Info
-      const employee = await Employee.findOneAndUpdate(
+      const updateemployee = await Employee.findOneAndUpdate(
         { _id: req.body._id },
         {
           $set: {
