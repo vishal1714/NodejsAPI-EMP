@@ -5,6 +5,7 @@ const {
   GetEmployees,
   UpdateEmployee,
   DelEmployeeByID,
+  GetEmployeelog,
 } = require('../controllers/EmpFunctions');
 const {
   GetRenderEmployees,
@@ -33,5 +34,7 @@ Route.route('/api/v1/employee')
 Route.route('/api/v1/employee/:id')
   .delete(DelEmployeeByID)
   .get(GetEmployeeByID);
+
+Route.route('/api/v1/empadmin').get(GetEmployeelog);
 
 module.exports = Route;
