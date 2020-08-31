@@ -1,7 +1,9 @@
 const Employee = require('../models/EmployeeSchema');
 const APILog = require('../models/APISchemaLog');
 const Log = require('./EmployeeAPILog');
+const dotenv = require('dotenv');
 
+dotenv.config({ path: './config.env' });
 const ValidKey = 'Vishal1714';
 
 exports.GetEmployees = async (req, res, next) => {
@@ -59,6 +61,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
 
 exports.AddEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
+  var IP = req.header('X-Real-IP');
   // Validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -73,12 +76,15 @@ exports.AddEmployee = async (req, res, next) => {
       //Send Response
       res.status(201).json(Response);
       //Log
-      const ReqRes = {
-        Method: 'Add Employee',
-        reqBody: req.body,
-        resBody: Response,
-      };
-      Log(ReqRes);
+      if (process.env.LOGSTATUS == 'on') {
+        const ReqRes = {
+          Method: 'Add Employee',
+          reqBody: req.body,
+          resBody: Response,
+          ClientIP: IP,
+        };
+        Log(ReqRes);
+      }
     } catch (err) {
       //if Valid Error Found
       if (err.name == 'ValidationError') {
@@ -109,6 +115,7 @@ exports.AddEmployee = async (req, res, next) => {
 
 exports.DelEmployeeByID = async (req, res, next) => {
   var reqKey = req.header('API-Key');
+  var IP = req.header('X-Real-IP');
   //Validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -131,12 +138,15 @@ exports.DelEmployeeByID = async (req, res, next) => {
         //Send Response
         res.status(200).json(Response);
         //Log
-        const ReqRes = {
-          Method: 'Delete Employee',
-          reqBody: { _id: req.params.id },
-          resBody: Response,
-        };
-        Log(ReqRes);
+        if (process.env.LOGSTATUS == 'on') {
+          const ReqRes = {
+            Method: 'Delete Employee',
+            reqBody: { _id: req.params.id },
+            resBody: Response,
+            ClientIP: IP,
+          };
+          Log(ReqRes);
+        }
       }
     } catch (err) {
       //Send Error
@@ -159,6 +169,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
 
 exports.UpdateEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
+  var IP = req.header('X-Real-IP');
   //validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -194,12 +205,15 @@ exports.UpdateEmployee = async (req, res, next) => {
       //Send Success Response
       res.status(200).json(Response);
       //Log
-      const ReqRes = {
-        Method: 'Update Employee',
-        reqBody: req.body,
-        resBody: Response,
-      };
-      Log(ReqRes);
+      if (process.env.LOGSTATUS == 'on') {
+        const ReqRes = {
+          Method: 'Update Employee',
+          reqBody: req.body,
+          resBody: Response,
+          ClientIP: IP,
+        };
+        Log(ReqRes);
+      }
     } catch (err) {
       //send Error
       res.status(500).json({
@@ -220,8 +234,8 @@ exports.UpdateEmployee = async (req, res, next) => {
 };
 
 exports.GetEmployeelog = async (req, res, next) => {
-  var adminreqKey = req.header('Admin-API-Key');
-  if (reqKey == ValidKey) {
+  var adminreqKey = req.header('API-Key');
+  if (adminreqKey == ValidKey) {
     try {
       const getemployeelog = await APILog.find().select('-__v');
       //Send Success Response

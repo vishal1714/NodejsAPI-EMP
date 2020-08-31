@@ -70,8 +70,16 @@ const APISchemaLog = new mongoose.Schema({
       return moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
     },
   },
+  ClientIP: {
+    type: 'String',
+  },
 });
 
-//EmployeeSchema.plugin(autoIncrement.plugin, 'Employee');
-
+APISchemaLog.set('toJSON', {
+  transform: function (doc, ret, options) {
+    ret.RajeRefNo = ret._id;
+    delete ret._id;
+    delete ret.__v;
+  },
+});
 module.exports = mongoose.model('APILog', APISchemaLog);
