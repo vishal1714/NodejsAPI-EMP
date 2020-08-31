@@ -226,7 +226,7 @@ exports.UpdateEmployee = async (req, res, next) => {
 };
 
 exports.GetEmployeelog = async (req, res, next) => {
-  var adminreqKey = req.header('Admin-API-Key');
+  var adminreqKey = req.header('API-Key');
   if (adminreqKey == ValidKey) {
     try {
       const getemployeelog = await APILog.find().select('-__v');
