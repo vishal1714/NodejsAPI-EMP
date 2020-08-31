@@ -13,7 +13,7 @@ const Log = async (data) => {
 
     fs.appendFile('./APILog/APILog.log', LogData, function (err) {
       if (err) throw err;
-      console.log('Loged!' + LogData);
+      //console.log('Loged!' + LogData);
     });
     await EmployeeAPILog.create(data);
   } catch (error) {
