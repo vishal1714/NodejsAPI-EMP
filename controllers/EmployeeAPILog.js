@@ -11,9 +11,9 @@ const Log = async (data) => {
     var LogedinDB = JSON.stringify(data);
     var LogData = '|' + m + '|' + LogedinDB;
 
-    fs.appendFile('./APILog/APILog.log', LogData, function (err) {
+    fs.appendFile(process.env.LOGDIR, LogData, function (err) {
       if (err) throw err;
-      //console.log('Loged!' + LogData);
+      console.log('Loged!' + LogData);
     });
     await EmployeeAPILog.create(data);
   } catch (error) {
