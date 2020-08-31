@@ -228,8 +228,6 @@ exports.UpdateEmployee = async (req, res, next) => {
 };
 
 exports.GetEmployeelog = async (req, res, next) => {
-  var adminreqKey = req.header('API-Key');
-  if (adminreqKey == ValidKey) {
     try {
       const getemployeelog = await APILog.find().select('-__v');
       //Send Success Response
@@ -248,12 +246,5 @@ exports.GetEmployeelog = async (req, res, next) => {
         },
       });
     }
-  } else {
-    //API-Key is not valid
-    res.status(401).json({
-      Error: {
-        message: 'Unauthorized User',
-      },
-    });
-  }
+ 
 };
