@@ -3,12 +3,20 @@ const uuid = require('uuid');
 const moment = require('moment-timezone');
 
 const APISchemaLog = new mongoose.Schema({
-   _id: {
+  _id: {
     type: String,
     default: uuid.v4,
   },
   Method: {
     type: 'String',
+  },
+  APIKey: {
+    type: 'String',
+  },
+  reqPath: {
+    _id: {
+      type: 'String',
+    },
   },
   reqBody: {
     _id: {
@@ -31,6 +39,14 @@ const APISchemaLog = new mongoose.Schema({
     },
   },
   resBody: {
+    Error: {
+      message: {
+        type: 'String',
+      },
+      Info: {
+        type: 'String',
+      },
+    },
     Status: {
       type: 'String',
     },
@@ -76,11 +92,10 @@ const APISchemaLog = new mongoose.Schema({
 });
 
 APISchemaLog.set('toJSON', {
-     transform: function (doc, ret, options) {
-         ret.RajeRefNo = ret._id;
-         delete ret._id;
-         delete ret.__v;
-     }
-}); 
-
+  transform: function (doc, ret, options) {
+    ret.RajeRefNo = ret._id;
+    delete ret._id;
+    delete ret.__v;
+  },
+});
 module.exports = mongoose.model('APILog', APISchemaLog);
