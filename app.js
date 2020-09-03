@@ -22,6 +22,7 @@ app.use((req, resp, next) => {
   resp.setHeader('Access-Control-Allow-Headers', '*');
   resp.setHeader('Access-Control-Allow-Origin', '*');
   resp.removeHeader('X-Powered-By', '*');
+  resp.removeHeader('Server', '*');
   resp.removeHeader('Date', '*');
   next();
 });
