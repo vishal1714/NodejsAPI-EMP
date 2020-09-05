@@ -26,7 +26,7 @@ const Log = async (req, Response, IP, reqKey, reqmethod) => {
     var LogedinDB = JSON.stringify(ReqRes);
     var LogData = '|' + m + '|' + LogedinDB;
 
-    fs.appendFile(process.env.LOGDIR, LogData, function (err) {
+    fs.appendFile(process.env.LOGDIR, LogData = "/n", function (err) {
       if (err) throw err;
       //console.log('Loged!' + LogData);
     });
