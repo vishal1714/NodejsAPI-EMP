@@ -17,11 +17,11 @@ const Log = async (req, Response, IP, reqKey, reqmethod) => {
     const ReqRes = {
       Method: reqmethod,
       APIKey: reqKey,
-      reqBody: reqbody,
-      reqPath: reqpara,
-      resBody: Response,
       ClientIP: IP,
       LoggedAt: m,
+      reqPath: reqpara,
+      ReqBody: reqbody,
+      ResBody: Response,
     };
     var LogedinDB = JSON.stringify(ReqRes);
     var LogData = '|' + m + '|' + LogedinDB;
