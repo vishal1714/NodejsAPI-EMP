@@ -14,9 +14,9 @@ const Log = async (req, Response, IP, reqKey, reqmethod) => {
       var reqpara = { _id: req.params.id };
     }
     const ReqRes = {
-      reqBody: reqbody,
-      reqPath: reqpara,
-      resBody: Response,
+      ReqBody: reqbody,
+      ReqPath: reqpara,
+      ResBody: Response,
       Method: reqmethod,
       APIKey: reqKey,
       ClientIP: IP,
