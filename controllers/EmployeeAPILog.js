@@ -13,20 +13,19 @@ const Log = async (req, Response, IP, reqKey, reqmethod) => {
     } else {
       var reqpara = { _id: req.params.id };
     }
-
     const ReqRes = {
+      reqBody: reqbody,
+      reqPath: reqpara,
+      resBody: Response,
       Method: reqmethod,
       APIKey: reqKey,
       ClientIP: IP,
       LoggedAt: m,
-      reqPath: reqpara,
-      ReqBody: reqbody,
-      ResBody: Response,
     };
     var LogedinDB = JSON.stringify(ReqRes);
     var LogData = '|' + m + '|' + LogedinDB;
 
-    fs.appendFile(process.env.LOGDIR, LogData = "\n", function (err) {
+    fs.appendFile(process.env.LOGDIR, LogData + '\n', function (err) {
       if (err) throw err;
       //console.log('Loged!' + LogData);
     });
