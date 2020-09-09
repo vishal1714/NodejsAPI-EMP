@@ -13,12 +13,12 @@ const APISchemaLog = new mongoose.Schema({
   APIKey: {
     type: 'String',
   },
-  reqPath: {
+  ReqPath: {
     _id: {
       type: 'String',
     },
   },
-  reqBody: {
+  ReqBody: {
     _id: {
       type: 'String',
     },
@@ -38,7 +38,7 @@ const APISchemaLog = new mongoose.Schema({
       type: 'String',
     },
   },
-  resBody: {
+  ResBody: {
     Error: {
       message: {
         type: 'String',
