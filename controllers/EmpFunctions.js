@@ -1,10 +1,23 @@
 const Employee = require('../models/EmployeeSchema');
-const APILog = require('../models/APISchemaLog');
-const Log = require('./EmployeeAPILog');
+const APIAdmin = require('../models/APISchemaAdmin');
+const { Log } = require('./APILogManager');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
+
 const ValidKey = 'Vishal1714';
+
+const ValidateKey = async (reqkey) => {
+  var a = reqkey.toString();
+  console.log(a);
+  var validate = await APIAdmin.find({ APIKey: a });
+  console.log(validate);
+  if (!validate) {
+    return 0;
+  } else {
+    return 1;
+  }
+};
 
 exports.GetEmployees = async (req, res, next) => {
   try {
@@ -63,6 +76,8 @@ exports.AddEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
   // Validate API-Key
+  //var a = ValidateKey(reqKey);
+  //console.log(a);
   if (reqKey == ValidKey) {
     try {
       //Copturaing API Request
@@ -176,7 +191,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         //Send Error
         const Response = {
           Error: {
-            message: '_id not present in request body',
+            message: 'EmpRefNo not present in request body',
           },
         };
         //Send Response
@@ -225,26 +240,4 @@ exports.UpdateEmployee = async (req, res, next) => {
       },
     });
   }
-};
-
-exports.GetEmployeelog = async (req, res, next) => {
-    try {
-      const getemployeelog = await APILog.find().select('-__v');
-      //Send Success Response
-      res.status(200).json({
-        Status: 'Success',
-        Count: getemployeelog.length,
-        Log: getemployeelog,
-      });
-    } catch (err) {
-      console.log(err);
-      //Send Error
-      res.status(500).json({
-        Error: {
-          message: 'Internal Server Error',
-          info: err,
-        },
-      });
-    }
- 
 };

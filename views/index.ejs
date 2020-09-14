@@ -21,17 +21,26 @@
       }
     </style>
     <!--  jQuery -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://code.jquery.com/jquery-1.11.3.min.js"
+    ></script>
 
-<!-- Bootstrap Date-Picker Plugin -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <!-- Bootstrap Date-Picker Plugin -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"
+    />
   </head>
 
   <body>
     <div class="container">
       <h1 align="center">My Employee Management App</h1>
-      <div class="row" style="padding-top: 10px;">
+      <div class="row" style="padding-top: 10px">
         <div class="col">
           <h2>Add Employee</h2>
           <form method="post" action="/add">
@@ -147,7 +156,7 @@
           </form>
         </div>
       </div>
-      <div style="padding-top: 5%; align-content: center;">
+      <div style="padding-top: 5%; align-content: center">
         <form method="get" action="/del" class="form-inline">
           <div class="form-group">
             <label for="id">Employee ID</label>
@@ -164,7 +173,7 @@
         </form>
       </div>
 
-      <div style="padding-top: 5%; padding-bottom: 5%;">
+      <div style="padding-top: 5%; padding-bottom: 5%">
         <% if(locals.messages) { %>
         <h4 align="center">Error</h4>
         <ul>

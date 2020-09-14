@@ -27,8 +27,17 @@ app.use((req, resp, next) => {
   next();
 });
 
+//Web reander Route
+const webroute = require('./routes/web');
+app.use('/', webroute);
+
+// Employee API Route
 const route = require('./routes/index');
-app.use('/', route);
+app.use('/api/v1', route);
+
+//Admin APIRoute
+const adminroute = require('./routes/admin');
+app.use('/apiadmin', adminroute);
 
 // Error handling 🔥
 app.use((req, resp, next) => {

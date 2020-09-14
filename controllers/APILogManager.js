@@ -35,4 +35,4 @@ const Log = async (req, Response, IP, reqKey, reqmethod) => {
   }
 };
 
-module.exports = Log;
+module.exports = { Log };
