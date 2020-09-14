@@ -1,5 +1,5 @@
 const Employee = require('../models/EmployeeSchema');
-const APIAdmin = require('../models/APISchemaAdmin');
+const APIAdmin = require('../models/APIAdminSchema');
 const { Log } = require('./APILogManager');
 const dotenv = require('dotenv');
 

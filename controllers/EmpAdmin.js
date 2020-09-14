@@ -1,5 +1,5 @@
-const APILog = require('../models/APISchemaLog');
-const APIAdmin = require('../models/APISchemaAdmin');
+const APILog = require('../models/APILogSchema');
+const APIAdmin = require('../models/APIAdminSchema');
 var fs = require('fs');
 const dotenv = require('dotenv');
 

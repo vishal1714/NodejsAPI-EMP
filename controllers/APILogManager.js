@@ -3,7 +3,7 @@ const moment = require('moment');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config/config.env' });
-const EmployeeAPILog = require('../models/APISchemaLog');
+const EmployeeAPILog = require('../models/APILogSchema');
 
 const Log = async (req, Response, IP, reqKey, reqmethod) => {
   try {
