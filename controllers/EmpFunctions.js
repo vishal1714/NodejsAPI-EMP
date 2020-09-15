@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
 const ValidKey = 'Vishal1714';
-
+/* API Key Validation 
 const ValidateKey = async (reqkey) => {
   var a = reqkey.toString();
   console.log(a);
@@ -18,6 +18,7 @@ const ValidateKey = async (reqkey) => {
     return 1;
   }
 };
+*/
 
 exports.GetEmployees = async (req, res, next) => {
   try {
