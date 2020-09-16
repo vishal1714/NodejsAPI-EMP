@@ -22,12 +22,22 @@ app.use((req, resp, next) => {
   resp.setHeader('Access-Control-Allow-Headers', '*');
   resp.setHeader('Access-Control-Allow-Origin', '*');
   resp.removeHeader('X-Powered-By', '*');
+  resp.removeHeader('Server', '*');
   resp.removeHeader('Date', '*');
   next();
 });
 
+//Web reander Route
+const webroute = require('./routes/web');
+app.use('/', webroute);
+
+// Employee API Route
 const route = require('./routes/index');
-app.use('/', route);
+app.use('/api/v1', route);
+
+//Admin APIRoute
+const adminroute = require('./routes/admin');
+app.use('/apiadmin', adminroute);
 
 // Error handling 🔥
 app.use((req, resp, next) => {

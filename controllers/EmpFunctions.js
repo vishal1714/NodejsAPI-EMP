@@ -1,10 +1,31 @@
 const Employee = require('../models/EmployeeSchema');
+<<<<<<< HEAD
 const APILog = require('../models/APISchemaLog');
 const Log = require('./EmployeeAPILog');
 const dotenv = require('dotenv');
+=======
+const APIAdmin = require('../models/APIAdminSchema');
+const { Log } = require('./APILogManager');
+const dotenv = require('dotenv');
+
+dotenv.config({ path: './config.env' });
+>>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
 
 dotenv.config({ path: './config.env' });
 const ValidKey = 'Vishal1714';
+/* API Key Validation 
+const ValidateKey = async (reqkey) => {
+  var a = reqkey.toString();
+  console.log(a);
+  var validate = await APIAdmin.find({ APIKey: a });
+  console.log(validate);
+  if (!validate) {
+    return 0;
+  } else {
+    return 1;
+  }
+};
+*/
 
 exports.GetEmployees = async (req, res, next) => {
   try {
@@ -63,6 +84,8 @@ exports.AddEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
   // Validate API-Key
+  //var a = ValidateKey(reqKey);
+  //console.log(a);
   if (reqKey == ValidKey) {
     try {
       //Copturaing API Request
@@ -76,6 +99,7 @@ exports.AddEmployee = async (req, res, next) => {
       //Send Response
       res.status(201).json(Response);
       //Log
+<<<<<<< HEAD
       if (process.env.LOGSTATUS == 'on') {
         const ReqRes = {
           Method: 'Add Employee',
@@ -85,22 +109,29 @@ exports.AddEmployee = async (req, res, next) => {
         };
         Log(ReqRes);
       }
+=======
+      Log(req, Response, IP, reqKey, 'Add Employee');
+>>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
     } catch (err) {
       //if Valid Error Found
       if (err.name == 'ValidationError') {
         const messages = Object.values(err.errors).map((val) => val.message);
-        res.status(400).json({
+        const Response = {
           Error: {
             message: messages,
           },
-        });
+        };
+        res.status(400).json(Response);
+        Log(req, Response, IP, reqKey, 'Add Employee');
       } else {
-        //Send Error
-        res.status(500).json({
+        const Response = {
           Error: {
             message: 'Internal Server Error',
           },
-        });
+        };
+        res.status(500).json(Response);
+        //Send Error
+        Log(req, Response, IP, reqKey, 'Add Employee');
       }
     }
   } else {
@@ -116,20 +147,27 @@ exports.AddEmployee = async (req, res, next) => {
 exports.DelEmployeeByID = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
   //Validate API-Key
   if (reqKey == ValidKey) {
     try {
       const delemployee = await Employee.findById(req.params.id).select('-__v');
       //if Employee not found in DB
       if (!delemployee) {
-        res.status(404).json({
+        const Response = {
           Error: {
             message: 'Employee Not Found',
           },
-        });
+        };
+        //Send Response
+        Log(req, Response, IP, reqKey, 'Delete Employee');
+        return res.status(404).json(Response);
       } else {
         //Remove Employee
-        await Employee.remove();
+        await delemployee.remove();
         const Response = {
           Status: 'Success',
           Data: delemployee,
@@ -138,6 +176,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
         //Send Response
         res.status(200).json(Response);
         //Log
+<<<<<<< HEAD
         if (process.env.LOGSTATUS == 'on') {
           const ReqRes = {
             Method: 'Delete Employee',
@@ -147,15 +186,21 @@ exports.DelEmployeeByID = async (req, res, next) => {
           };
           Log(ReqRes);
         }
+=======
+        Log(req, Response, IP, reqKey, 'Delete Employee');
+>>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
       }
     } catch (err) {
-      //Send Error
-      res.status(500).json({
+      const Response = {
         Error: {
           message: 'Internal Server Error',
           info: err,
         },
-      });
+      };
+      //Send Error
+      res.status(500).json(Response);
+      //Log
+      Log(req, Response, IP, reqKey, 'Delete Employee');
     }
   } else {
     //if APi-Key is not valid
@@ -170,23 +215,31 @@ exports.DelEmployeeByID = async (req, res, next) => {
 exports.UpdateEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
   //validate API-Key
   if (reqKey == ValidKey) {
     try {
       //Capture Request Body
-      const { _id, Name, Zip, Age, Department, Salary } = req.body;
+      const { EmpRefNo, Name, Zip, Age, Department, Salary } = req.body;
       //if _id is not present in RequestBody
-      if (req.body._id == null) {
+      if (req.body.EmpRefNo == null) {
         //Send Error
-        res.status(400).json({
+        const Response = {
           Error: {
-            message: '_id not present in request body',
+            message: 'EmpRefNo not present in request body',
           },
-        });
+        };
+        //Send Response
+        res.status(400).json(Response);
+        //Log
+        Log(req, Response, IP, reqKey, 'Update Method');
       }
       //Update Emplyee Info
       const updateemployee = await Employee.findOneAndUpdate(
-        { _id: req.body._id },
+        { _id: req.body.EmpRefNo },
         {
           $set: {
             Name: req.body.Name,
@@ -205,6 +258,7 @@ exports.UpdateEmployee = async (req, res, next) => {
       //Send Success Response
       res.status(200).json(Response);
       //Log
+<<<<<<< HEAD
       if (process.env.LOGSTATUS == 'on') {
         const ReqRes = {
           Method: 'Update Employee',
@@ -214,14 +268,19 @@ exports.UpdateEmployee = async (req, res, next) => {
         };
         Log(ReqRes);
       }
+=======
+      Log(req, Response, IP, reqKey, 'Update Method');
+>>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
     } catch (err) {
       //send Error
-      res.status(500).json({
+      var Response = {
         Error: {
           message: 'Internal Server Error',
           info: err,
         },
-      });
+      };
+      res.status(500).json(Response);
+      Log(req, Response, IP, reqKey, 'Update Method');
     }
   } else {
     //API-Key is not valid

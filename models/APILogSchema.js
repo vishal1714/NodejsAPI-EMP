@@ -10,7 +10,15 @@ const APISchemaLog = new mongoose.Schema({
   Method: {
     type: 'String',
   },
-  reqBody: {
+  APIKey: {
+    type: 'String',
+  },
+  ReqPath: {
+    _id: {
+      type: 'String',
+    },
+  },
+  ReqBody: {
     _id: {
       type: 'String',
     },
@@ -30,7 +38,15 @@ const APISchemaLog = new mongoose.Schema({
       type: 'String',
     },
   },
-  resBody: {
+  ResBody: {
+    Error: {
+      message: {
+        type: 'String',
+      },
+      Info: {
+        type: 'String',
+      },
+    },
     Status: {
       type: 'String',
     },
