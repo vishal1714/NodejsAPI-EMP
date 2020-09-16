@@ -43,20 +43,12 @@ const EmployeeSchema = new mongoose.Schema({
 });
 
 EmployeeSchema.set('toJSON', {
-<<<<<<< HEAD
   transform: function (doc, ret, options) {
     ret.EmpRefNo = ret._id;
     delete ret._id;
     delete ret.__v;
   },
 });
-=======
-     transform: function (doc, ret, options) {
-         ret.EmpRefNo = ret._id;
-         delete ret._id;
-         delete ret.__v;
-     }
-}); 
->>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
+
 
 module.exports = mongoose.model('Employee', EmployeeSchema);
