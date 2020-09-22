@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config/config.env' });
 const EmployeeAPILog = require('../models/APILogSchema');
 
-const Log = async (req, Response, IP, reqKey, reqmethod) => {
+const Log = (req, Response, IP, reqKey, reqmethod) => {
   try {
     var m = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
     if (!req.params.id) {
@@ -29,7 +29,7 @@ const Log = async (req, Response, IP, reqKey, reqmethod) => {
       if (err) throw err;
       //console.log('Loged!' + LogData);
     });
-    await EmployeeAPILog.create(ReqRes);
+    EmployeeAPILog.create(ReqRes);
   } catch (error) {
     console.log(error);
   }

@@ -60,7 +60,7 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
 
 exports.DelRenderEmployeeByID = async (req, res, next) => {
   try {
-    const employee = await Employee.findById(req.query.id).select('-__v');
+    const employee = await Employee.findById(req.params.id).select('-__v');
     if (!employee) {
       res.render('index', { messages: 'Employee _id is not found' });
     } else {

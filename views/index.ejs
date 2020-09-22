@@ -11,15 +11,13 @@
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
       crossorigin="anonymous"
     />
-    <style>
-      table,
-      th,
-      td {
-        border: 2px solid black;
-        column-width: auto;
-        text-align: center;
-      }
-    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
     <!--  jQuery -->
     <script
       type="text/javascript"
@@ -95,7 +93,7 @@
           </form>
         </div>
 
-        <div class="col">
+        <div class="col my-4">
           <h2>Update Employee</h2>
           <form method="post" action="/update">
             <div class="form-group">
@@ -155,23 +153,6 @@
             <button type="submit" class="btn btn-primary">Add</button>
           </form>
         </div>
-      </div>
-      <div style="padding-top: 5%; align-content: center">
-        <form method="get" action="/del" class="form-inline">
-          <div class="form-group">
-            <label for="id">Employee ID</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Employee ID"
-              name="id"
-            />
-          </div>
-          <button type="submit" class="btn btn-primary mb-2">
-            Delete Employee
-          </button>
-        </form>
-      </div>
 
       <div style="padding-top: 5%; padding-bottom: 5%">
         <% if(locals.messages) { %>
@@ -181,27 +162,36 @@
         </ul>
         <% } if(locals.GetEmployees) {%>
         <h4 align="center">Employee Table</h4>
-        <table align="center" class=".table-bordered">
-          <tr>
-            <th class="w-5">ID</th>
-            <th>Employee ID</th>
-            <th class="w-25">Name</th>
-            <th class="w-25">Zip Code</th>
-            <th>Department</th>
-            <th>Age</th>
-            <th>Salary</th>
-          </tr>
-          <% for (var i = 0; i < GetEmployees.length;i++) { %>
-          <tr>
-            <td><%= i+1 %></td>
-            <td><%= GetEmployees[i]._id %></td>
-            <td><%= GetEmployees[i].Name %></td>
-            <td><%= GetEmployees[i].Zip %></td>
-            <td><%= GetEmployees[i].Department %></td>
-            <td><%= GetEmployees[i].Age %></td>
-            <td><%= GetEmployees[i].Salary %></td>
-          </tr>
-          <% } %>
+
+        <table class="table table-striped table-responsive">
+          <thead>
+            <tr>
+              <th>Employee ID</th>
+              <th>Name</th>
+              <th>Zip Code</th>
+              <th>Department</th>
+              <th>Age</th>
+              <th>Salary</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% GetEmployees.forEach(Employee => { %>
+            <tr>
+              <td><%= Employee._id %></td>
+              <td><%= Employee.Name %></td>
+              <td><%= Employee.Zip %></td>
+              <td><%= Employee.Department %></td>
+              <td><%= Employee.Age %></td>
+              <td><%= Employee.Salary %></td>
+              <td>
+                <a href="/del/<%= Employee._id %>"
+                  ><i class="fa fa-trash" aria-hidden="true"></i
+                ></a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
         </table>
         <% } %>
       </div>
