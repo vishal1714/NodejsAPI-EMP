@@ -8,7 +8,7 @@ const key = process.env.ENCRYPTION_KEY;
 
 exports.encrypt = (text1) => {
   const iv = crypto.randomBytes(16);
-  console.log(iv);
+  //console.log(iv);
   let text = JSON.stringify(text1);
   let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
   let encrypted = cipher.update(text);
