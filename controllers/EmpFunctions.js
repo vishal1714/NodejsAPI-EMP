@@ -2,7 +2,7 @@ const Employee = require('../models/EmployeeSchema');
 const APIAdmin = require('../models/APIAdminSchema');
 
 const { Log } = require('./APILogManager');
-const { encrypt, decrypt } = require('./crypto');
+const { encrypt, decrypt } = require('./Crypto');
 
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
