@@ -1,6 +1,9 @@
 const Employee = require('../models/EmployeeSchema');
 const APIAdmin = require('../models/APIAdminSchema');
+
 const { Log } = require('./APILogManager');
+const { encrypt, decrypt } = require('./crypto');
+
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
@@ -87,9 +90,16 @@ exports.AddEmployee = async (req, res, next) => {
         Status: 'Success',
         Data: addemployee,
         Message: 'Successfully! Record has been inserted.',
-      };
+      }; 
+      const inc = encrypt(Response);
+      //console.log(inc);
       //Send Response
-      res.status(201).json(Response);
+      const FullResponse = {
+        ActualResponse : Response,
+        EncryptedResponse : inc
+      }
+      //Send Response
+      res.status(201).json(FullResponse);
       //Log
       Log(req, Response, IP, reqKey, 'Add Employee');
 
@@ -241,33 +251,19 @@ exports.UpdateEmployee = async (req, res, next) => {
   }
 };
 
-exports.GetEmployeelog = async (req, res, next) => {
-  var adminreqKey = req.header('API-Key');
-  if (adminreqKey == ValidKey) {
-    try {
-      const getemployeelog = await APILog.find().select('-__v');
-      //Send Success Response
-      res.status(200).json({
-        Status: 'Success',
-        Count: getemployeelog.length,
-        Log: getemployeelog,
-      });
-    } catch (err) {
-      console.log(err);
-      //Send Error
-      res.status(500).json({
-        Error: {
-          message: 'Internal Server Error',
-          info: err,
-        },
-      });
-    }
-  } else {
-    //API-Key is not valid
-    res.status(401).json({
-      Error: {
-        message: 'Unauthorized User',
-      },
-    });
+exports.DecryptResponse = async (req, res, next) => {
+  try {
+    const { Refno, encryptedData } = req.body;
+    //console.log(req.body);
+    //let text = JSON.stringify(req.body);
+    //console.log(text);
+    const apikey = req.header('API-Key');
+    const response = decrypt(Refno, encryptedData, apikey);
+    //console.log(response);
+    const respp = JSON.parse(response);
+    res.status(200).send(respp);
+  } catch (error) {
+    res.status(500).json(error);
+    //console.log(error);
   }
 };
