@@ -1,17 +1,9 @@
 const Employee = require('../models/EmployeeSchema');
-<<<<<<< HEAD
-const APILog = require('../models/APISchemaLog');
-const Log = require('./EmployeeAPILog');
-const dotenv = require('dotenv');
-=======
 const APIAdmin = require('../models/APIAdminSchema');
 const { Log } = require('./APILogManager');
 const dotenv = require('dotenv');
-
 dotenv.config({ path: './config.env' });
->>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
 
-dotenv.config({ path: './config.env' });
 const ValidKey = 'Vishal1714';
 /* API Key Validation 
 const ValidateKey = async (reqkey) => {
@@ -99,19 +91,8 @@ exports.AddEmployee = async (req, res, next) => {
       //Send Response
       res.status(201).json(Response);
       //Log
-<<<<<<< HEAD
-      if (process.env.LOGSTATUS == 'on') {
-        const ReqRes = {
-          Method: 'Add Employee',
-          reqBody: req.body,
-          resBody: Response,
-          ClientIP: IP,
-        };
-        Log(ReqRes);
-      }
-=======
       Log(req, Response, IP, reqKey, 'Add Employee');
->>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
+
     } catch (err) {
       //if Valid Error Found
       if (err.name == 'ValidationError') {
@@ -147,10 +128,6 @@ exports.AddEmployee = async (req, res, next) => {
 exports.DelEmployeeByID = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
-<<<<<<< HEAD
-=======
-
->>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
   //Validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -176,19 +153,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
         //Send Response
         res.status(200).json(Response);
         //Log
-<<<<<<< HEAD
-        if (process.env.LOGSTATUS == 'on') {
-          const ReqRes = {
-            Method: 'Delete Employee',
-            reqBody: { _id: req.params.id },
-            resBody: Response,
-            ClientIP: IP,
-          };
-          Log(ReqRes);
-        }
-=======
         Log(req, Response, IP, reqKey, 'Delete Employee');
->>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
       }
     } catch (err) {
       const Response = {
@@ -215,10 +180,6 @@ exports.DelEmployeeByID = async (req, res, next) => {
 exports.UpdateEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
-<<<<<<< HEAD
-=======
-
->>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
   //validate API-Key
   if (reqKey == ValidKey) {
     try {
@@ -258,19 +219,7 @@ exports.UpdateEmployee = async (req, res, next) => {
       //Send Success Response
       res.status(200).json(Response);
       //Log
-<<<<<<< HEAD
-      if (process.env.LOGSTATUS == 'on') {
-        const ReqRes = {
-          Method: 'Update Employee',
-          reqBody: req.body,
-          resBody: Response,
-          ClientIP: IP,
-        };
-        Log(ReqRes);
-      }
-=======
       Log(req, Response, IP, reqKey, 'Update Method');
->>>>>>> 79fb552554e635da232b1bec6030e88d2053df59
     } catch (err) {
       //send Error
       var Response = {
