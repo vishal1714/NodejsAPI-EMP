@@ -5,7 +5,6 @@ const {
   GetEmployees,
   UpdateEmployee,
   DelEmployeeByID,
-  GetEmployeelog,
 } = require('../controllers/EmpFunctions');
 
 const Route = express.Router();
@@ -19,6 +18,5 @@ Route.route('/updateemployee').patch(UpdateEmployee);
 
 Route.route('/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
 
-Route.route('/api/v1/empadmin').get(GetEmployeelog);
 
 module.exports = Route;
