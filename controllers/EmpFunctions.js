@@ -7,7 +7,7 @@ const { encrypt, decrypt } = require('./crypto');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
-const ValidKey = 'Vishal1714';
+const ValidKey = process.env.AdminAPIKey;
 /* API Key Validation 
 const ValidateKey = async (reqkey) => {
   var a = reqkey.toString();
