@@ -13,6 +13,6 @@ const Route = express.Router();
 Route.route('/').get(GetRenderEmployees);
 Route.route('/add').post(AddRenderEmployee);
 Route.route('/update').post(UpdateRenderEmployee);
-Route.route('/del').get(DelRenderEmployeeByID);
+Route.route('/del/:id').get(DelRenderEmployeeByID);
 
 module.exports = Route;
