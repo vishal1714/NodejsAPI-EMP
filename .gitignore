@@ -12,7 +12,6 @@ yarn-error.log*
 lerna-debug.log*
 
 config/config.env
-config/db.js
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
