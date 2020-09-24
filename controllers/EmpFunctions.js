@@ -249,13 +249,23 @@ exports.DecryptResponse = async (req, res, next) => {
     //console.log(req.body);
     //let text = JSON.stringify(req.body);
     //console.log(text);
-    const apikey = req.header('API-Key');
-    const response = decrypt(Refno, encryptedData, apikey);
-    //console.log(response);
-    const respp = JSON.parse(response);
-    res.status(200).send(respp);
+    const apikey = req.header('AES-Key');
+    if (apikey == process.env.ENCRYPTION_KEY) {
+      const response = decrypt(Refno, encryptedData, apikey);
+      //console.log(response);
+      const respp = JSON.parse(response);
+      res.status(200).send(respp);
+    } else {
+      res.status(500).json({
+        message: 'Internal Server Error',
+        info: 'Invalid Decryption Key',
+      });
+    }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(400).json({
+      message: 'Invalid Payload or Missing Payload',
+      info: error,
+    });
     //console.log(error);
   }
 };
