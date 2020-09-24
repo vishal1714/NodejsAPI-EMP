@@ -11,6 +11,7 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+*.env
 config/config.env
 
 # Diagnostic reports (https://nodejs.org/api/report.html)

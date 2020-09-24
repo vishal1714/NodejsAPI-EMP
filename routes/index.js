@@ -21,5 +21,4 @@ Route.route('/updateemployee').patch(UpdateEmployee);
 
 Route.route('/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
 
-
 module.exports = Route;

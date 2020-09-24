@@ -6,8 +6,10 @@ const bodyParser = require('body-parser');
 
 dotenv.config({ path: './config/config.env' });
 const ConnectDB = require('./config/db');
+const { CreatePath } = require('./controllers/APILogManager');
 
 ConnectDB();
+CreatePath(process.env.LOGDIR);
 
 const app = express();
 app.use(express.json());

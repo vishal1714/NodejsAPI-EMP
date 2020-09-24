@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
 const ValidKey = process.env.AdminAPIKey;
+
 /* API Key Validation 
 const ValidateKey = async (reqkey) => {
   var a = reqkey.toString();
@@ -78,9 +79,7 @@ exports.GetEmployeeByID = async (req, res, next) => {
 exports.AddEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
-  // Validate API-Key
-  //var a = ValidateKey(reqKey);
-  //console.log(a);
+
   if (reqKey == ValidKey) {
     try {
       //Copturaing API Request
@@ -90,19 +89,12 @@ exports.AddEmployee = async (req, res, next) => {
         Status: 'Success',
         Data: addemployee,
         Message: 'Successfully! Record has been inserted.',
-      }; 
+      };
       const inc = encrypt(Response);
-      //console.log(inc);
       //Send Response
-      const FullResponse = {
-        ActualResponse : Response,
-        EncryptedResponse : inc
-      }
-      //Send Response
-      res.status(201).json(FullResponse);
+      res.status(201).json(inc);
       //Log
       Log(req, Response, IP, reqKey, 'Add Employee');
-
     } catch (err) {
       //if Valid Error Found
       if (err.name == 'ValidationError') {

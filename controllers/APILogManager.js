@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 const moment = require('moment');
 const dotenv = require('dotenv');
 
@@ -22,10 +23,11 @@ const Log = (req, Response, IP, reqKey, reqmethod) => {
       ClientIP: IP,
       LoggedAt: m,
     };
+
     var LogedinDB = JSON.stringify(ReqRes);
     var LogData = '|' + m + '|' + LogedinDB;
 
-    fs.appendFile(process.env.LOGDIR, LogData + '\n', function (err) {
+    fs.appendFile(process.env.LOGFILE, LogData + '\n', function (err) {
       if (err) throw err;
       //console.log('Loged!' + LogData);
     });
@@ -35,4 +37,11 @@ const Log = (req, Response, IP, reqKey, reqmethod) => {
   }
 };
 
-module.exports = { Log };
+function CreatePath(filePath) {
+  if (fs.existsSync(filePath)) {
+  } else {
+    fs.mkdirSync(filePath);
+  }
+}
+
+module.exports = { Log, CreatePath };
