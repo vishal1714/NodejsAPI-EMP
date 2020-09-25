@@ -1,4 +1,6 @@
 const Employee = require('../models/EmployeeSchema');
+const crypto = require('crypto');
+const algorithm = 'aes-256-cbc';
 
 // Render Methods
 
@@ -69,5 +71,30 @@ exports.DelRenderEmployeeByID = async (req, res, next) => {
     }
   } catch (messages) {
     res.render('index', { messages });
+  }
+};
+
+exports.encryptAPI = async (req, res, next) => {
+  try {
+    const { plaintext, key } = req.body;
+    //console.log(req.body);
+    const iv = crypto.randomBytes(16);
+    let text = JSON.stringify(plaintext);
+    //console.log(iv);
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(plaintext);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const response = {
+      Refno: iv.toString('hex'),
+      encryptedData: encrypted.toString('hex'),
+    };
+    console.log(response);
+    // const response = {
+    //   Test: text,
+    // };
+    res.render('index', { response });
+  } catch (err) {
+    console.log(err);
+    res.render('index', { messages: 'Internal Server Error' });
   }
 };

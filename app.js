@@ -3,10 +3,10 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
 const bodyParser = require('body-parser');
+const { CreatePath } = require('./controllers/APILogManager');
 
 dotenv.config({ path: './config/config.env' });
 const ConnectDB = require('./config/db');
-const { CreatePath } = require('./controllers/APILogManager');
 
 ConnectDB();
 CreatePath(process.env.LOGDIR);
@@ -37,14 +37,14 @@ const route = require('./routes/index');
 app.use('/api/v1', route);
 
 // Employee Secure API Route
-const secroute = require('./routes/secureapi');
-app.use('/api/v2', secroute);
+const secureroute = require('./routes/secureapi');
+app.use('/api/v2', secureroute);
 
 //Admin APIRoute
 const adminroute = require('./routes/admin');
 app.use('/apiadmin', adminroute);
 
-// Error handling 🔥
+// Error handling
 app.use((req, resp, next) => {
   var error = new Error('Not Found ⛔ ');
   error.status = 404;
