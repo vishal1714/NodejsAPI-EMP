@@ -7,6 +7,9 @@ const APISchemaLog = new mongoose.Schema({
     type: String,
     default: uuid.v4,
   },
+  EncKey: {
+    type: 'String',
+  },
   Method: {
     type: 'String',
   },
@@ -19,6 +22,12 @@ const APISchemaLog = new mongoose.Schema({
     },
   },
   ReqBody: {
+    Refno: {
+      type: 'String',
+    },
+    encryptedData: {
+      type: 'String',
+    },
     _id: {
       type: 'String',
     },
@@ -46,6 +55,12 @@ const APISchemaLog = new mongoose.Schema({
       Info: {
         type: 'String',
       },
+    },
+    Refno: {
+      type: 'String',
+    },
+    encryptedData: {
+      type: 'String',
     },
     Status: {
       type: 'String',

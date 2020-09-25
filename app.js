@@ -36,6 +36,10 @@ app.use('/', webroute);
 const route = require('./routes/index');
 app.use('/api/v1', route);
 
+// Employee Secure API Route
+const secroute = require('./routes/secureapi');
+app.use('/api/v2', secroute);
+
 //Admin APIRoute
 const adminroute = require('./routes/admin');
 app.use('/apiadmin', adminroute);
