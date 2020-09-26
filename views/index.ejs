@@ -7,8 +7,8 @@
     <title>My Employee Management App</title>
     <link
       rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
 
@@ -18,21 +18,22 @@
       integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
       crossorigin="anonymous"
     />
-    <!--  jQuery -->
-    <script
-      type="text/javascript"
-      src="https://code.jquery.com/jquery-1.11.3.min.js"
-    ></script>
 
-    <!-- Bootstrap Date-Picker Plugin -->
     <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
     ></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"
-    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
@@ -40,48 +41,52 @@
       <h1 align="center">My Employee Management App</h1>
       <div style="padding-top: 5%; padding-bottom: 5%">
         <% if(locals.messages) { %>
-        <h4 align="center">Error</h4>
-        <ul>
-          <%= messages %>
-        </ul>
+        <div class="alert alert-warning" role="alert">
+          <h4 class="alert-heading">Error</h4>
+          <p><%- messages %></p>
+          <hr />
+        </div>
         <% } if(locals.GetEmployees) {%>
         <h4 align="center">Employee Table</h4>
-        <div class="row" >
-          <div class="col-md-12 align-center-self">
-        <table class="table table-striped table-responsive">
-          <thead>
-            <tr>
-              <th>Employee ID</th>
-              <th>Name</th>
-              <th>Zip Code</th>
-              <th>Department</th>
-              <th>Age</th>
-              <th>Salary</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <% GetEmployees.forEach(Employee => { %>
-            <tr>
-              <td><%= Employee._id %></td>
-              <td><%= Employee.Name %></td>
-              <td><%= Employee.Zip %></td>
-              <td><%= Employee.Department %></td>
-              <td><%= Employee.Age %></td>
-              <td><%= Employee.Salary %></td>
-              <td>
-                <a href="/del/<%= Employee._id %>"
-                  ><i class="fa fa-trash" aria-hidden="true"></i
-                ></a>
-              </td>
-            </tr>
-            <% }) %>
-          </tbody>
-        </table>
-        <% } %>
+        <div class="row">
+          <div class="col-12">
+            <table
+              class="table table-striped table-responsive mx-auto"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Phone Number</th>
+                  <th>Department</th>
+                  <th>Age</th>
+                  <th>Salary</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% GetEmployees.forEach(Employee => { %>
+                <tr>
+                  <td><%= Employee._id %></td>
+                  <td><%= Employee.Name %></td>
+                  <td><%= Employee.PhoneNo %></td>
+                  <td><%= Employee.Department %></td>
+                  <td><%= Employee.Age %></td>
+                  <td><%= Employee.Salary %></td>
+                  <td>
+                    <a href="/del/<%= Employee._id %>"
+                      ><i class="fa fa-trash" aria-hidden="true"></i
+                    ></a>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <% } %>
+          </div>
+        </div>
       </div>
     </div>
-    </div>
-    
   </body>
 </html>

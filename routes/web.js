@@ -5,20 +5,34 @@ const {
   UpdateRenderEmployee,
   DelRenderEmployeeByID,
   encryptAPI,
+  decryptAPI,
 } = require('../controllers/EmpRenderFunctions');
 
 const Route = express.Router();
 
 //* Route for Web Application *\\
-
+//? Route /
 Route.route('/').get(GetRenderEmployees);
-Route.route('/add').post(AddRenderEmployee);
-Route.route('/update').post(UpdateRenderEmployee);
+
+Route.route('/addemployee')
+  .post(AddRenderEmployee)
+  .get((req, res) => {
+    res.render('addemployee');
+  });
+Route.route('/updateemployee')
+  .post(UpdateRenderEmployee)
+  .get((req, res) => {
+    res.render('updateemployee');
+  });
+
 Route.route('/del/:id').get(DelRenderEmployeeByID);
+
 Route.route('/encrypt').post(encryptAPI);
 
-Route.get('/employee', (req, res) => {
-  res.render('employee');
+Route.route('/decrypt').post(decryptAPI);
+
+Route.get('/encdec', (req, res) => {
+  res.render('encdec');
 });
 
 module.exports = Route;

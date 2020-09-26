@@ -16,13 +16,13 @@ const EmployeeSchema = new mongoose.Schema({
     trim: true,
     required: [true, 'Please Enter Your Name'],
   },
-  Zip: {
+  PhoneNo: {
     type: String,
     trim: true,
-    required: [true, 'Please Enter Your Zip Code'],
+    required: [true, 'Please Enter Your Phone No'],
   },
   Age: {
-    type: Number,
+    type: String,
     required: [true, 'Please Enter Your Employee Age'],
   },
   Department: {
@@ -31,7 +31,7 @@ const EmployeeSchema = new mongoose.Schema({
     required: [true, 'Please Enter Your Department Name'],
   },
   Salary: {
-    type: Number,
+    type: String,
     required: [true, 'Please Enter Your Employee Salary PA'],
   },
   CreatedAt: {
@@ -49,6 +49,5 @@ EmployeeSchema.set('toJSON', {
     delete ret.__v;
   },
 });
-
 
 module.exports = mongoose.model('Employee', EmployeeSchema);

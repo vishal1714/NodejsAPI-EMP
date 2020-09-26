@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config/config.env' });
 const EmployeeAPILog = require('../models/APILogSchema');
 
+// ! Log Add Delete Update Employee Requests and Response
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
   try {
     var m = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
@@ -18,19 +19,22 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
       LoggedAt: m,
     };
 
+    // ? Log API request in MongoDB Databse -> apilogs
+    EmployeeAPILog.create(ReqRes);
+    //console.log(ReqRes);
     var LogedinDB = JSON.stringify(ReqRes);
+    //console.log('Log' + LogedinDB);
     var LogData = '|' + m + '|' + LogedinDB;
 
     fs.appendFile(process.env.LOGFILE, LogData + '\n', function (err) {
       if (err) throw err;
-      //console.log('Loged!' + LogData);
     });
-    EmployeeAPILog.create(ReqRes);
   } catch (error) {
     console.log(error);
   }
 };
 
+// ! Create Log Dir if it is not exist
 function CreatePath(filePath) {
   if (fs.existsSync(filePath)) {
   } else {

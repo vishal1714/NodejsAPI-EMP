@@ -10,11 +10,12 @@ const {
 const Route = express.Router();
 
 //* Route for JSON base response API*\\
+//? Route /api/v1/
 Route.route('/employees').get(GetEmployees);
 
-Route.route('/addemployee').post(AddEmployee);
+Route.route('/employee/add').post(AddEmployee);
 
-Route.route('/updateemployee').patch(UpdateEmployee);
+Route.route('/employee/update').patch(UpdateEmployee);
 
 Route.route('/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
 

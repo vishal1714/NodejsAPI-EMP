@@ -38,12 +38,12 @@ const APISchemaLog = new mongoose.Schema({
       type: 'String',
     },
     Age: {
-      type: 'Number',
+      type: 'String',
     },
     Salary: {
-      type: 'Number',
+      type: 'String',
     },
-    Zip: {
+    PhoneNo: {
       type: 'String',
     },
   },
@@ -73,12 +73,12 @@ const APISchemaLog = new mongoose.Schema({
         type: 'String',
       },
       Age: {
-        type: 'Number',
+        type: 'String',
       },
       Salary: {
-        type: 'Number',
+        type: 'String',
       },
-      Zip: {
+      PhoneNo: {
         type: 'String',
       },
       _id: {

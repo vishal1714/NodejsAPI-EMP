@@ -1,27 +1,14 @@
 const Employee = require('../models/EmployeeSchema');
-const APIAdmin = require('../models/APIAdminSchema');
-
 const { Log } = require('./APILogManager');
-
 const dotenv = require('dotenv');
+
 dotenv.config({ path: './config.env' });
 
 const ValidKey = process.env.AdminAPIKey;
 
-/* API Key Validation 
-const ValidateKey = async (reqkey) => {
-  var a = reqkey.toString();
-  console.log(a);
-  var validate = await APIAdmin.find({ APIKey: a });
-  console.log(validate);
-  if (!validate) {
-    return 0;
-  } else {
-    return 1;
-  }
-};
-*/
-
+//@dec      Get All Employees
+//@route    GET /api/v1/employees
+//@access   Public
 exports.GetEmployees = async (req, res, next) => {
   try {
     const getemployee = await Employee.find().select('-__v');
@@ -43,6 +30,9 @@ exports.GetEmployees = async (req, res, next) => {
   }
 };
 
+//@dec      Get Employee By Employee ID
+//@route    GET /api/v1/employee/:id
+//@access   Public
 exports.GetEmployeeByID = async (req, res, next) => {
   try {
     const getemployeebyid = await Employee.findById(req.params.id).select(
@@ -75,15 +65,17 @@ exports.GetEmployeeByID = async (req, res, next) => {
   }
 };
 
+//@dec      Add Employee in DB
+//@route    POST /api/v1/employee/add
+//@access   Private (Client API-KEY)
 exports.AddEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
-  var key = req.header('AES-Key');
   var IP = req.header('X-Real-IP');
 
   if (reqKey == ValidKey) {
     try {
       //Copturaing API Request
-      const { Name, Zip, Age, Department, Salary } = req.body;
+      const { Name, PhoneNo, Age, Department, Salary } = req.body;
       const addemployee = await Employee.create(req.body);
       const Response = {
         Status: 'Success',
@@ -93,7 +85,7 @@ exports.AddEmployee = async (req, res, next) => {
       //Send Response
       res.status(201).json(Response);
       //Log
-      Log(req, Response, IP, reqKey, 'Add Employee');
+      Log(req.body, Response, IP, reqKey, 'Add Employee');
     } catch (err) {
       //if Valid Error Found
       if (err.name == 'ValidationError') {
@@ -104,7 +96,7 @@ exports.AddEmployee = async (req, res, next) => {
           },
         };
         res.status(400).json(Response);
-        Log(req, Response, IP, reqKey, 'Add Employee');
+        Log(req.body, Response, IP, reqKey, 'Add Employee');
       } else {
         const Response = {
           Error: {
@@ -113,7 +105,7 @@ exports.AddEmployee = async (req, res, next) => {
         };
         res.status(500).json(Response);
         //Send Error
-        Log(req, Response, IP, reqKey, 'Add Employee');
+        Log(req.body, Response, IP, reqKey, 'Add Employee');
       }
     }
   } else {
@@ -126,6 +118,9 @@ exports.AddEmployee = async (req, res, next) => {
   }
 };
 
+//@dec      Delete Employee using Employee ID
+//@route    DELETE /api/v1/employee/:id
+//@access   Private (Client API-KEY)
 exports.DelEmployeeByID = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
@@ -133,6 +128,9 @@ exports.DelEmployeeByID = async (req, res, next) => {
   if (reqKey == ValidKey) {
     try {
       const delemployee = await Employee.findById(req.params.id).select('-__v');
+      const reqbody = {
+        _id: req.params.id,
+      };
       //if Employee not found in DB
       if (!delemployee) {
         const Response = {
@@ -141,7 +139,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
           },
         };
         //Send Response
-        Log(req, Response, IP, reqKey, 'Delete Employee');
+        Log(reqbody, Response, IP, reqKey, 'Delete Employee');
         return res.status(404).json(Response);
       } else {
         //Remove Employee
@@ -154,7 +152,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
         //Send Response
         res.status(200).json(Response);
         //Log
-        Log(req, Response, IP, reqKey, 'Delete Employee');
+        Log(reqbody, Response, IP, reqKey, 'Delete Employee');
       }
     } catch (err) {
       const Response = {
@@ -166,7 +164,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
       //Send Error
       res.status(500).json(Response);
       //Log
-      Log(req, Response, IP, reqKey, 'Delete Employee');
+      Log(reqbody, Response, IP, reqKey, 'Delete Employee');
     }
   } else {
     //if APi-Key is not valid
@@ -178,6 +176,9 @@ exports.DelEmployeeByID = async (req, res, next) => {
   }
 };
 
+//@dec      Update Employee
+//@route    PATCH /api/v1/employee/update
+//@access   Private (Client API-KEY)
 exports.UpdateEmployee = async (req, res, next) => {
   var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
@@ -185,7 +186,7 @@ exports.UpdateEmployee = async (req, res, next) => {
   if (reqKey == ValidKey) {
     try {
       //Capture Request Body
-      const { EmpRefNo, Name, Zip, Age, Department, Salary } = req.body;
+      const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = req.body;
       //if _id is not present in RequestBody
       if (req.body.EmpRefNo == null) {
         //Send Error
@@ -197,7 +198,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         //Send Response
         res.status(400).json(Response);
         //Log
-        Log(req, Response, IP, reqKey, 'Update Method');
+        Log(req.body, Response, IP, reqKey, 'Update Method');
       }
       //Update Emplyee Info
       const updateemployee = await Employee.findOneAndUpdate(
@@ -205,7 +206,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         {
           $set: {
             Name: req.body.Name,
-            Zip: req.body.Zip,
+            PhoneNo: req.body.PhoneNo,
             Age: req.body.Age,
             Department: req.body.Department,
             Salary: req.body.Salary,
@@ -220,7 +221,7 @@ exports.UpdateEmployee = async (req, res, next) => {
       //Send Success Response
       res.status(200).json(Response);
       //Log
-      Log(req, Response, IP, reqKey, 'Update Method');
+      Log(req.body, Response, IP, reqKey, 'Update Method');
     } catch (err) {
       //send Error
       var Response = {
@@ -230,7 +231,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         },
       };
       res.status(500).json(Response);
-      Log(req, Response, IP, reqKey, 'Update Method');
+      Log(req.body, Response, IP, reqKey, 'Update Method');
     }
   } else {
     //API-Key is not valid

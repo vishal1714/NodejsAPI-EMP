@@ -5,6 +5,9 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: './config/config.env' });
 
+//@dec      Get API Logs
+//@route    /apiadmin/log
+//@access   Private (Admin Only with API-KEY)
 exports.GetEmployeelog = async (req, res, next) => {
   try {
     const getemployeelog = await APILog.find().select('-__v');
@@ -26,6 +29,9 @@ exports.GetEmployeelog = async (req, res, next) => {
   }
 };
 
+//@dec      Add API Client with Key
+//@route    POST /apiadmin/createKey
+//@access   Private (Admin Only with API-KEY)
 exports.AddKey = async (req, res) => {
   try {
     const { Username, APIKey } = req.body;
@@ -57,6 +63,9 @@ exports.AddKey = async (req, res) => {
   }
 };
 
+//@dec      Update API Client with Key
+//@route    POST /apiadmin/updateKey
+//@access   Private (Admin Only with API-KEY)
 exports.UpdateKey = async (req, res) => {
   try {
     if (req.body.Username == null) {
