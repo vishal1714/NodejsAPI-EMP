@@ -63,6 +63,7 @@
                   <th>Age</th>
                   <th>Salary</th>
                   <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -74,11 +75,17 @@
                   <td><%= Employee.Department %></td>
                   <td><%= Employee.Age %></td>
                   <td><%= Employee.Salary %></td>
+                  <td><a href="/get/<%= Employee._id %>"
+                    ><i class="fa fa-edit" aria-hidden="true"></i
+                  ></a></td>
                   <td>
                     <a href="/del/<%= Employee._id %>"
                       ><i class="fa fa-trash" aria-hidden="true"></i
                     ></a>
+                    
                   </td>
+                  
+                  </tr>
                 </tr>
                 <% }) %>
               </tbody>

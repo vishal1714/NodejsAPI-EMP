@@ -4,6 +4,7 @@ const {
   AddRenderEmployee,
   UpdateRenderEmployee,
   DelRenderEmployeeByID,
+  GetRenderEmployeeByID,
   encryptAPI,
   decryptAPI,
 } = require('../controllers/EmpRenderFunctions');
@@ -13,6 +14,8 @@ const Route = express.Router();
 //* Route for Web Application *\\
 //? Route /
 Route.route('/').get(GetRenderEmployees);
+
+Route.route('/get/:id').get(GetRenderEmployeeByID);
 
 Route.route('/addemployee')
   .post(AddRenderEmployee)

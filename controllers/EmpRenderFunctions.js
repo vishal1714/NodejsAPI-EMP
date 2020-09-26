@@ -15,6 +15,34 @@ exports.GetRenderEmployees = async (req, res, next) => {
   }
 };
 
+//@dec      Get Employee By ID for Update
+//@route    GET /get
+//@access   Public
+exports.GetRenderEmployeeByID = async (req, res, next) => {
+  try {
+    const getemployeebyid = await Employee.findById(req.params.id).select(
+      '-__v'
+    );
+
+    //id Employee not found in DB
+    if (!getemployeebyid) {
+      res.render('updateemployee', { messages: 'Employee Not Found' });
+    } else {
+      //Send Success Response
+      console.log(getemployeebyid);
+      res.render('updateemployee', { getemployeebyid });
+    }
+  } catch (err) {
+    //Send Error
+    res.status(500).json({
+      Error: {
+        message: 'Internal Server Error',
+        info: err,
+      },
+    });
+  }
+};
+
 //@dec      Add Employees
 //@route    POST /add
 //@access   Public
@@ -48,24 +76,34 @@ exports.AddRenderEmployee = async (req, res, next) => {
 exports.UpdateRenderEmployee = async (req, res, next) => {
   try {
     const { _id, Name, PhoneNo, Department, Age, Salary } = req.body;
-    if (req.body._id == null) {
+    if (!req.body._id == null) {
       res.render('updateemployee', { messages: 'Employee _id is not found' });
+    } else {
+      const employee = await Employee.findOneAndUpdate(
+        { _id: req.body._id },
+        {
+          $set: {
+            Name: req.body.Name,
+            PhoneNo: req.body.PhoneNo,
+            Department: req.body.Department,
+            Age: req.body.Age,
+            Salary: req.body.Salary,
+          },
+        }
+      ).select('-__v');
+      const Response = {
+        Status: 'Success',
+        Data: req.body,
+        Message: 'Successfully! Record has been updated.',
+      };
+      //console.log(employee);
+      res.render('updateemployee', {
+        UpdateResponse: JSON.stringify(Response),
+        UpdateRequest: JSON.stringify(req.body),
+      });
     }
-    const employee = await Employee.findOneAndUpdate(
-      { _id: req.body._id },
-      {
-        $set: {
-          Name: req.body.Name,
-          PhoneNo: req.body.PhoneNo,
-          Department: req.body.Department,
-          Age: req.body.Age,
-          Salary: req.body.Salary,
-        },
-      }
-    ).select('-__v');
-    res.render('updateemployee', { Response: employee });
   } catch (messages) {
-    res.render('index', { messages });
+    res.render('updateemployee', { messages });
   }
 };
 
