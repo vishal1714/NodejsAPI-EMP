@@ -8,8 +8,10 @@ const EmployeeAPILog = require('../models/APILogSchema');
 // ! Log Add Delete Update Employee Requests and Response
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
   try {
-    var m = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
-    let d = new Date();
+    var LogDate = moment()
+      .tz('Asia/Kolkata')
+      .format('MMMM Do YYYY, hh:mm:ss A');
+    var FileDate = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
     const ReqRes = {
       ReqBody: req,
       EncKey: key,
@@ -17,7 +19,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
       Method: reqmethod,
       APIKey: reqKey,
       ClientIP: IP,
-      LoggedAt: m,
+      LoggedAt: LogDate,
     };
 
     // ? Log API request in MongoDB Databse -> apilogs
@@ -25,17 +27,9 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
     //console.log(ReqRes);
     var LogedinDB = JSON.stringify(ReqRes);
     //console.log('Log' + LogedinDB);
-    var LogData = '|' + m + '|' + LogedinDB;
+    var LogData = '|' + LogDate + '|' + LogedinDB;
 
-    let filename =
-      process.env.LOGFILE +
-      '-' +
-      d.getDate() +
-      '-' +
-      d.getMonth() +
-      '-' +
-      d.getFullYear() +
-      '.log';
+    let filename = process.env.LOGFILE + '-' + FileDate + '.log';
 
     fs.appendFile(filename, LogData + '\n', function (err) {
       if (err) throw err;
