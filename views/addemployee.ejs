@@ -46,6 +46,7 @@
         <hr />
       </div>
       <% } %>
+
       <div class="row shadow p-3 mb-5 bg-white rounded my-4">
         <div class="col-6">
           <h2>Add Employee</h2>
@@ -103,12 +104,13 @@
             </button>
           </form>
         </div>
+
         <div class="col-6 my-5">
           <div class="form-group" style="height: 40%">
             <label for="comment">API Request :</label>
             <textarea
               class="form-control"
-              rows="5"
+              rows="3"
               style="height: 100%"
               disabled
             >
@@ -119,12 +121,31 @@
             <label for="comment">API Response :</label>
             <textarea
               class="form-control"
-              rows="5"
+              rows="3"
               style="height: 100%"
               disabled
             >
 <% if(locals.AddResponse) { %> <%- AddResponse %> <% } %></textarea
             >
+          </div>
+          <div class="row my-3">
+            <div class="col-6">
+              <a
+                href="/"
+                class="btn btn-outline-primary btn-block"
+                role="button"
+                ><i class="fa fa-list" aria-hidden="true"></i> Employee List</a
+              >
+            </div>
+            <div class="col-6">
+              <a
+                href="/updateemployee"
+                class="btn btn-outline-primary btn-block"
+                role="button"
+              >
+                <i class="fa fa-plus" aria-hidden="true"></i> Update Employee</a
+              >
+            </div>
           </div>
         </div>
       </div>

@@ -107,7 +107,7 @@
                 class="form-control"
                 placeholder="Salary"
                 name="Salary"
-                value="<%if(locals.getemployeebyid){ %><%=getemployeebyid.Age%><%}%>"
+                value="<%if(locals.getemployeebyid){ %><%=getemployeebyid.Salary%><%}%>"
               />
             </div>
             <button
@@ -119,7 +119,7 @@
           </form>
         </div>
         <div class="col-6 my-5">
-          <div class="form-group" style="height: 40%">
+          <div class="form-group" style="height: 44%">
             <label for="comment">API Request :</label>
             <textarea
               class="form-control"
@@ -141,6 +141,24 @@
 <% if(locals.UpdateResponse) { %> <%- UpdateResponse %> <% } %></textarea
             >
           </div>
+          <div class="row my-3">
+            <div class="col-6">
+              <a
+                href="/"
+                class="btn btn-outline-primary btn-block"
+                role="button"
+                ><i class="fa fa-list" aria-hidden="true"></i> Employee List</a
+              >
+            </div>
+            <div class="col-6">
+              <a
+                href="/addemployee"
+                class="btn btn-outline-primary btn-block"
+                role="button"
+              >
+                <i class="fa fa-plus" aria-hidden="true"></i> Add Employee</a
+              >
+            </div>
         </div>
       </div>
     </div>

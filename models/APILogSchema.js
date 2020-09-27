@@ -50,7 +50,7 @@ const APISchemaLog = new mongoose.Schema({
   ResBody: {
     Error: {
       message: {
-        type: 'String',
+        type: 'array',
       },
       Info: {
         type: 'String',

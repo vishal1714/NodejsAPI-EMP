@@ -9,6 +9,7 @@ const EmployeeAPILog = require('../models/APILogSchema');
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
   try {
     var m = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+    let d = new Date();
     const ReqRes = {
       ReqBody: req,
       EncKey: key,
@@ -26,7 +27,17 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
     //console.log('Log' + LogedinDB);
     var LogData = '|' + m + '|' + LogedinDB;
 
-    fs.appendFile(process.env.LOGFILE, LogData + '\n', function (err) {
+    let filename =
+      process.env.LOGFILE +
+      '-' +
+      d.getDate() +
+      '-' +
+      d.getMonth() +
+      '-' +
+      d.getFullYear() +
+      '.log';
+
+    fs.appendFile(filename, LogData + '\n', function (err) {
       if (err) throw err;
     });
   } catch (error) {
