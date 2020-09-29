@@ -201,7 +201,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         Log(req.body, Response, IP, reqKey, 'Update Method');
       }
       //Update Emplyee Info
-      const updateemployee = await Employee.findOneAndUpdate(
+      const updateemployee = await Employee.updateOne(
         { _id: req.body.EmpRefNo },
         {
           $set: {

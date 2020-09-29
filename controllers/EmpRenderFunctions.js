@@ -79,18 +79,19 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
     if (!req.body._id == null) {
       res.render('updateemployee', { messages: 'Employee _id is not found' });
     } else {
-      const employee = await Employee.findOneAndUpdate(
+      const employee = await Employee.updateOne(
         { _id: req.body._id },
         {
           $set: {
-            Name: req.body.Name,
-            PhoneNo: req.body.PhoneNo,
-            Department: req.body.Department,
-            Age: req.body.Age,
-            Salary: req.body.Salary,
+            Name: Name,
+            PhoneNo: PhoneNo,
+            Department: Department,
+            Age: Age,
+            Salary: Salary,
           },
         }
       ).select('-__v');
+      console.log(employee);
       const Response = {
         Status: 'Success',
         Data: req.body,
@@ -139,11 +140,11 @@ exports.encryptAPI = async (req, res, next) => {
       encryptedData: encrypted.toString('hex'),
     };
     const aresponse = JSON.stringify(response);
-    console.log(aresponse);
+    //console.log(aresponse);
     res.render('encdec', { enresponse: aresponse });
   } catch (err) {
     //console.log(err);
-    res.render('index', { messages: 'Internal Server Error' });
+    res.render('encdec', { messages: 'Internal Server Error' });
   }
 };
 
@@ -164,6 +165,6 @@ exports.decryptAPI = async (req, res, next) => {
     res.render('encdec', { deresponse: response });
   } catch (error) {
     console.log(error);
-    res.render('index', { messages: 'Internal Server Error' });
+    res.render('encdec', { messages: 'Internal Server Error' });
   }
 };

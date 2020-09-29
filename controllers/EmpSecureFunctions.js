@@ -27,11 +27,12 @@ const encrypt = (text1, apikey) => {
 };
 
 //! Decrypt Function
-const decrypt = (Refno, encryptedData1, apikey) => {
+const decrypt = (req, apikey) => {
   const key = apikey || process.env.ENCRYPTION_KEY;
+  const { Refno, encryptedData } = req;
   //console.log(key);
   let iv = Buffer.from(Refno, 'hex');
-  let encryptedText = Buffer.from(encryptedData1, 'hex');
+  let encryptedText = Buffer.from(encryptedData, 'hex');
   let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -101,8 +102,7 @@ exports.SecAddEmployee = async (req, res, next) => {
   if (reqKey == ValidKey) {
     try {
       // Decrypt Encrypted Request
-      const { Refno, encryptedData } = req.body;
-      const dec = decrypt(Refno, encryptedData, key);
+      const dec = decrypt(req.body, key);
       const { Name, PhoneNo, Age, Department, Salary } = dec;
       const addemployee = await Employee.create(dec);
       const Response = {
@@ -216,10 +216,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
   //validate API-Key
   if (reqKey == ValidKey) {
     try {
-      const { Refno, encryptedData } = req.body;
-      //console.log(req.body);
-      const dec = decrypt(Refno, encryptedData, key);
-      //console.log(dec);
+      const dec = decrypt(req.body, key);
       //Capture Request Body
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = dec;
       //if _id is not present in RequestBody
@@ -236,7 +233,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         Log(dec, Response, IP, reqKey, 'Update Method', key);
       }
       //Update Emplyee Info
-      const updateemployee = await Employee.findOneAndUpdate(
+      const updateemployee = await Employee.updateOne(
         { _id: EmpRefNo },
         {
           $set: {
@@ -288,11 +285,14 @@ exports.encryptAPI = (req, res) => {
     const key = reqkey || process.env.ENCRYPTION_KEY;
     const { Name, PhoneNo, Department, Age, Salary } = req.body;
     const iv = crypto.randomBytes(16);
-    let text = JSON.stringify(req.body);
+    let plaintext = JSON.stringify(req.body);
     //console.log(text);
     let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
+    let encrypted = cipher.update(plaintext);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
+    //console.log(plaintext);
+    //const Hash = crypto.createHash('sha256').update(plaintext).digest('hex');
+    //console.log(Hash);
     const Response = {
       Refno: iv.toString('hex'),
       encryptedData: encrypted.toString('hex'),
@@ -315,13 +315,17 @@ exports.decryptAPI = (req, res) => {
   try {
     const reqkey = req.header('AES-Key');
     const key = reqkey || process.env.ENCRYPTION_KEY;
-    const { Refno, encryptedData } = req.body;
+    const { Refno, encryptedData, Hash } = req.body;
     let iv = Buffer.from(Refno, 'hex');
     let encryptedText = Buffer.from(encryptedData, 'hex');
     let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-    const Response = JSON.parse(decrypted.toString());
+    const Data = JSON.parse(decrypted.toString());
+    const Response = {
+      Response: Data,
+      Hash: Hash,
+    };
     res.status(200).json(Response);
   } catch (error) {
     res.status(500).json({

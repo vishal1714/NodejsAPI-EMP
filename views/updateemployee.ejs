@@ -51,12 +51,13 @@
           <h2>Update Employee</h2>
           <form method="post" action="/updateemployee">
             <div class="form-group">
-              <label for="_id">Employee _id</label>
+              <label for="_id">Employee ID</label>
               <input
                 type="text"
                 class="form-control"
-                placeholder="Enter Employee _id"
+                placeholder="Enter Employee ID"
                 name="_id"
+                <% if(locals.getemployeebyid){ %>disabled<% } %>
                 value="<%if(locals.getemployeebyid){%><%=getemployeebyid._id%><%}%>"
               />
             </div>
@@ -70,7 +71,7 @@
                 value="<%if(locals.getemployeebyid){ %><%=getemployeebyid.Name%><%}%>"
               />
             </div>
-            <div class="datepicker form-group">
+            <div class="form-group">
               <label for="PhoneNo">Phone No</label>
               <input
                 type="text"
