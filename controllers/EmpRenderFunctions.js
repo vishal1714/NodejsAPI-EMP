@@ -94,7 +94,7 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
       console.log(employee);
       const Response = {
         Status: 'Success',
-        Data: req.body,
+        Data: employee,
         Message: 'Successfully! Record has been updated.',
       };
       //console.log(employee);
