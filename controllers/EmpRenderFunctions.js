@@ -83,17 +83,17 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
         { _id: req.body._id },
         {
           $set: {
-            Name: req.body.Name,
-            PhoneNo: req.body.PhoneNo,
-            Department: req.body.Department,
-            Age: req.body.Age,
-            Salary: req.body.Salary,
+            Name: Name,
+            PhoneNo: PhoneNo,
+            Department: Department,
+            Age: Age,
+            Salary: Salary,
           },
         }
       ).select('-__v');
       const Response = {
         Status: 'Success',
-        Data: req.body,
+        Data: employee,
         Message: 'Successfully! Record has been updated.',
       };
       //console.log(employee);
