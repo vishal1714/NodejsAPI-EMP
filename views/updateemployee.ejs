@@ -57,7 +57,7 @@
                 class="form-control"
                 placeholder="Enter Employee ID"
                 name="_id"
-                <%if(locals.getemployeebyid){%><%=disabled%><%}%>
+                <%if(locals.getemployeebyid){%><%="disabled"%><%}%>
                 value="<%if(locals.getemployeebyid){%><%=getemployeebyid._id%><%}%>"
               />
             </div>
