@@ -15,7 +15,7 @@ Route.route('/employees').get(GetEmployees);
 
 Route.route('/employee/add').post(AddEmployee);
 
-Route.route('/employee/update').patch(UpdateEmployee);
+Route.route('/employee/update').post(UpdateEmployee);
 
 Route.route('/employee/:id').delete(DelEmployeeByID).get(GetEmployeeByID);
 
