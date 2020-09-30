@@ -75,12 +75,12 @@ exports.AddRenderEmployee = async (req, res, next) => {
 //@access   Public
 exports.UpdateRenderEmployee = async (req, res, next) => {
   try {
-    const { _id, Name, PhoneNo, Department, Age, Salary } = req.body;
+    const { EmpRefNo, Name, PhoneNo, Department, Age, Salary } = req.body;
     if (!req.body._id == null) {
       res.render('updateemployee', { messages: 'Employee _id is not found' });
     } else {
       const employee = await Employee.updateOne(
-        { _id: req.body._id },
+        { _id: req.body.EmpRefNo },
         {
           $set: {
             Name: Name,
