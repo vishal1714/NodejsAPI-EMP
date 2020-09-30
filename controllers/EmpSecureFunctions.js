@@ -247,7 +247,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
       ).select('-__v');
       const Response = {
         Status: 'Success',
-        Data: updateemployee,
+        Data: dec,
         Message: 'Successfully! Record has been updated.',
       };
       const inc = encrypt(Response, key);
