@@ -322,11 +322,11 @@ exports.decryptAPI = (req, res) => {
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     const Data = JSON.parse(decrypted.toString());
-    const Response = {
+    /*const Response = {
       Response: Data,
       Hash: Hash,
-    };
-    res.status(200).json(Response);
+    };*/
+    res.status(200).json(Data);
   } catch (error) {
     res.status(500).json({
       Error: {
