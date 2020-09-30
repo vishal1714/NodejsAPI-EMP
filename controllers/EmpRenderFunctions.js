@@ -76,7 +76,7 @@ exports.AddRenderEmployee = async (req, res, next) => {
 exports.UpdateRenderEmployee = async (req, res, next) => {
   try {
     const { EmpRefNo, Name, PhoneNo, Department, Age, Salary } = req.body;
-    if (!req.body._id == null) {
+    if (!EmpRefNo == null) {
       res.render('updateemployee', { messages: 'Employee _id is not found' });
     } else {
       const employee = await Employee.updateOne(
