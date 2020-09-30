@@ -57,6 +57,7 @@
               <thead>
                 <tr>
                   <th>Employee ID</th>
+                  <th>EmpRefNo</th>
                   <th>Name</th>
                   <th>Phone Number</th>
                   <th>Department</th>
@@ -67,8 +68,11 @@
                 </tr>
               </thead>
               <tbody>
+                <% i=0 %>
                 <% GetEmployees.forEach(Employee => { %>
                 <tr>
+                  <td><%= i %></td>
+                  <% i++ %>
                   <td><%= Employee._id %></td>
                   <td><%= Employee.Name %></td>
                   <td><%= Employee.PhoneNo %></td>
