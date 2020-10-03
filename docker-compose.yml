@@ -29,3 +29,5 @@ services:
       ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: Vishal123
+    depends_on:
+      - mongo
