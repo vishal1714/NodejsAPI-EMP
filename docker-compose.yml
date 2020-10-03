@@ -21,7 +21,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: Vishal@123
    mongoweb:
     image: mongo-express
-	container_name: mongoadmin
+    container_name: mongoadmin
     restart: always
     ports:
       - 8083:8081
