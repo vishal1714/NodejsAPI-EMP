@@ -26,7 +26,7 @@ const AdminSchema = new mongoose.Schema({
     index: { unique: true },
     default: uuid.v4,
   },
-  APISeacretKey: {
+  APISecretKey: {
     type: String,
     index: { unique: true },
     default: uuid.v4,
