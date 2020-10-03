@@ -19,7 +19,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: Vishal@123
-   mongoweb:
+  mongoweb:
     image: mongo-express
     container_name: mongoadmin
     restart: always
