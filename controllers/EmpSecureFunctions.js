@@ -1,12 +1,11 @@
 const Employee = require('../models/EmployeeSchema');
-//const APIAdmin = require('../models/APIAdminSchema');
+const APIAdmin = require('../models/APIAdminSchema');
 const crypto = require('crypto');
 const { Log } = require('./APILogManager');
 
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
-const ValidKey = process.env.AdminAPIKey;
 const algorithm = 'aes-256-cbc';
 
 /*  Functions  */
@@ -95,11 +94,15 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
 //@route    POST /api/v2/employee/add
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecAddEmployee = async (req, res, next) => {
-  var reqKey = req.header('API-Key');
   var key = req.header('AES-Key');
   var IP = req.header('X-Real-IP');
 
-  if (reqKey == ValidKey) {
+  const AdminUser = await APIAdmin.findOne({
+    APIClientID: req.header('API-Client-ID'),
+    APISecretKey: req.header('API-Secret-Key'),
+  });
+  //console.log(AdminUser);
+  if (AdminUser) {
     try {
       // Decrypt Encrypted Request
       const dec = decrypt(req.body, key);
@@ -113,8 +116,12 @@ exports.SecAddEmployee = async (req, res, next) => {
       const inc = encrypt(Response, key);
       //Send Response
       res.status(201).json(inc);
+
+      AdminUser.APICalls++;
+      await AdminUser.save();
+
       //Log
-      Log(dec, Response, IP, reqKey, 'Add Employee', key);
+      Log(dec, Response, IP, AdminUser.APIClientID, 'Add Employee', key);
     } catch (err) {
       //if Valid Error Found
       if (err.name == 'ValidationError') {
@@ -150,14 +157,17 @@ exports.SecAddEmployee = async (req, res, next) => {
 //@route    DELETE /api/v2/employee/:id
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecDelEmployeeByID = async (req, res, next) => {
-  var reqKey = req.header('API-Key');
   var key = req.header('AES-Key');
   var IP = req.header('X-Real-IP');
   const reqbody = {
     _id: req.params.id,
   };
-  //Validate API-Key
-  if (reqKey == ValidKey) {
+  const AdminUser = await APIAdmin.findOne({
+    APIClientID: req.header('API-Client-ID'),
+    APISecretKey: req.header('API-Secret-Key'),
+  });
+  //console.log(AdminUser);
+  if (AdminUser) {
     try {
       const delemployee = await Employee.findById(req.params.id).select('-__v');
       //if Employee not found in DB
@@ -168,7 +178,14 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
           },
         };
         //Send Response
-        Log(reqbody, Response, IP, reqKey, 'Delete Employee', key);
+        Log(
+          reqbody,
+          Response,
+          IP,
+          AdminUser.APIClientID,
+          'Delete Employee',
+          key
+        );
         return res.status(404).json(Response);
       } else {
         //Remove Employee
@@ -181,8 +198,19 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
         const inc = encrypt(Response, key);
         //Send Response
         res.status(200).json(inc);
+
+        AdminUser.APICalls++;
+        await AdminUser.save();
+
         //Log
-        Log(reqbody, Response, IP, reqKey, 'Delete Employee', key);
+        Log(
+          reqbody,
+          Response,
+          IP,
+          AdminUser.APIClientID,
+          'Delete Employee',
+          key
+        );
       }
     } catch (err) {
       const Response = {
@@ -194,7 +222,7 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
       //Send Error
       res.status(500).json(Response);
       //Log
-      Log(reqbody, Response, IP, reqKey, 'Delete Employee', key);
+      Log(reqbody, Response, IP, AdminUser.APIClientID, 'Delete Employee', key);
     }
   } else {
     //if APi-Key is not valid
@@ -210,11 +238,15 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
 //@route    POST /api/v2/employee/update
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecUpdateEmployee = async (req, res, next) => {
-  var reqKey = req.header('API-Key');
   var key = req.header('AES-Key');
   var IP = req.header('X-Real-IP');
   //validate API-Key
-  if (reqKey == ValidKey) {
+  const AdminUser = await APIAdmin.findOne({
+    APIClientID: req.header('API-Client-ID'),
+    APISecretKey: req.header('API-Secret-Key'),
+  });
+  //console.log(AdminUser);
+  if (AdminUser) {
     try {
       const dec = decrypt(req.body, key);
       //Capture Request Body
@@ -230,7 +262,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         //Send Response
         res.status(400).json(Response);
         //Log
-        Log(dec, Response, IP, reqKey, 'Update Method', key);
+        Log(dec, Response, IP, AdminUser.APIClientID, 'Update Method', key);
       }
       //Update Emplyee Info
       const updateemployee = await Employee.updateOne(
@@ -253,8 +285,12 @@ exports.SecUpdateEmployee = async (req, res, next) => {
       const inc = encrypt(Response, key);
       //Send Success Response
       res.status(200).json(inc);
+
+      AdminUser.APICalls++;
+      await AdminUser.save();
+
       //Log
-      Log(dec, Response, IP, reqKey, 'Update Method', key);
+      Log(dec, Response, IP, AdminUser.APIClientID, 'Update Method', key);
     } catch (err) {
       //send Error
       var Response = {
@@ -264,7 +300,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         },
       };
       res.status(500).json(Response);
-      Log(dec, Response, IP, reqKey, 'Update Method', key);
+      Log(dec, Response, IP, AdminUser.APIClientID, 'Update Method', key);
     }
   } else {
     //API-Key is not valid

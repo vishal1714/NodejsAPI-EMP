@@ -1,10 +1,6 @@
 const Employee = require('../models/EmployeeSchema');
+const APIAdmin = require('../models/APIAdminSchema');
 const { Log } = require('./APILogManager');
-const dotenv = require('dotenv');
-
-dotenv.config({ path: './config.env' });
-
-const ValidKey = process.env.AdminAPIKey;
 
 //@dec      Get All Employees
 //@route    GET /api/v1/employees
@@ -69,10 +65,13 @@ exports.GetEmployeeByID = async (req, res, next) => {
 //@route    POST /api/v1/employee/add
 //@access   Private (Client API-KEY)
 exports.AddEmployee = async (req, res, next) => {
-  var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
-
-  if (reqKey == ValidKey) {
+  const AdminUser = await APIAdmin.findOne({
+    APIClientID: req.header('API-Client-ID'),
+    APISecretKey: req.header('API-Secret-Key'),
+  });
+  //console.log(AdminUser);
+  if (AdminUser) {
     try {
       //Copturaing API Request
       const { Name, PhoneNo, Age, Department, Salary } = req.body;
@@ -84,8 +83,12 @@ exports.AddEmployee = async (req, res, next) => {
       };
       //Send Response
       res.status(201).json(Response);
+
+      AdminUser.APICalls++;
+      await AdminUser.save();
+
       //Log
-      Log(req.body, Response, IP, reqKey, 'Add Employee');
+      Log(req.body, Response, IP, AdminUser.APIClientID, 'Add Employee');
     } catch (err) {
       //if Valid Error Found
       if (err.name == 'ValidationError') {
@@ -96,7 +99,7 @@ exports.AddEmployee = async (req, res, next) => {
           },
         };
         res.status(400).json(Response);
-        Log(req.body, Response, IP, reqKey, 'Add Employee');
+        Log(req.body, Response, IP, AdminUser.APIClientID, 'Add Employee');
       } else {
         const Response = {
           Error: {
@@ -105,7 +108,7 @@ exports.AddEmployee = async (req, res, next) => {
         };
         res.status(500).json(Response);
         //Send Error
-        Log(req.body, Response, IP, reqKey, 'Add Employee');
+        Log(req.body, Response, IP, AdminUser.APIClientID, 'Add Employee');
       }
     }
   } else {
@@ -122,10 +125,13 @@ exports.AddEmployee = async (req, res, next) => {
 //@route    DELETE /api/v1/employee/:id
 //@access   Private (Client API-KEY)
 exports.DelEmployeeByID = async (req, res, next) => {
-  var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
+  const AdminUser = await APIAdmin.findOne({
+    APIClientID: req.header('API-Client-ID'),
+    APISecretKey: req.header('API-Secret-Key'),
+  });
   //Validate API-Key
-  if (reqKey == ValidKey) {
+  if (AdminUser) {
     try {
       const delemployee = await Employee.findById(req.params.id).select('-__v');
       const reqbody = {
@@ -139,7 +145,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
           },
         };
         //Send Response
-        Log(reqbody, Response, IP, reqKey, 'Delete Employee');
+        Log(reqbody, Response, IP, AdminUser.APIClientID, 'Delete Employee');
         return res.status(404).json(Response);
       } else {
         //Remove Employee
@@ -151,8 +157,11 @@ exports.DelEmployeeByID = async (req, res, next) => {
         };
         //Send Response
         res.status(200).json(Response);
+
+        AdminUser.APICalls++;
+        await AdminUser.save();
         //Log
-        Log(reqbody, Response, IP, reqKey, 'Delete Employee');
+        Log(reqbody, Response, IP, AdminUser.APIClientID, 'Delete Employee');
       }
     } catch (err) {
       const Response = {
@@ -164,7 +173,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
       //Send Error
       res.status(500).json(Response);
       //Log
-      Log(reqbody, Response, IP, reqKey, 'Delete Employee');
+      Log(reqbody, Response, IP, AdminUser.APIClientID, 'Delete Employee');
     }
   } else {
     //if APi-Key is not valid
@@ -180,10 +189,13 @@ exports.DelEmployeeByID = async (req, res, next) => {
 //@route    PATCH /api/v1/employee/update
 //@access   Private (Client API-KEY)
 exports.UpdateEmployee = async (req, res, next) => {
-  var reqKey = req.header('API-Key');
   var IP = req.header('X-Real-IP');
-  //validate API-Key
-  if (reqKey == ValidKey) {
+  const AdminUser = await APIAdmin.findOne({
+    APIClientID: req.header('API-Client-ID'),
+    APISecretKey: req.header('API-Secret-Key'),
+  });
+  //Validate API-Key
+  if (AdminUser) {
     try {
       //Capture Request Body
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = req.body;
@@ -198,7 +210,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         //Send Response
         res.status(400).json(Response);
         //Log
-        Log(req.body, Response, IP, reqKey, 'Update Method');
+        Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
       }
       //Update Emplyee Info
       const updateemployee = await Employee.updateOne(
@@ -213,15 +225,29 @@ exports.UpdateEmployee = async (req, res, next) => {
           },
         }
       ).select('-__v');
-      const Response = {
-        Status: 'Success',
-        Data: req.body,
-        Message: 'Successfully! Record has been updated.',
-      };
-      //Send Success Response
-      res.status(200).json(Response);
-      //Log
-      Log(req.body, Response, IP, reqKey, 'Update Method');
+
+      if (!updateemployee) {
+        const Response = {
+          Status: 'Failed',
+          Message: 'Something went wrong',
+        };
+        res.status(400).json(Response);
+        //Log
+        Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
+      } else {
+        const Response = {
+          Status: 'Success',
+          Data: req.body,
+          Message: 'Successfully! Record has been updated.',
+        };
+        //Send Success Response
+        res.status(200).json(Response);
+
+        AdminUser.APICalls++;
+        await AdminUser.save();
+        //Log
+        Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
+      }
     } catch (err) {
       //send Error
       var Response = {
@@ -231,7 +257,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         },
       };
       res.status(500).json(Response);
-      Log(req.body, Response, IP, reqKey, 'Update Method');
+      Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
     }
   } else {
     //API-Key is not valid

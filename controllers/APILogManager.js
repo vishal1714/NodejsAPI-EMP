@@ -17,7 +17,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
       EncKey: key,
       ResBody: Response,
       Method: reqmethod,
-      APIKey: reqKey,
+      APIClientID: reqKey,
       ClientIP: IP,
       LoggedAt: LogDate,
     };

@@ -12,10 +12,24 @@ const AdminSchema = new mongoose.Schema({
     index: { unique: true },
     required: [true, 'Please Enter Your UserName'],
   },
-  APIKey: {
+  Password: {
+    type: String,
+    required: [true, 'Please Enter Your Password'],
+  },
+  Email: {
     type: String,
     index: { unique: true },
-    required: [true, 'Please Enter Unique API-Key'],
+    required: [true, 'Please Enter Your Email ID'],
+  },
+  APIClientID: {
+    type: String,
+    index: { unique: true },
+    default: uuid.v4,
+  },
+  APISeacretKey: {
+    type: String,
+    index: { unique: true },
+    default: uuid.v4,
   },
   APICalls: {
     type: Number,
@@ -31,7 +45,7 @@ const AdminSchema = new mongoose.Schema({
 
 AdminSchema.set('toJSON', {
   transform: function (doc, ret, options) {
-    ret.RefNo = ret._id;
+    ret.UserRefNo = ret._id;
     delete ret._id;
     delete ret.__v;
   },

@@ -91,17 +91,25 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
           },
         }
       ).select('-__v');
-      console.log(employee);
-      const Response = {
-        Status: 'Success',
-        Data: req.body,
-        Message: 'Successfully! Record has been updated.',
-      };
-      //console.log(employee);
-      res.render('updateemployee', {
-        UpdateResponse: JSON.stringify(Response),
-        UpdateRequest: JSON.stringify(req.body),
-      });
+
+      if (!employee) {
+        const messages = {
+          Status: 'Failed',
+          Message: 'Username or Password is not Valid!.',
+        };
+        res.render('updateemployee', { messages });
+      } else {
+        const Response = {
+          Status: 'Success',
+          Data: req.body,
+          Message: 'Successfully! Record has been updated.',
+        };
+        //console.log(employee);
+        res.render('updateemployee', {
+          UpdateResponse: JSON.stringify(Response),
+          UpdateRequest: JSON.stringify(req.body),
+        });
+      }
     }
   } catch (messages) {
     res.render('updateemployee', { messages });

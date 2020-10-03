@@ -13,7 +13,7 @@ const APISchemaLog = new mongoose.Schema({
   Method: {
     type: 'String',
   },
-  APIKey: {
+  APIClientID: {
     type: 'String',
   },
   ReqPath: {
