@@ -6,3 +6,21 @@ services:
     ports:
       - "5000:5000"
     restart: always
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - /root/Mongodbdata:/data/db
+  mongoexpress:
+    image: mongo-express
+    container_name: mongoadmin
+    restart: always
+    ports:
+      - '8083:8081'
+    depends_on:
+      - mongo      
