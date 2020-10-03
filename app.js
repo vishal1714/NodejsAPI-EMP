@@ -60,6 +60,8 @@ app.use((error, req, resp, next) => {
   });
 });
 
+console.log = function(){};
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(
