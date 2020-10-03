@@ -18,4 +18,4 @@ services:
       - /root/Mongodbdata:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=rootPassXXX
+      - MONGO_INITDB_ROOT_PASSWORD=root
