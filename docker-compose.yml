@@ -1,0 +1,18 @@
+version: '3'
+services:
+  webapp:
+    container_name: empapi
+    build: .
+    ports:
+      - "5000:5000"
+    restart: always
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - /root/Mongodbdata:/data/db
