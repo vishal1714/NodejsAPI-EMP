@@ -200,7 +200,14 @@ exports.UpdateEmployee = async (req, res, next) => {
       //Capture Request Body
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = req.body;
       //if _id is not present in RequestBody
-      if (req.body.EmpRefNo == null || req.body.Name == null || req.body.PhoneNo == null || req.body.Age == null || req.body.Department == null || req.body.Salary == null) {
+      if (
+        req.body.EmpRefNo == null ||
+        req.body.Name == null ||
+        req.body.PhoneNo == null ||
+        req.body.Age == null ||
+        req.body.Department == null ||
+        req.body.Salary == null
+      ) {
         //Send Error
         const Response = {
           Error: {
@@ -211,43 +218,43 @@ exports.UpdateEmployee = async (req, res, next) => {
         res.status(400).json(Response);
         //Log
         Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
-      }else{
-            //Update Emplyee Info
-      const updateemployee = await Employee.updateOne(
-        { _id: req.body.EmpRefNo },
-        {
-          $set: {
-            Name: req.body.Name,
-            PhoneNo: req.body.PhoneNo,
-            Age: req.body.Age,
-            Department: req.body.Department,
-            Salary: req.body.Salary,
-          },
-        }
-      ).select('-__v');
-      }
-
-      if (!updateemployee) {
-        const Response = {
-          Status: 'Failed',
-          Message: 'Something went wrong',
-        };
-        res.status(400).json(Response);
-        //Log
-        Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
       } else {
-        const Response = {
-          Status: 'Success',
-          Data: req.body,
-          Message: 'Successfully! Record has been updated.',
-        };
-        //Send Success Response
-        res.status(200).json(Response);
+        //Update Emplyee Info
+        const updateemployee = await Employee.updateOne(
+          { _id: req.body.EmpRefNo },
+          {
+            $set: {
+              Name: req.body.Name,
+              PhoneNo: req.body.PhoneNo,
+              Age: req.body.Age,
+              Department: req.body.Department,
+              Salary: req.body.Salary,
+            },
+          }
+        ).select('-__v');
 
-        AdminUser.APICalls++;
-        await AdminUser.save();
-        //Log
-        Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
+        if (!updateemployee) {
+          const Response = {
+            Status: 'Failed',
+            Message: 'Something went wrong',
+          };
+          res.status(400).json(Response);
+          //Log
+          Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
+        } else {
+          const Response = {
+            Status: 'Success',
+            Data: req.body,
+            Message: 'Successfully! Record has been updated.',
+          };
+          //Send Success Response
+          res.status(200).json(Response);
+
+          AdminUser.APICalls++;
+          await AdminUser.save();
+          //Log
+          Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
+        }
       }
     } catch (err) {
       //send Error
