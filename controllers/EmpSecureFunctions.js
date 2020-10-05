@@ -252,45 +252,64 @@ exports.SecUpdateEmployee = async (req, res, next) => {
       //Capture Request Body
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = dec;
       //if _id is not present in RequestBody
-      if (EmpRefNo == null) {
+      if (
+        EmpRefNo == null ||
+        Name == null ||
+        PhoneNo == null ||
+        Age == null ||
+        Department == null ||
+        Salary == null
+      ) {
         //Send Error
         const Response = {
           Error: {
-            message: 'EmpRefNo not present in request body',
+            message: 'Some fileds are not present in request body',
           },
         };
         //Send Response
         res.status(400).json(Response);
         //Log
         Log(dec, Response, IP, AdminUser.APIClientID, 'Update Method', key);
-      }
-      //Update Emplyee Info
-      const updateemployee = await Employee.updateOne(
-        { _id: EmpRefNo },
-        {
-          $set: {
-            Name: Name,
-            PhoneNo: PhoneNo,
-            Age: Age,
-            Department: Department,
-            Salary: Salary,
-          },
+      } else {
+        //Update Emplyee Info
+        const updateemployee = await Employee.updateOne(
+          { _id: EmpRefNo },
+          {
+            $set: {
+              Name: Name,
+              PhoneNo: PhoneNo,
+              Age: Age,
+              Department: Department,
+              Salary: Salary,
+            },
+          }
+        ).select('-__v');
+
+        if (!updateemployee) {
+          const Response = {
+            Status: 'Failed',
+            Message: 'Something went wrong',
+          };
+          const inc = encrypt(Response, key);
+
+          res.status(400).json(inc);
+          //Log
+          Log(dec, Response, IP, AdminUser.APIClientID, 'Update Method', key);
+        } else {
+          const Response = {
+            Status: 'Success',
+            Data: dec,
+            Message: 'Successfully! Record has been updated.',
+          };
+          const inc = encrypt(Response, key);
+          //Send Success Response
+          res.status(200).json(inc);
+          AdminUser.APICalls++;
+          AdminUser.save();
+          //Log
+          Log(dec, Response, IP, AdminUser.APIClientID, 'Update Method', key);
         }
-      ).select('-__v');
-      const Response = {
-        Status: 'Success',
-        Data: dec,
-        Message: 'Successfully! Record has been updated.',
-      };
-      const inc = encrypt(Response, key);
-      //Send Success Response
-      res.status(200).json(inc);
-
-      AdminUser.APICalls++;
-      await AdminUser.save();
-
-      //Log
-      Log(dec, Response, IP, AdminUser.APIClientID, 'Update Method', key);
+      }
     } catch (err) {
       //send Error
       var Response = {
@@ -351,7 +370,7 @@ exports.decryptAPI = (req, res) => {
   try {
     const reqkey = req.header('AES-Key');
     const key = reqkey || process.env.ENCRYPTION_KEY;
-    const { Refno, encryptedData, Hash } = req.body;
+    const { Refno, encryptedData } = req.body;
     let iv = Buffer.from(Refno, 'hex');
     let encryptedText = Buffer.from(encryptedData, 'hex');
     let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
