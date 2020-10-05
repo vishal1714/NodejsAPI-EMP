@@ -211,8 +211,8 @@ exports.UpdateEmployee = async (req, res, next) => {
         res.status(400).json(Response);
         //Log
         Log(req.body, Response, IP, AdminUser.APIClientID, 'Update Method');
-      }
-      //Update Emplyee Info
+      }else{
+            //Update Emplyee Info
       const updateemployee = await Employee.updateOne(
         { _id: req.body.EmpRefNo },
         {
@@ -225,6 +225,7 @@ exports.UpdateEmployee = async (req, res, next) => {
           },
         }
       ).select('-__v');
+      }
 
       if (!updateemployee) {
         const Response = {
