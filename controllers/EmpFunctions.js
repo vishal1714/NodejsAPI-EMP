@@ -200,11 +200,11 @@ exports.UpdateEmployee = async (req, res, next) => {
       //Capture Request Body
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = req.body;
       //if _id is not present in RequestBody
-      if (req.body.EmpRefNo == null) {
+      if (req.body.EmpRefNo == null || req.body.Name == null || req.body.PhoneNo == null || req.body.Age == null || req.body.Department == null || req.body.Salary == null) {
         //Send Error
         const Response = {
           Error: {
-            message: 'EmpRefNo not present in request body',
+            message: 'Some fileds are not present in request body',
           },
         };
         //Send Response
