@@ -41,6 +41,12 @@ const AdminSchema = new mongoose.Schema({
       return moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
     },
   },
+  ModifiedAt: {
+    type: String,
+    default: function () {
+      return moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+    },
+  },
 });
 
 AdminSchema.set('toJSON', {

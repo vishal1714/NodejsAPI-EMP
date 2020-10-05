@@ -2,6 +2,7 @@ const Employee = require('../models/EmployeeSchema');
 const APIAdmin = require('../models/APIAdminSchema');
 const crypto = require('crypto');
 const { Log } = require('./APILogManager');
+const moment = require('moment-timezone');
 
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
@@ -238,6 +239,7 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
 //@route    POST /api/v2/employee/update
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecUpdateEmployee = async (req, res, next) => {
+  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   var key = req.header('AES-Key');
   var IP = req.header('X-Real-IP');
   //validate API-Key
@@ -281,6 +283,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
               Age: Age,
               Department: Department,
               Salary: Salary,
+              ModifiedAt: date,
             },
           }
         ).select('-__v');

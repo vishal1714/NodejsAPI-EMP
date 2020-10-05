@@ -1,5 +1,6 @@
 const Employee = require('../models/EmployeeSchema');
 const crypto = require('crypto');
+const moment = require('moment-timezone');
 const algorithm = 'aes-256-cbc';
 
 //@dec      Get Employees
@@ -74,13 +75,22 @@ exports.AddRenderEmployee = async (req, res, next) => {
 //@route    POST /update
 //@access   Public
 exports.UpdateRenderEmployee = async (req, res, next) => {
+  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   try {
     const { EmpRefNo, Name, PhoneNo, Department, Age, Salary } = req.body;
-    if (!EmpRefNo == null) {
+    console.log(req.body);
+    if (
+      EmpRefNo == null ||
+      Name == null ||
+      PhoneNo == null ||
+      Age == null ||
+      Department == null ||
+      Salary == null
+    ) {
       res.render('updateemployee', { messages: 'Employee _id is not found' });
     } else {
       const employee = await Employee.updateOne(
-        { _id: req.body.EmpRefNo },
+        { _id: EmpRefNo },
         {
           $set: {
             Name: Name,
@@ -88,6 +98,7 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
             Department: Department,
             Age: Age,
             Salary: Salary,
+            ModifiedAt: date,
           },
         }
       ).select('-__v');

@@ -49,7 +49,9 @@
       <div class="row shadow p-3 mb-5 bg-white rounded my-4">
         <div class="col-6">
           <h2>Update Employee</h2>
+
           <form method="post" action="/updateemployee">
+
             <div class="form-group">
               <label for="EmpRefNo">EmpRefNo</label>
               <input
@@ -57,7 +59,7 @@
                 class="form-control"
                 placeholder="Enter EmpRefNo"
                 name="EmpRefNo"
-                <% if(locals.getemployeebyid){ %>disabled<% } %>
+                
                 value="<%if(locals.getemployeebyid){%><%=getemployeebyid._id%><%}%>"
               />
             </div>

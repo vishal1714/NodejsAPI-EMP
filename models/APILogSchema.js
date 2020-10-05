@@ -87,6 +87,9 @@ const APISchemaLog = new mongoose.Schema({
       CreatedAt: {
         type: 'String',
       },
+      ModifiedAt: {
+        type: 'String',
+      },
       __v: {
         type: 'Number',
       },

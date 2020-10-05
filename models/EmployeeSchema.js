@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
 const moment = require('moment-timezone');
-//const autoIncrement = require('mongoose-auto-increment');
-//const ConnectDB = require('../config/db');
-
-//autoIncrement.initialize(ConnectDB);
 
 const EmployeeSchema = new mongoose.Schema({
   _id: {
@@ -35,6 +31,12 @@ const EmployeeSchema = new mongoose.Schema({
     required: [true, 'Please Enter Your Employee Salary PA'],
   },
   CreatedAt: {
+    type: String,
+    default: function () {
+      return moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+    },
+  },
+  ModifiedAt: {
     type: String,
     default: function () {
       return moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');

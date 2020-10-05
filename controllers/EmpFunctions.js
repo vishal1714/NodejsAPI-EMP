@@ -1,6 +1,7 @@
 const Employee = require('../models/EmployeeSchema');
 const APIAdmin = require('../models/APIAdminSchema');
 const { Log } = require('./APILogManager');
+const moment = require('moment-timezone');
 
 //@dec      Get All Employees
 //@route    GET /api/v1/employees
@@ -189,6 +190,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
 //@route    PATCH /api/v1/employee/update
 //@access   Private (Client API-KEY)
 exports.UpdateEmployee = async (req, res, next) => {
+  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   var IP = req.header('X-Real-IP');
   const AdminUser = await APIAdmin.findOne({
     APIClientID: req.header('API-Client-ID'),
@@ -201,12 +203,12 @@ exports.UpdateEmployee = async (req, res, next) => {
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = req.body;
       //if _id is not present in RequestBody
       if (
-        req.body.EmpRefNo == null ||
-        req.body.Name == null ||
-        req.body.PhoneNo == null ||
-        req.body.Age == null ||
-        req.body.Department == null ||
-        req.body.Salary == null
+        EmpRefNo == null ||
+        Name == null ||
+        PhoneNo == null ||
+        Age == null ||
+        Department == null ||
+        Salary == null
       ) {
         //Send Error
         const Response = {
@@ -229,9 +231,11 @@ exports.UpdateEmployee = async (req, res, next) => {
               Age: req.body.Age,
               Department: req.body.Department,
               Salary: req.body.Salary,
+              ModifiedAt: date,
             },
           }
         ).select('-__v');
+        console.log(updateemployee);
 
         if (!updateemployee) {
           const Response = {
