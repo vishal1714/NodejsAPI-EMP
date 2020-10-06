@@ -115,12 +115,14 @@ exports.SecAddEmployee = async (req, res, next) => {
         Data: addemployee,
         Message: 'Successfully! Record has been inserted.',
       };
+      
+      APIClientInfo.APICalls++;
+      await APIClientInfo.save();
+
       const inc = encrypt(Response, key);
       //Send Response
       res.status(201).json(inc);
 
-      APIClientInfo.APICalls++;
-      await APIClientInfo.save();
       //Log
       Log(dec, Response, IP, APIClientInfo.APIClientID, 'Add Employee', key);
     } catch (err) {
@@ -196,12 +198,13 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
           Data: delemployee,
           Message: 'Successfully! Record has been deleted.',
         };
+        
+      APIClientInfo.APICalls++;
+      await APIClientInfo.save();
+
         const inc = encrypt(Response, key);
         //Send Response
-        res.status(200).json(inc);
-
-        APIClientInfo.APICalls++;
-        await APIClientInfo.save();
+        res.status(200).json(inc);;
         //Log
         Log(
           reqbody,
@@ -317,12 +320,12 @@ exports.SecUpdateEmployee = async (req, res, next) => {
             Data: dec,
             Message: 'Successfully! Record has been updated.',
           };
+          
+      APIClientInfo.APICalls++;
+      await APIClientInfo.save();
           const inc = encrypt(Response, key);
           //Send Success Response
           res.status(200).json(inc);
-
-          APIClientInfo.APICalls++;
-          await APIClientInfo.save();
           //Log
           Log(
             dec,
