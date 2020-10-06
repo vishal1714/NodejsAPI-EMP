@@ -1,6 +1,6 @@
 const APILog = require('../models/APILogSchema');
-const APIAdmin = require('../models/APIAdminSchema');
-var fs = require('fs');
+const APIUser = require('../models/APIUserSchema');
+const moment = require('moment-timezone');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config/config.env' });
@@ -32,7 +32,7 @@ exports.GetEmployeelog = async (req, res, next) => {
 };
 
 //@dec      Add API Client with Key
-//@route    POST /apiadmin/createKey
+//@route    POST /APIUser/createKey
 //@access   Private (Admin Only with API-KEY)
 exports.AddKey = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
@@ -41,7 +41,7 @@ exports.AddKey = async (req, res) => {
   if (reqKey == AdminAPIKey) {
     try {
       const { Username, Email, Password } = req.body;
-      const addKey = await APIAdmin.create(req.body);
+      const addKey = await APIUser.create(req.body);
       res.status(200).json({
         Status: 'Successful',
         Data: addKey,
@@ -67,11 +67,11 @@ exports.AddKey = async (req, res) => {
 };
 
 //@dec      Update API Client with Key
-//@route    POST /apiadmin/updateKey
+//@route    POST /APIUser/updateKey
 //@access   Private (Admin Only with API-KEY)
 exports.UpdateKey = async (req, res) => {
+  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   var reqKey = req.header('API-Admin-Key');
-  var IP = req.header('X-Real-IP');
 
   if (reqKey == AdminAPIKey) {
     try {
@@ -86,14 +86,13 @@ exports.UpdateKey = async (req, res) => {
         res.status(400).json(Response);
       }
       //Update Key Info
-      const updateKey = await APIAdmin.findOneAndUpdate(
+      const updateKey = await APIUser.updateOne(
         { Username: req.body.Username, Password: req.body.Password },
         {
           $set: {
-            Username: req.body.Username,
             APIClientID: req.body.APIClientID,
             APISecretKey: req.body.APISecretKey,
-            Password: req.body.Password,
+            ModifiedAt: date,
           },
         }
       ).select('-__v');

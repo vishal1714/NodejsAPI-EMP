@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const uuid = require('uuid');
 const moment = require('moment-timezone');
 
-const AdminSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   _id: {
     type: String,
     default: uuid.v4,
@@ -24,11 +24,15 @@ const AdminSchema = new mongoose.Schema({
   APIClientID: {
     type: String,
     index: { unique: true },
+    minlength: 10,
+    maxlength: 40,
     default: uuid.v4,
   },
   APISecretKey: {
     type: String,
     index: { unique: true },
+    minlength: 10,
+    maxlength: 40,
     default: uuid.v4,
   },
   APICalls: {
@@ -49,7 +53,7 @@ const AdminSchema = new mongoose.Schema({
   },
 });
 
-AdminSchema.set('toJSON', {
+UserSchema.set('toJSON', {
   transform: function (doc, ret, options) {
     ret.UserRefNo = ret._id;
     delete ret._id;
@@ -57,4 +61,4 @@ AdminSchema.set('toJSON', {
   },
 });
 
-module.exports = mongoose.model('APIAdmin', AdminSchema);
+module.exports = mongoose.model('APIUser', UserSchema);
