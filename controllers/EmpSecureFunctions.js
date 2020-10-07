@@ -284,18 +284,19 @@ exports.SecUpdateEmployee = async (req, res, next) => {
       } else {
         //Update Emplyee Info
         const updateemployee = await Employee.findOneAndUpdate(
-          { _id: req.body.EmpRefNo },
+          { _id: EmpRefNo },
           {
             $set: {
-              Name: req.body.Name,
-              PhoneNo: req.body.PhoneNo,
-              Age: req.body.Age,
-              Department: req.body.Department,
-              Salary: req.body.Salary,
+              Name: Name,
+              PhoneNo: PhoneNo,
+              Age: Age,
+              Department: Department,
+              Salary: Salary,
               ModifiedAt: date,
             },
           },{new: true}
         ).select('-__v');
+        console.log(updateemployee);
 
         if (!updateemployee) {
           const Response = {
