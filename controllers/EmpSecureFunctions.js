@@ -317,7 +317,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         } else {
           const Response = {
             Status: 'Success',
-            Data: dec,
+            Data: updateemployee,
             Message: 'Successfully! Record has been updated.',
           };
           
