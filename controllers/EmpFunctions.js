@@ -236,7 +236,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         Log(req.body, Response, IP, APIClientInfo.APIClientID, 'Update Method');
       } else {
         //Update Emplyee Info
-        const updateemployee = await Employee.updateOne(
+        const updateemployee = await Employee.findOneAndUpdate(
           { _id: req.body.EmpRefNo },
           {
             $set: {
@@ -247,7 +247,7 @@ exports.UpdateEmployee = async (req, res, next) => {
               Salary: req.body.Salary,
               ModifiedAt: date,
             },
-          }
+          },{new: true}
         ).select('-__v');
         console.log(updateemployee);
 
@@ -268,7 +268,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         } else {
           const Response = {
             Status: 'Success',
-            Data: req.body,
+            Data: updateemployee,
             Message: 'Successfully! Record has been updated.',
           };
           

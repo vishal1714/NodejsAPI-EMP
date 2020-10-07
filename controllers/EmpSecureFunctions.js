@@ -283,18 +283,18 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         Log(dec, Response, IP, APIClientInfo.APIClientID, 'Update Method', key);
       } else {
         //Update Emplyee Info
-        const updateemployee = await Employee.updateOne(
-          { _id: EmpRefNo },
+        const updateemployee = await Employee.findOneAndUpdate(
+          { _id: req.body.EmpRefNo },
           {
             $set: {
-              Name: Name,
-              PhoneNo: PhoneNo,
-              Age: Age,
-              Department: Department,
-              Salary: Salary,
+              Name: req.body.Name,
+              PhoneNo: req.body.PhoneNo,
+              Age: req.body.Age,
+              Department: req.body.Department,
+              Salary: req.body.Salary,
               ModifiedAt: date,
             },
-          }
+          },{new: true}
         ).select('-__v');
 
         if (!updateemployee) {

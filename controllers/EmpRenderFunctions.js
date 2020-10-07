@@ -89,19 +89,19 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
     ) {
       res.render('updateemployee', { messages: 'Employee _id is not found' });
     } else {
-      const employee = await Employee.updateOne(
-        { _id: EmpRefNo },
-        {
-          $set: {
-            Name: Name,
-            PhoneNo: PhoneNo,
-            Department: Department,
-            Age: Age,
-            Salary: Salary,
-            ModifiedAt: date,
-          },
-        }
-      ).select('-__v');
+        const employee = await Employee.findOneAndUpdate(
+          { _id: req.body.EmpRefNo },
+          {
+            $set: {
+              Name: req.body.Name,
+              PhoneNo: req.body.PhoneNo,
+              Age: req.body.Age,
+              Department: req.body.Department,
+              Salary: req.body.Salary,
+              ModifiedAt: date,
+            },
+          },{new: true}
+        ).select('-__v');
 
       if (!employee) {
         const messages = {
@@ -112,7 +112,7 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
       } else {
         const Response = {
           Status: 'Success',
-          Data: req.body,
+          Data: employee,
           Message: 'Successfully! Record has been updated.',
         };
         //console.log(employee);
