@@ -6,8 +6,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-     - NODE_ENV=production
-     - MONGOURI=mongodb://mongo:27017
+     - NODE_ENV=Production
+     - MONGOURI=mongodb+srv://admin:admin@rajecluster.o4zia.mongodb.net/EMP?retryWrites=true&w=majority
     restart: always
     depends_on:
       - mongo
