@@ -7,7 +7,7 @@ services:
       - "5000:5000"
     environment:
      - NODE_ENV=Production
-     - MONGOURI=mongodb+srv://admin:admin@rajecluster.o4zia.mongodb.net/EMP?retryWrites=true&w=majority
+     - MONGOURI=mongodb://167.71.239.50:27017
     restart: always
     depends_on:
       - mongo
