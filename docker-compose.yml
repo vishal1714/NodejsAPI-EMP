@@ -7,9 +7,7 @@ services:
       - "5000:5000"
     environment:
      - NODE_ENV=Production
-     - MONGOURI=mongodb://mongo:27017
-    volumes:
-      - /home/vishal/empapi:/home/node/app    
+     - MONGOURI=mongodb://mongo:27017   
     restart: always
     depends_on:
       - mongo
