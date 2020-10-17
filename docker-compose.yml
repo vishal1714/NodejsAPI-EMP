@@ -9,7 +9,7 @@ services:
      - NODE_ENV=Production
      - MONGOURI=mongodb://mongo:27017
     volumes:
-      - /root/empapi:/home/node/app    
+      - /home/vishal/empapi:/home/node/app    
     restart: always
     depends_on:
       - mongo
@@ -20,7 +20,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - /root/Mongodbdata:/data/db
+      - /home/vishal/Mongodbdata:/data/db
   mongoexpress:
     image: mongo-express
     container_name: mongoadmin
