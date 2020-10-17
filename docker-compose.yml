@@ -8,6 +8,8 @@ services:
     environment:
      - NODE_ENV=Production
      - MONGOURI=mongodb://mongo:27017
+    volumes:
+      - /root/empapi:/home/node/app    
     restart: always
     depends_on:
       - mongo
