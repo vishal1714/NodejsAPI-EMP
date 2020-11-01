@@ -1,31 +1,29 @@
 
 //List all Employees details
-GET https://api.rajeapi.tk/api/v1/employee
+GET https://api.raje.tech/api/v1/employee
 
 // List Employee by ID
 //GET  https://rajeapi.herokuapp.com/api/v1/employee/{ID} 
 ###
-GET https://api.rajeapi.tk/api/v1/employee/6e1db625-efef-45cd-a01f-8004604d8f89
+GET https://api.raje.tech/api/v1/employee/6e1db625-efef-45cd-a01f-8004604d8f89
 
 ###
 //Add Employee detail
 //POST https://rajeapi.herokuapp.com/api/v1/employee/
-POST https://api.rajeapi.tk/api/v1/employee
+POST https://api.raje.tech/api/v2/employee/add
 Content-Type: application/json
-API-Key: Vishal1714
+API-Client-ID:f290469a-5777-4eaf-91eb-d94fd3cf05ba
+API-Secret-Key: 4223e571-a4d6-4f68-950a-21ac284f5a5b
 
 {
-    "Name" : "Vishal",
-    "Zip" : "400022",
-    "Age" : 25,
-    "Department" : "OS",
-    "Salary" : 450000
+  "Refno": "3baf55c38a1bf605f3cbd17e6b5d28f2",
+  "encryptedData": "554a7d809ee00798bf6404b20989c2c364f478f1321e9d9289468bf3114e05da2f7e38ca0a9b57b82f3779f16fd01819a59025b353febfcffe99c28fc7a1e247376029bc55f663aaafe141bd579ba2ad"
 }
 
 ###
 //Update Employee Detail
 //PATCH https://rajeapi.herokuapp.com/api/v1/employee/
-PATCH  https://api.rajeapi.tk/api/v1/employee
+PATCH  https://api.raje.tech/api/v1/employee
 API-Key: Vishal1714
 
 {
@@ -40,21 +38,21 @@ API-Key: Vishal1714
 ###
 //Delete Employee Detail by ID
 // DELETE https://rajeapi.herokuapp.com/api/v1/employee/{ID}
-DELETE  https://api.rajeapi.tk/api/v1/employee/3b96b75f-adf7-4d86-97f9-ad3d61a68773
+DELETE  https://api.raje.tech/api/v1/employee/3b96b75f-adf7-4d86-97f9-ad3d61a68773
 API-Key: Vishal1714
 =======
 //List all Employees details
-GET https://api.rajeapi.tk/api/v1/employee
+GET https://api.raje.tech/api/v1/employee
 
 // List Employee by ID
 //GET  https://rajeapi.herokuapp.com/api/v1/employee/{ID} 
 ###
-GET https://api.rajeapi.tk/api/v1/employee/6e1db625-efef-45cd-a01f-8004604d8f89
+GET https://api.raje.tech/api/v1/employee/6e1db625-efef-45cd-a01f-8004604d8f89
 
 ###
 //Add Employee detail
 //POST https://rajeapi.herokuapp.com/api/v1/employee/
-POST https://api.rajeapi.tk/api/v1/employee
+POST https://api.raje.tech/api/v1/employee
 Content-Type: application/json
 API-Key: Vishal1714
 
@@ -69,7 +67,7 @@ API-Key: Vishal1714
 ###
 //Update Employee Detail
 //PATCH https://rajeapi.herokuapp.com/api/v1/employee/
-PATCH  https://api.rajeapi.tk/api/v1/employee
+PATCH  https://api.raje.tech/api/v1/employee
 API-Key: Vishal1714
 
 {
@@ -84,5 +82,5 @@ API-Key: Vishal1714
 ###
 //Delete Employee Detail by ID
 // DELETE https://rajeapi.herokuapp.com/api/v1/employee/{ID}
-DELETE  https://api.rajeapi.tk/api/v1/employee/3b96b75f-adf7-4d86-97f9-ad3d61a68773
+DELETE  https://api.raje.tech/api/v1/employee/3b96b75f-adf7-4d86-97f9-ad3d61a68773
 API-Key: Vishal1714

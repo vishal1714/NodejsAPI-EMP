@@ -154,13 +154,14 @@ exports.encryptAPI = async (req, res, next) => {
     let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
     let encrypted = cipher.update(plaintext);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const Hash = crypto.createHash('sha256').update(plaintext).digest('hex');
     const response = {
       Refno: iv.toString('hex'),
       encryptedData: encrypted.toString('hex'),
     };
     const aresponse = JSON.stringify(response);
     //console.log(aresponse);
-    res.render('encdec', { enresponse: aresponse });
+    res.render('encdec', { enresponse: aresponse , encHash : Hash });
   } catch (err) {
     //console.log(err);
     res.render('encdec', { messages: 'Internal Server Error' });
@@ -181,7 +182,8 @@ exports.decryptAPI = async (req, res, next) => {
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     const response = decrypted.toString();
-    res.render('encdec', { deresponse: response });
+    const Hash = crypto.createHash('sha256').update(response).digest('hex');
+    res.render('encdec', { deresponse: response , decHash : Hash });
   } catch (error) {
     console.log(error);
     res.render('encdec', { messages: 'Internal Server Error' });

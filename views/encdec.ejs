@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>My Employee Management App</title>
+    <title>AES256 CBC and SHA256</title>
     <link
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -38,7 +38,7 @@
 
   <body>
     <div class="container">
-      <h1 align="center">My Employee Management App</h1>
+      <h1 align="center">AES256 CBC and SHA256</h1>
       <% if(locals.messages) { %>
       <div class="alert alert-warning" role="alert">
         <h4 class="alert-heading">Error</h4>
@@ -71,7 +71,17 @@
               <label for="comment">Encrypted Text:</label>
               <textarea class="form-control" rows="5" disabled>
 <% if(locals.enresponse) { %> <%= enresponse %> <% } %></textarea
-              >
+              ></div>
+              <div class="form-group">
+              <label for="usr">SHA256 HASH:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="Hash"
+                placeholder="SHA256 HASH of Payload"
+                disabled
+                value=<% if(locals.encHash) { %> <%= encHash %> <% } %>
+              ></input>
             </div>
             <button
               type="submit"
@@ -107,6 +117,17 @@
               <textarea class="form-control" rows="5" disabled>
 <% if(locals.deresponse) { %> <%= deresponse %> <% } %></textarea
               >
+              </div>
+              <div class="form-group">
+              <label for="usr">SHA256 HASH:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="Hash"
+                placeholder="SHA256 HASH of Payload"
+                disabled
+                value=<% if(locals.decHash) { %> <%= decHash %> <% } %>
+              ></input>
             </div>
             <button
               type="submit"
