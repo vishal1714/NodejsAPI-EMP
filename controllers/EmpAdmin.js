@@ -34,7 +34,7 @@ exports.GetEmployeelog = async (req, res, next) => {
 //@dec      Add API Client with Key
 //@route    POST /APIUser/createKey
 //@access   Private (Admin Only with API-KEY)
-exports.AddKey = async (req, res) => {
+exports.AddUser = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
   var IP = req.header('X-Real-IP');
 
@@ -67,9 +67,9 @@ exports.AddKey = async (req, res) => {
 };
 
 //@dec      Update API Client with Key
-//@route    POST /APIUser/updateKey
+//@route    POST /APIUser/updateUserKey
 //@access   Private (Admin Only with API-KEY)
-exports.UpdateKey = async (req, res) => {
+exports.UpdateUserKey = async (req, res) => {
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   var reqKey = req.header('API-Admin-Key');
 
