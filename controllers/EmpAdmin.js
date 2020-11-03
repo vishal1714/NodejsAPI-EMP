@@ -128,3 +128,47 @@ exports.UpdateKey = async (req, res) => {
     });
   }
 };
+
+//@dec      Get API Client Status
+//@route    /apiadmin/apiStatus
+//@access   Public
+exports.UserStatus = async (req, res, next) => {
+  try {
+    const {Username , Password} = req.body;
+    if (Username != undefined && Password != undefined) {
+      const APIClientResponse = await APIUser.findOne({
+        Username: Username,
+        Password: Password,
+      }).select('-Username').select('-Password');
+      if (APIClientResponse == null) {
+        const Response = {
+          Error: {
+            message: 'User Credentials are Incorrect or Not Found',
+          }
+        }
+        res.status(404).json(Response);
+      } else {
+        const Response = {
+          APIStatus : APIClientResponse
+        }
+        res.status(200).json(Response);
+      }
+
+    } else {
+      res.status(400).json({
+        Error: {
+          message: 'Username or Password is missing',
+        },
+      })
+    }
+  } catch (err) {
+    console.log(err);
+    //Send Error
+    res.status(500).json({
+      Error: {
+        message: 'Internal Server Error',
+        info: err,
+      },
+    });
+  }
+};
