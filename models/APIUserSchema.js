@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const uuid = require('uuid');
+const RandomString = require('randomstring')
 const moment = require('moment-timezone');
 
 const UserSchema = new mongoose.Schema({
@@ -34,6 +35,15 @@ const UserSchema = new mongoose.Schema({
     minlength: 10,
     maxlength: 40,
     default: uuid.v4,
+  },
+  AESKey: {
+    type: String,
+    index: { unique: true },
+    minlength: 32,
+    maxlength: 32,
+    default: function () { return RandomString.generate({
+      length: 32,
+    }); }
   },
   APICalls: {
     type: Number,

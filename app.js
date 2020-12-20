@@ -5,8 +5,8 @@ const colors = require('colors');
 const bodyParser = require('body-parser');
 const { CreatePath } = require('./controllers/APILogManager');
 
-dotenv.config({ path: './config/config.env' });
-const ConnectDB = require('./config/db');
+dotenv.config({ path: './config/Config.env' });
+const ConnectDB = require('./config/DB');
 
 ConnectDB();
 CreatePath(process.env.LOGDIR);
@@ -29,19 +29,19 @@ app.use((req, resp, next) => {
 });
 
 //Web reander Route
-const webroute = require('./routes/web');
+const webroute = require('./routes/Web');
 app.use('/', webroute);
 
 // Employee API Route
-const route = require('./routes/index');
+const route = require('./routes/APIv1');
 app.use('/api/v1', route);
 
 // Employee Secure API Route
-const secureroute = require('./routes/secureapi');
+const secureroute = require('./routes/APIv2Secure');
 app.use('/api/v2', secureroute);
 
 //Admin APIRoute
-const adminroute = require('./routes/admin');
+const adminroute = require('./routes/Admin');
 app.use('/apiadmin', adminroute);
 
 // Error handling

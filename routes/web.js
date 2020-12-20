@@ -7,7 +7,7 @@ const {
   GetRenderEmployeeByID,
   encryptAPI,
   decryptAPI,
-} = require('../controllers/EmpRenderFunctions');
+} = require('../controllers/WebRenderFunctions');
 
 const Route = express.Router();
 

@@ -5,7 +5,7 @@ const {
   GetEmployees,
   UpdateEmployee,
   DelEmployeeByID,
-} = require('../controllers/EmpFunctions');
+} = require('../controllers/APIv1_Functions');
 
 const Route = express.Router();
 

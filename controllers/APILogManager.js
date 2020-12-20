@@ -12,7 +12,16 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
       .tz('Asia/Kolkata')
       .format('MMMM Do YYYY, hh:mm:ss A');
     var FileDate = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
-    const ReqRes = {
+    const ReqResLogLocal = {
+      ReqBody: req,
+      ResBody: Response,
+      Method: reqmethod,
+      APIClientID: reqKey,
+      ClientIP: IP,
+      LoggedAt: LogDate,
+    };
+
+    const ReqResLogCloud = {
       ReqBody: req,
       EncKey: key,
       ResBody: Response,
@@ -23,9 +32,9 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
     };
 
     // ? Log API request in MongoDB Databse -> apilogs
-    EmployeeAPILog.create(ReqRes);
+    EmployeeAPILog.create(ReqResLogCloud);
     //console.log(ReqRes);
-    var LogedinDB = JSON.stringify(ReqRes);
+    var LogedinDB = JSON.stringify(ReqResLogLocal);
     //console.log('Log' + LogedinDB);
     var LogData = '|' + LogDate + '|' + LogedinDB;
 

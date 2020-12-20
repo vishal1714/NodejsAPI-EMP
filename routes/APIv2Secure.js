@@ -7,7 +7,7 @@ const {
   SecGetEmployeeByID,
   SecUpdateEmployee,
   SecDelEmployeeByID,
-} = require('../controllers/EmpSecureFunctions');
+} = require('../controllers/APIv2_SecureFunctions');
 
 const Route = express.Router();
 

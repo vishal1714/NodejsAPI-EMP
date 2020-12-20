@@ -20,9 +20,11 @@
     "moment-timezone": "^0.5.31",
     "mongoose": "^5.9.25",
     "morgan": "^1.10.0",
+    "node-cache": "^5.1.2",
+    "randomstring": "^1.1.5",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.6"
   }
 }

@@ -1,19 +1,19 @@
 const express = require('express');
 
 const {
-  GetEmployeelog,
+  GetAPIlog,
   AddUser,
-  UpdateUserKey,
+  UpdateUser,
   UserStatus
-} = require('../controllers/EmpAdmin');
+} = require('../controllers/AdminFunctions');
 
 const Route = express.Router();
 
 //Route for  API admin
 //? Route /apiadmin/
-Route.route('/log').get(GetEmployeelog);
+Route.route('/logs').get(GetAPIlog);
 Route.route('/createUser').post(AddUser);
-Route.route('/updateUserKey').post(UpdateUserKey);
+Route.route('/updateUser').post(UpdateUser);
 Route.route('/UserStatus').post(UserStatus);
 
 module.exports = Route;

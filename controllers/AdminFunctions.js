@@ -10,14 +10,14 @@ const AdminAPIKey = process.env.AdminAPIKey;
 //@dec      Get API Logs
 //@route    /apiadmin/log
 //@access   Private (Admin Only with API-KEY)
-exports.GetEmployeelog = async (req, res, next) => {
+exports.GetAPIlog = async (req, res, next) => {
   try {
-    const getemployeelog = await APILog.find().select('-__v');
+    const getapilog = await APILog.find().select('-__v');
     //Send Success Response
     res.status(200).json({
       Status: 'Success',
-      Count: getemployeelog.length,
-      Log: getemployeelog,
+      Count: getapilog.length,
+      Log: getapilog,
     });
   } catch (err) {
     console.log(err);
@@ -69,7 +69,7 @@ exports.AddUser = async (req, res) => {
 //@dec      Update API Client with Key
 //@route    POST /APIUser/updateUserKey
 //@access   Private (Admin Only with API-KEY)
-exports.UpdateUserKey = async (req, res) => {
+exports.UpdateUser = async (req, res) => {
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   var reqKey = req.header('API-Admin-Key');
 
