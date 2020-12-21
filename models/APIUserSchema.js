@@ -33,8 +33,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     index: { unique: true },
     minlength: 10,
-    maxlength: 40,
-    default: uuid.v4,
+    maxlength: 32,
+    default: function () { return RandomString.generate({
+      length: 32,
+    }); },
   },
   AESKey: {
     type: String,
