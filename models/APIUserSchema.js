@@ -42,9 +42,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     index: { unique: true },
     minlength: 32,
-    maxlength: 32,
+    maxlength: 40,
     default: function () { return RandomString.generate({
-      length: 32,
+      length: 36,
     }); }
   },
   APICalls: {
