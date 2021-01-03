@@ -51,6 +51,10 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  APICallLimit: {
+    type: Number,
+    default: 1000,
+  },
   CreatedAt: {
     type: String,
     default: function () {
