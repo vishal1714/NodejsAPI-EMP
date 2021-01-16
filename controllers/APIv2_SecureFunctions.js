@@ -145,10 +145,12 @@ exports.SecAddEmployee = async (req, res, next) => {
         Message: 'Successfully! Record has been inserted.',
       };
       
-      
-      APIClientInfo.APICalls++;
-      await APIClientInfo.save();
-      //console.log(APIClientInfo)
+      setTimeout(async () => {
+        APIClientInfo.APICalls++;
+        await APIClientInfo.save();
+        //console.log(APIClientInfo)
+      }, 100);
+
       
       const inc = encrypt(Response, APIClientInfo.AESKey);
       //Send Response
