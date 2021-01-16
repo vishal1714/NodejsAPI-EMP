@@ -41,11 +41,11 @@ exports.AddUser = async (req, res) => {
   if (reqKey == AdminAPIKey) {
     try {
       const { Username, Email, Password } = req.body;
-      const addKey = await APIUser.create(req.body);
+      const addUser = await APIUser.create(req.body);
       res.status(200).json({
         Status: 'Successful',
-        Data: addKey,
-        Message: 'API Key has been Added',
+        Data: addUser,
+        Message: 'API user has been created',
       });
     } catch (err) {
       //console.log(err);
@@ -60,7 +60,7 @@ exports.AddUser = async (req, res) => {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        message: 'Unauthorized ( Who are you Dude ?)',
       },
     });
   }

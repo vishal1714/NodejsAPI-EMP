@@ -4,48 +4,59 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: './config/config.env' });
 const EmployeeAPILog = require('../models/APILogSchema');
+const { CLIENT_RENEG_LIMIT } = require('tls');
 
 // ! Log Add Delete Update Employee Requests and Response
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
-  try {
-    var LogDate = moment()
-      .tz('Asia/Kolkata')
-      .format('MMMM Do YYYY, hh:mm:ss A');
-    var FileDate = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
-    const ReqResLogLocal = {
-      ReqBody: req,
-      ResBody: Response,
-      Method: reqmethod,
-      APIClientID: reqKey,
-      ClientIP: IP,
-      LoggedAt: LogDate,
-    };
+  if (process.env.LOG != "OFF" ) {
+    try {
+      var LogDate = moment()
+  .tz('Asia/Kolkata')
+  .format('MMMM Do YYYY, hh:mm:ss A');
+      var FileDate = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
+      const ReqResLogLocal = {
+        ReqBody: req,
+        ResBody: Response,
+        Method: reqmethod,
+        APIClientID: reqKey,
+        ClientIP: IP,
+        LoggedAt: LogDate,
+      };
 
-    const ReqResLogCloud = {
-      ReqBody: req,
-      EncKey: key,
-      ResBody: Response,
-      Method: reqmethod,
-      APIClientID: reqKey,
-      ClientIP: IP,
-      LoggedAt: LogDate,
-    };
 
-    // ? Log API request in MongoDB Databse -> apilogs
-    EmployeeAPILog.create(ReqResLogCloud);
-    //console.log(ReqRes);
-    var LogedinDB = JSON.stringify(ReqResLogLocal);
-    //console.log('Log' + LogedinDB);
-    var LogData = '|' + LogDate + '|' + LogedinDB;
+      if (process.env.LOG == "Cloud" || process.env.LOG == "Both")  {
+        const ReqResLogCloud = {
+          ReqBody: req,
+          EncKey: key,
+          ResBody: Response,
+          Method: reqmethod,
+          APIClientID: reqKey,
+          ClientIP: IP,
+        };
+          // ? Log API request in MongoDB Databse -> apilogs
+          EmployeeAPILog.create(ReqResLogCloud);
+      }
 
-    let filename = process.env.LOGFILE + '-' + FileDate + '.log';
+      if (process.env.LOG == "Internal" || process.env.LOG == "Both" ) {
+      //console.log(ReqRes);
+      var LogedinDB = JSON.stringify(ReqResLogLocal);
+      //console.log('Log' + LogedinDB);
+      var LogData = '|' + LogDate + '|' + LogedinDB;
+  
+      let filename = process.env.LOGFILE + '-' + FileDate + '.log';
+  
+      fs.appendFile(filename, LogData + '\n', function (err) {
+        if (err) throw err;
+      });
+      }  
 
-    fs.appendFile(filename, LogData + '\n', function (err) {
-      if (err) throw err;
-    });
-  } catch (error) {
-    console.log(error);
-  }
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    //Pass
+  } 
+  
 };
 
 // ! Create Log Dir if it is not exist

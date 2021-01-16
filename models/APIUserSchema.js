@@ -34,7 +34,9 @@ const UserSchema = new mongoose.Schema({
     index: { unique: true },
     minlength: 10,
     maxlength: 40,
-    default: uuid.v4,
+    default: function () { return RandomString.generate({
+      length: 36,
+    }); },
   },
   AESKey: {
     type: String,
@@ -48,6 +50,10 @@ const UserSchema = new mongoose.Schema({
   APICalls: {
     type: Number,
     default: 0,
+  },
+  APICallLimit: {
+    type: Number,
+    default: 1000,
   },
   CreatedAt: {
     type: String,
