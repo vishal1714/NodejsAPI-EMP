@@ -14,7 +14,7 @@ CreatePath(process.env.LOGDIR);
 const app = express();
 app.use(express.json());
 
-if (process.env.NODE_ENV == 'Development') {
+if (process.env.NODE_ENV == 'Dev') {
   app.use(morgan('dev'));
 }
 app.set('view engine', 'ejs');
@@ -29,8 +29,15 @@ app.use((req, resp, next) => {
 });
 
 //Web reander Route
-const webroute = require('./routes/Web');
-app.use('/', webroute);
+if (process.env.WEBUI == 'ON') {
+  const webroute = require('./routes/Web');
+  app.use('/', webroute); 
+}else {
+  app.get("/" , (req,resp,next) => {
+    resp.status(200).send("Raje Tech Employee API")
+  })
+}
+
 
 // Employee API Route
 const route = require('./routes/APIv1');
@@ -40,7 +47,7 @@ app.use('/api/v1', route);
 const secureroute = require('./routes/APIv2Secure');
 app.use('/api/v2', secureroute);
 
-//Admin APIRoute
+//Admin API Route
 const adminroute = require('./routes/Admin');
 app.use('/apiadmin', adminroute);
 
