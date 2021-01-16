@@ -114,7 +114,7 @@ exports.SecAddEmployee = async (req, res, next) => {
     APISecretKey: req.header('API-Secret-Key'),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo  && APIClientInfo.APICallLimit != APIClientInfo.APICalls) {
+    if (APIClientInfo && APIClientInfo.APICallLimit != APIClientInfo.APICalls) {
     try {
       // Decrypt Encrypted Request
       const dec = decrypt(req.body, APIClientInfo.AESKey);
@@ -144,24 +144,18 @@ exports.SecAddEmployee = async (req, res, next) => {
         Data: addemployee,
         Message: 'Successfully! Record has been inserted.',
       };
-      
-      setTimeout(async () => {
-        APIClientInfo.APICalls++;
-        await APIClientInfo.save();
-        //console.log(APIClientInfo)
-      }, 100);
 
-      
+     APIClientInfo.APICalls++;
+     await APIClientInfo.save();
+
       const inc = encrypt(Response, APIClientInfo.AESKey);
       //Send Response
-      res.status(201).json(inc);
-  
+      res.status(201).json(inc); 
       //Log
       Log(req.body, inc, IP, APIClientInfo.APIClientID, 'Add Employee', APIClientInfo.AESKey);
     } 
   }
     catch (err) {
-
         const Response = {
           Error: {
             message: 'Internal Server Error',
@@ -175,7 +169,7 @@ exports.SecAddEmployee = async (req, res, next) => {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized or Rate Limit Exceeded ',
+        message: 'Unauthorized',
       },
     });
   }
