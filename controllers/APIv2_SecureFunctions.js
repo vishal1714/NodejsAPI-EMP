@@ -1,9 +1,6 @@
 const Employee = require('../models/EmployeeSchema');
 const APIUser = require('../models/APIUserSchema');
 const crypto = require('crypto');
-//const {
-//  performance
-//} = require('perf_hooks');
 const { Log } = require('./APILogManager');
 const moment = require('moment-timezone');
 
@@ -130,7 +127,7 @@ exports.SecAddEmployee = async (req, res, next) => {
         //Send Error
         const Response = {
           Error: {
-            message: 'Some fileds are not present in encrypted request body',
+            message: 'Some fields are not present in encrypted request body',
           },
         };
         //Send Response
