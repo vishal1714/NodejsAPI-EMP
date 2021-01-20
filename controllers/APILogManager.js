@@ -8,7 +8,7 @@ const { CLIENT_RENEG_LIMIT } = require('tls');
 
 // ! Log Add Delete Update Employee Requests and Response
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
-  if (process.env.LOG != "OFF" ) {
+  if (process.env.LOGMODE != "OFF" ) {
     try {
       var LogDate = moment()
   .tz('Asia/Kolkata')
@@ -24,7 +24,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
       };
 
 
-      if (process.env.LOG == "Cloud" || process.env.LOG == "Both")  {
+      if (process.env.LOGMODE == "Cloud" || process.env.LOGMODE == "ALL")  {
         const ReqResLogCloud = {
           ReqBody: req,
           EncKey: key,
@@ -33,11 +33,11 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
           APIClientID: reqKey,
           ClientIP: IP,
         };
-          // ? Log API request in MongoDB Databse -> apilogs
+          // ? Log API request in MongoDB Database -> apilogs
           EmployeeAPILog.create(ReqResLogCloud);
       }
 
-      if (process.env.LOG == "Internal" || process.env.LOG == "Both" ) {
+      if (process.env.LOGMODE == "Internal" || process.env.LOGMODE == "ALL" ) {
       //console.log(ReqRes);
       var LogedinDB = JSON.stringify(ReqResLogLocal);
       //console.log('Log' + LogedinDB);
