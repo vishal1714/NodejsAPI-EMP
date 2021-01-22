@@ -1,11 +1,16 @@
 const APILog = require('../models/APILogSchema');
 const APIUser = require('../models/APIUserSchema');
 const moment = require('moment-timezone');
+const crypto = require('crypto');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config/config.env' });
 
 const AdminAPIKey = process.env.AdminAPIKey;
+
+var Hash = (string) => {
+  return crypto.createHash(process.env.HashAlgo).update(string).digest('hex');
+}
 
 //@dec      Get API Logs
 //@route    /apiadmin/log
@@ -41,7 +46,12 @@ exports.AddUser = async (req, res) => {
   if (reqKey == AdminAPIKey) {
     try {
       const { Username, Email, Password } = req.body;
-      const addUser = await APIUser.create(req.body);
+      const adduserreq =  {
+        Username : Hash(Username),
+        Email : Hash(Email),
+        Password : Hash(Password)
+      }
+      const addUser = await APIUser.create(adduserreq);
       res.status(200).json({
         Status: 'Successful',
         Data: addUser,
@@ -74,7 +84,7 @@ exports.UpdateUser = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
 
   if (reqKey == AdminAPIKey) {
-    try {
+    
       if (req.body.Username == null) {
         //Send Error
         const Response = {
@@ -85,9 +95,17 @@ exports.UpdateUser = async (req, res) => {
         //Send Response
         res.status(400).json(Response);
       }
+
+      const APIClientInfo = await APIUser.findOne({
+        Username: Hash(req.body.Username),
+        Password: Hash(req.body.Password),
+      });
+      if(APIClientInfo) {
+      try {
       //Update Key Info
+      const PasswordHash = Hash(req.body.Password);
       const updateKey = await APIUser.updateOne(
-        { Username: req.body.Username, Password: req.body.Password },
+        { Username: req.body.Username, Password: PasswordHash },
         {
           $set: {
             APIClientID: req.body.APIClientID,
@@ -96,13 +114,7 @@ exports.UpdateUser = async (req, res) => {
           },
         }
       ).select('-__v');
-      if (!updateKey) {
-        const Responsefailed = {
-          Status: 'Failed',
-          Message: 'Username or Password is not Valid!.',
-        };
-        res.status(400).json(Responsefailed);
-      } else {
+      //console.log(updateKey)
         const Response = {
           Status: 'Success',
           Data: req.body,
@@ -110,7 +122,7 @@ exports.UpdateUser = async (req, res) => {
         };
         res.status(200).json(Response);
       }
-    } catch (err) {
+     catch (err) {
       var Response = {
         Error: {
           message: 'Internal Server Error',
@@ -118,6 +130,14 @@ exports.UpdateUser = async (req, res) => {
         },
       };
       res.status(500).json(Response);
+    }
+  }
+    else {
+      const Responsefailed = {
+        Status: 'Failed',
+        Message: 'Username or Password is not Valid!.',
+      };
+      res.status(400).json(Responsefailed);
     }
   } else {
     //if API-Key is not valid
@@ -137,8 +157,8 @@ exports.UserStatus = async (req, res, next) => {
     const {Username , Password} = req.body;
     if (Username != undefined && Password != undefined) {
       const APIClientResponse = await APIUser.findOne({
-        Username: Username,
-        Password: Password,
+        Username: Hash(Username),
+        Password: Hash(Password),
       }).select('-Username').select('-Password');
       if (APIClientResponse == null) {
         const Response = {

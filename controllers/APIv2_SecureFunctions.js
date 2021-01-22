@@ -105,7 +105,6 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecAddEmployee = async (req, res, next) => {
   var IP = req.header('X-Real-IP');
-
   const APIClientInfo = await APIUser.findOne({
     APIClientID: req.header('API-Client-ID'),
     APISecretKey: req.header('API-Secret-Key'),
@@ -115,8 +114,8 @@ exports.SecAddEmployee = async (req, res, next) => {
     try {
       // Decrypt Encrypted Request
       const dec = decrypt(req.body, APIClientInfo.AESKey);
+      //console.log(dec)
       const { Name, PhoneNo, Age, Department, Salary } = dec;
-
       if (
         Name == null ||
         PhoneNo == null ||
