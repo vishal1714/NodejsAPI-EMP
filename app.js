@@ -27,10 +27,9 @@ if (process.env.WEBUI == 'ON') {
   app.use('/', webroute); 
 }else {
   app.get("/" , (req,resp,next) => {
-    resp.status(200).send("Raje Tech Employee API")
+    resp.status(200).send("RajeTechSolutions Employee API Test")
   })
 }
-
 
 // Employee API Route
 const route = require('./routes/APIv1');
