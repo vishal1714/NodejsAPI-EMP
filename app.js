@@ -2,7 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
-const bodyParser = require('body-parser');
+const helmet = require("helmet")
 const { CreatePath } = require('./controllers/APILogManager');
 
 dotenv.config({ path: './config/Config.env' });
@@ -13,20 +13,13 @@ CreatePath(process.env.LOGDIR);
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended : false}));
 
 if (process.env.NODE_ENV == 'Dev') {
   app.use(morgan('dev'));
 }
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use((req, resp, next) => {
-  resp.setHeader('Access-Control-Allow-Headers', '*');
-  resp.setHeader('Access-Control-Allow-Origin', '*');
-  resp.removeHeader('X-Powered-By', '*');
-  resp.removeHeader('Server', '*');
-  next();
-});
+app.use(helmet())
 
 //Web reander Route
 if (process.env.WEBUI == 'ON') {
