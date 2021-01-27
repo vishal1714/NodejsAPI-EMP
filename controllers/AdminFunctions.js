@@ -48,7 +48,7 @@ exports.AddUser = async (req, res) => {
       const { Username, Email, Password } = req.body;
       const adduserreq =  {
         Username : Hash(Username),
-        Email : Hash(Email),
+        Email : Email,
         Password : Hash(Password)
       }
       const addUser = await APIUser.create(adduserreq);
