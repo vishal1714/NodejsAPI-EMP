@@ -104,7 +104,7 @@ exports.UpdateUser = async (req, res) => {
       try {
       //Update Key Inf
       const updateKey = await APIUser.updateOne(
-        { Username: Username, Password: Password },
+        { Username: Hash(req.body.Username), Password: Hash(req.body.Password) },
         {
           $set: {
             APIClientID: req.body.APIClientID,
