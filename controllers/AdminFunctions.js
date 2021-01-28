@@ -102,10 +102,9 @@ exports.UpdateUser = async (req, res) => {
       });
       if(APIClientInfo) {
       try {
-      //Update Key Info
-      const PasswordHash = Hash(req.body.Password);
+      //Update Key Inf
       const updateKey = await APIUser.updateOne(
-        { Username: req.body.Username, Password: PasswordHash },
+        { Username: Username, Password: Password },
         {
           $set: {
             APIClientID: req.body.APIClientID,
