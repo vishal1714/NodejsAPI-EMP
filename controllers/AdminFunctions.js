@@ -3,6 +3,8 @@ const APIUser = require('../models/APIUserSchema');
 const moment = require('moment-timezone');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
+const RandomString = require('randomstring');
+const {SendEmail} = require('./Email/SendMail')
 
 dotenv.config({ path: './config/config.env' });
 
@@ -45,13 +47,19 @@ exports.AddUser = async (req, res) => {
 
   if (reqKey == AdminAPIKey) {
     try {
-      const { Username, Email, Password } = req.body;
-      const adduserreq =  {
+      const { Username, Email, Password  } = req.body;
+      const ActivationKey = RandomString.generate({
+        length: 32,
+      });
+      
+      const addUserReq =  {
         Username : Hash(Username),
         Email : Email,
-        Password : Hash(Password)
+        Password : Hash(Password),
+        ActivationKey : ActivationKey
       }
-      const addUser = await APIUser.create(adduserreq);
+      const addUser = await APIUser.create(addUserReq);
+      SendEmail(Email, ActivationKey , addUser._id);
       res.status(200).json({
         Status: 'Successful',
         Data: addUser,
@@ -104,7 +112,7 @@ exports.UpdateUser = async (req, res) => {
       try {
       //Update Key Inf
       const updateKey = await APIUser.updateOne(
-        { Username: Hash(req.body.Username), Password: Hash(req.body.Password) },
+        { Username: Hash(req.body.Username), Password: Hash(req.body.Password)    },
         {
           $set: {
             APIClientID: req.body.APIClientID,
@@ -191,3 +199,42 @@ exports.UserStatus = async (req, res, next) => {
     });
   }
 };
+
+exports.AccountActivation = async(req,res,next) => {
+  const Key = req.query.Key;
+  const User = req.query.User;
+  try {
+    if (Key != null && User != null) {
+      const APIClient = await APIUser.findOneAndUpdate(
+        { ActivationKey: Key,
+          _id: User,},
+        {
+          $set: {
+            ActivationStatus : 1
+          },
+        },{new: true});
+
+        if(APIClient){
+          res.status(200).json({
+            Status: "Successful",
+            Message : "Your Account is verified "
+          })
+        }else{
+          res.status(404).json({
+            Status : "Failed",
+            Message : "Account not found"
+          })
+        }
+      
+    } else {
+      res.status(404).json({
+        status : "Failed",
+        Message : "Key or User Query is missing from URL"})
+    }
+  } catch (error) {
+    res.status(500).json({
+      status : "Failed",
+      info : error
+    })
+  }
+}

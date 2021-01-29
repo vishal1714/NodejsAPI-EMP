@@ -9,6 +9,7 @@ const ConnectDB = async () => {
       useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true,
+      useFindAndModify: true,
     });
     const host = mongoose.connection.host;
     console.log('MongoDB Connected :'.green.bold + host.yellow.bold);

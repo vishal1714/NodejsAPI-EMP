@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: './config/config.env' });
 const EmployeeAPILog = require('../models/APILogSchema');
-const { CLIENT_RENEG_LIMIT } = require('tls');
 
 // ! Log Add Delete Update Employee Requests and Response
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {

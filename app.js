@@ -31,6 +31,10 @@ if (process.env.WEBUI == 'ON') {
   })
 }
 
+//Admin API Route
+const adminroute = require('./routes/Admin');
+app.use('/api', adminroute);
+
 // Employee API Route
 const route = require('./routes/APIv1');
 app.use('/api/v1', route);
@@ -38,10 +42,6 @@ app.use('/api/v1', route);
 // Employee Secure API Route
 const secureroute = require('./routes/APIv2Secure');
 app.use('/api/v2', secureroute);
-
-//Admin API Route
-const adminroute = require('./routes/Admin');
-app.use('/apiadmin', adminroute);
 
 // Error handling
 app.use((req, resp, next) => {
