@@ -114,10 +114,9 @@ exports.UpdateUser = async (req, res) => {
       try {
       //Update Key Inf
       const updateKey = await APIUser.updateOne(
-        { Username: Hash(req.body.Username), Password: Hash(req.body.Password)    },
+        { Username: Hash(req.body.Username), Password: Hash(req.body.Password)},
         {
           $set: {
-            APIClientID: req.body.APIClientID,
             APISecretKey: req.body.APISecretKey,
             ModifiedAt: date,
           },
@@ -202,6 +201,9 @@ exports.UserStatus = async (req, res, next) => {
   }
 };
 
+//@dec      Get Account Activation link
+//@route    /api/activation
+//@access   Public
 exports.AccountActivation = async(req,res,next) => {
   const Key = req.query.Key;
   const User = req.query.User;
@@ -217,7 +219,6 @@ if (APIClientValidation == null) {
     Message : "Key or User Query is Incorrect"})
 
 } else if(APIClientValidation.ActivationStatus === 0){
-  console.log("I am in main")
   const APIClient = await APIUser.findOneAndUpdate(
     { ActivationKey: Key,
       _id: User,},
