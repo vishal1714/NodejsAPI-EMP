@@ -4,12 +4,13 @@ const moment = require('moment-timezone');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
 const RandomString = require('randomstring');
-const {SendEmail} = require('./Email/SendMail')
+const {ActivationEmail , WelcomeEmail} = require('./Email/SendMail')
 
 dotenv.config({ path: './config/config.env' });
 
 const AdminAPIKey = process.env.AdminAPIKey;
 
+//@dec      Hash Function for converting sensitive user information to SHA hash
 var Hash = (string) => {
   return crypto.createHash(process.env.HashAlgo).update(string).digest('hex');
 }
@@ -59,10 +60,11 @@ exports.AddUser = async (req, res) => {
         ActivationKey : ActivationKey
       }
       const addUser = await APIUser.create(addUserReq);
-      SendEmail(Email, ActivationKey , addUser._id);
+      const User = await APIUser.findById(addUser._id).select('-__v').select('-ActivationKey');
+      ActivationEmail(Email, ActivationKey , addUser._id);
       res.status(200).json({
         Status: 'Successful',
-        Data: addUser,
+        Data: User,
         Message: 'API user has been created',
       });
     } catch (err) {
@@ -205,32 +207,51 @@ exports.AccountActivation = async(req,res,next) => {
   const User = req.query.User;
   try {
     if (Key != null && User != null) {
-      const APIClient = await APIUser.findOneAndUpdate(
-        { ActivationKey: Key,
-          _id: User,},
-        {
-          $set: {
-            ActivationStatus : 1
-          },
-        },{new: true});
 
-        if(APIClient){
-          res.status(200).json({
-            Status: "Successful",
-            Message : "Your Account is verified "
-          })
-        }else{
-          res.status(404).json({
-            Status : "Failed",
-            Message : "Account not found"
-          })
-        }
-      
-    } else {
+      const APIClientValidation = await APIUser.findById(User).select(
+        '-__v'
+      );
+
+if (APIClientValidation == null) {
+  res.status(404).json({
+    status : "Failed",
+    Message : "Key or User Query is Incorrect"})
+
+} else if(APIClientValidation.ActivationKey = 1){
+  res.status(400).json({
+    status : "Failed",
+    Message : "Your Account is already Activated"
+  })
+}
+else {
+  const APIClient = await APIUser.findOneAndUpdate(
+    { ActivationKey: Key,
+      _id: User,},
+    {
+      $set: {
+        ActivationStatus : 1
+      },
+    },{new: true});
+
+    if(APIClient){
+      res.status(200).json({
+        Status: "Successful",
+        Message : "Your Account is verified "
+      })
+      WelcomeEmail(APIClient.Email , APIClient)
+    }else{
       res.status(404).json({
-        status : "Failed",
-        Message : "Key or User Query is missing from URL"})
+        Status : "Failed",
+        Message : "Account not found"
+      })
     }
+}
+} else {
+  res.status(404).json({
+    status : "Failed",
+    Message : "Key or User Query is missing from URL"})
+}
+    
   } catch (error) {
     res.status(500).json({
       status : "Failed",
