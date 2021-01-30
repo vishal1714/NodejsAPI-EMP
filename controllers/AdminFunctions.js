@@ -211,19 +211,13 @@ exports.AccountActivation = async(req,res,next) => {
       const APIClientValidation = await APIUser.findById(User).select(
         '-__v'
       );
-
 if (APIClientValidation == null) {
   res.status(404).json({
     status : "Failed",
     Message : "Key or User Query is Incorrect"})
 
-} else if(APIClientValidation.ActivationKey = 1){
-  res.status(400).json({
-    status : "Failed",
-    Message : "Your Account is already Activated"
-  })
-}
-else {
+} else if(APIClientValidation.ActivationStatus === 0){
+  console.log("I am in main")
   const APIClient = await APIUser.findOneAndUpdate(
     { ActivationKey: Key,
       _id: User,},
@@ -245,6 +239,13 @@ else {
         Message : "Account not found"
       })
     }
+}
+else {
+  console.log(APIClientValidation.ActivationKey)
+  res.status(400).json({
+    status : "Failed",
+    Message : "Your Account is already Activated"
+  })
 }
 } else {
   res.status(404).json({
