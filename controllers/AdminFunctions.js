@@ -50,7 +50,7 @@ exports.AddUser = async (req, res) => {
     try {
       const { Username, Email, Password  } = req.body;
       const ActivationKey = RandomString.generate({
-        length: 32,
+        length: 6,
       });
       
       const addUserReq =  {

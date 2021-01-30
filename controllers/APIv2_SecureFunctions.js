@@ -311,7 +311,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
             },
           },{new: true}
         ).select('-__v');
-        console.log(updateemployee);
+        //console.log(updateemployee);
 
         if (!updateemployee) {
           const Response = {
