@@ -289,7 +289,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         //Send Error
         const Response = {
           Error: {
-            message: 'Some fileds are not present in encrypted request body',
+            message: 'Some fields are not present in encrypted request body',
           },
         };
         //Send Response
