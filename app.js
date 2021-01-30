@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const colors = require('colors');
 const helmet = require("helmet")
 const { CreatePath } = require('./controllers/APILogManager');
+const rateLimit = require("express-rate-limit");
 
 dotenv.config({ path: './config/Config.env' });
 const ConnectDB = require('./config/DB');
@@ -18,16 +19,24 @@ app.use(express.urlencoded({ extended : false}));
 if (process.env.NODE_ENV == 'Dev') {
   app.use(morgan('dev'));
 }
-app.set('view engine', 'ejs');
 app.use(helmet())
+app.set('view engine', 'ejs');
 
-//Web reander Route
+// app.set('trust proxy', 1);
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minutes
+  max: 150 // limit each IP to 100 requests per windowMs
+});
+//  apply to all requests
+app.use(limiter);
+
+//Web render Route
 if (process.env.WEBUI == 'ON') {
   const webroute = require('./routes/Web');
   app.use('/', webroute); 
 }else {
   app.get("/" , (req,resp,next) => {
-    resp.status(200).send("RajeTechSolutions Employee API Test")
+    resp.status(200).send("Raje Tech Solutions Employee API")
   })
 }
 
@@ -60,7 +69,6 @@ app.use((error, req, resp, next) => {
 });
 
 //console.log = function(){};
-//
 const PORT = process.env.PORT || 5000;
 
 app.listen(
