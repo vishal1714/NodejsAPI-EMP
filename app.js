@@ -28,7 +28,7 @@ const limiter = rateLimit({
   max: 150 // limit each IP to 100 requests per windowMs
 });
 //  apply to all requests
-app.use(limiter);
+//app.use(limiter);
 
 //Web render Route
 if (process.env.WEBUI == 'ON') {
