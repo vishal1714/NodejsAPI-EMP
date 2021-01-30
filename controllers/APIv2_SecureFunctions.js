@@ -52,7 +52,7 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
       APISecretKey: req.header('API-Secret-Key'),
     });
     //console.log(APIClientInfo);
-    if(APIClientInfo){
+    if(APIClientInfo && APIClientInfo.ActivationStatus === 1){
       try {
       const getemployeebyid = await Employee.findById(req.params.id).select(
         '-__v'
@@ -110,7 +110,7 @@ exports.SecAddEmployee = async (req, res, next) => {
     APISecretKey: req.header('API-Secret-Key'),
   });
   //console.log(APIClientInfo);
-    if (APIClientInfo && APIClientInfo.APICallLimit != APIClientInfo.APICalls) {
+    if (APIClientInfo && APIClientInfo.APICallLimit != APIClientInfo.APICalls && APIClientInfo.ActivationStatus === 1) {
     try {
       // Decrypt Encrypted Request
       const dec = decrypt(req.body, APIClientInfo.AESKey);
@@ -184,7 +184,7 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
     APISecretKey: req.header('API-Secret-Key'),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo) {
+  if (APIClientInfo && APIClientInfo.ActivationStatus === 1) {
     try {
       const delemployee = await Employee.findById(req.params.id).select('-__v');
       //if Employee not found in DB
@@ -271,7 +271,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
     APISecretKey: req.header('API-Secret-Key'),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo) {
+  if (APIClientInfo && APIClientInfo.ActivationStatus === 1) {
     try {
       const dec = decrypt(req.body, APIClientInfo.AESKey);
       //Capture Request Body
