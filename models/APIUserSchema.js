@@ -55,10 +55,6 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  ActivationKey: {
-    type: String,
-    index: { unique: true },
-  },
   APICallLimit: {
     type: Number,
     default: 1000,
