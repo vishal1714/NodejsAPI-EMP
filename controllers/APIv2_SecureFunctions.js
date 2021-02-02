@@ -12,8 +12,7 @@ const algorithm = 'aes-256-cbc';
 /*  Functions  */
 //! Encrypt Function
 const encrypt = (text1, apikey) => {
-  const key = apikey || process.env.ENCRYPTION_KEY;
-  //console.log(key);
+  const key = apikey;
   const iv = crypto.randomBytes(16);
   let text = JSON.stringify(text1);
   let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
@@ -28,7 +27,7 @@ const encrypt = (text1, apikey) => {
 
 //! Decrypt Function
 const decrypt = (req, apikey) => {
-  const key = apikey || process.env.ENCRYPTION_KEY;
+  const key = apikey;
   const { Refno, encryptedData } = req;
   //console.log(key);
   let iv = Buffer.from(Refno, 'hex');
@@ -380,18 +379,13 @@ exports.SecUpdateEmployee = async (req, res, next) => {
 //@access   Private (AES-Key for Encryption)
 exports.encryptAPI = (req, res) => {
   try {
-    const reqkey = req.header('AES-Key');
-    const key = reqkey || process.env.ENCRYPTION_KEY;
+    const key = req.header('AES-Key');
     const { Name, PhoneNo, Department, Age, Salary } = req.body;
     const iv = crypto.randomBytes(16);
     let plaintext = JSON.stringify(req.body);
-    //console.log(text);
     let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
     let encrypted = cipher.update(plaintext);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    //console.log(plaintext);
-    //const Hash = crypto.createHash('sha256').update(plaintext).digest('hex');
-    //console.log(Hash);
     const Response = {
       Refno: iv.toString('hex'),
       encryptedData: encrypted.toString('hex'),
@@ -412,8 +406,7 @@ exports.encryptAPI = (req, res) => {
 //@access   Private (AES-Key for Decryption)
 exports.decryptAPI = (req, res) => {
   try {
-    const reqkey = req.header('AES-Key');
-    const key = reqkey || process.env.ENCRYPTION_KEY;
+    const key = req.header('AES-Key');
     const { Refno, encryptedData } = req.body;
     let iv = Buffer.from(Refno, 'hex');
     let encryptedText = Buffer.from(encryptedData, 'hex');
@@ -421,10 +414,6 @@ exports.decryptAPI = (req, res) => {
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     const Data = JSON.parse(decrypted.toString());
-    /*const Response = {
-      Response: Data,
-      Hash: Hash,
-    };*/
     res.status(200).json(Data);
   } catch (error) {
     res.status(500).json({
