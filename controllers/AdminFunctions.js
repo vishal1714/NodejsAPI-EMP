@@ -12,7 +12,7 @@ const AdminAPIKey = process.env.AdminAPIKey;
 
 //@dec      Hash Function for converting sensitive user information to SHA hash
 var Hash = (string) => {
-  return crypto.createHash(process.env.HashAlgo).update(string).digest('hex');
+  return crypto.createHash(process.env.HASH_ALGO).update(string).digest('hex');
 }
 
 //@dec      Get API Logs

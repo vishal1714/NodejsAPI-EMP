@@ -10,7 +10,7 @@ dotenv.config({ path: './config/Config.env' });
 const ConnectDB = require('./config/DB');
 
 ConnectDB();
-CreatePath(process.env.LOGDIR);
+CreatePath(process.env.LOG_DIR);
 
 const app = express();
 app.use(express.json());
@@ -22,13 +22,15 @@ if (process.env.NODE_ENV == 'Dev') {
 app.use(helmet())
 app.set('view engine', 'ejs');
 
-// app.set('trust proxy', 1);
+if (process.env.RATELIMIT_MODE == "ON") {
+  // app.set('trust proxy', 1);
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minutes
-  max: 150 // limit each IP to 100 requests per windowMs
+  windowMs: process.env.RATELIMIT_WINDOW * 60 * 1000, // 1 minutes
+  max: process.env.RATELIMIT // limit each IP to 100 requests per windowMs
 });
 //  apply to all requests
 app.use(limiter);
+}
 
 //Web render Route
 if (process.env.WEBUI == 'ON') {
