@@ -27,6 +27,9 @@ const UserEmailSchema = new mongoose.Schema({
   WelcomeMailId: {
     type: String,
   },
+  Error: {
+    
+  },
   CreatedAt: {
     type: String,
     default: function () {

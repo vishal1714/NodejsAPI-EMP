@@ -2,25 +2,27 @@ const nodemailer = require("nodemailer");
 const RandomString = require('randomstring');
 const UserEmail = require('../../models/UserEmailSchema');
 const moment = require('moment-timezone');
+const dotenv = require('dotenv');
 
-// create reusable transporter object using the default SMTP transport
-let transporter = nodemailer.createTransport({
-  host: "smtp.hostinger.in",
-  port: 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: 'bot@byraje.com', // generated ethereal user
-    pass: 'Vishal@9930', // generated ethereal password
-  },
-});
+dotenv.config({ path: './config/config.env' });
 
 // async..await is not allowed in global scope, must use a wrapper
 const ActivationEmail = async (Email , id) => {
   const ActivationKey = RandomString.generate({
-    length: 6,
+    length: 12,
   });
 
-  // send mail with defined transport object
+  try {
+    let transporter = nodemailer.createTransport({
+      host: process.env.SMTP_SERVER,
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USERNAME, // generated ethereal user
+        pass: process.env.SMTP_PASSWORD, // generated ethereal password
+      },
+    });
+
     let info = await transporter.sendMail({
       from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
       to: Email, // list of receivers
@@ -299,13 +301,32 @@ const ActivationEmail = async (Email , id) => {
       ActivationKey : ActivationKey
     }
     await UserEmail.create(Response);
-    
+  } catch (error) {
+    console.log(error)
+    const Error = {
+      Error : error,
+      Email : Email,
+      UserID : id
+    }
+    await UserEmail.create(Error);
+  } 
 }
 
 const WelcomeEmail = async (Email , APIUserInfo) => {
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   // send mail with defined transport object
   const {AESKey , APIClientID , APISecretKey , APICallLimit , _id } = APIUserInfo;
+
+  try {
+        let transporter = nodemailer.createTransport({
+      host: process.env.SMTP_SERVER,
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USERNAME, // generated ethereal user
+        pass: process.env.SMTP_PASSWORD, // generated ethereal password
+      },
+    });
     let info = await transporter.sendMail({
       from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
       to: Email, // list of receivers
@@ -568,6 +589,16 @@ const WelcomeEmail = async (Email , APIUserInfo) => {
           ModifiedAt: date
         },
       },{new: true});
+  } catch (error) {
+    console.log(error)
+    const Error = {
+      Error : error,
+      Email : Email,
+      UserID : _id
+    }
+    await UserEmail.create(Error);
+  }
+    
   }
 
 
