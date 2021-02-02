@@ -60,7 +60,7 @@ exports.AddUser = async (req, res) => {
         ActivationKey : ActivationKey
       }
       const addUser = await APIUser.create(addUserReq);
-      const User = await APIUser.findById(addUser._id).select('-__v').select('-ActivationKey');
+      const User = await APIUser.findById(addUser._id).select('-__v').select('-ActivationKey').select('-APICalls').select('-ActivationStatus');
       ActivationEmail(Email, ActivationKey , addUser._id);
       res.status(200).json({
         Status: 'Successful',
