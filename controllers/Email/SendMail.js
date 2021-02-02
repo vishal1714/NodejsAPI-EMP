@@ -1,6 +1,8 @@
 const nodemailer = require("nodemailer");
 const RandomString = require('randomstring');
 const UserEmail = require('../../models/UserEmailSchema');
+const moment = require('moment-timezone');
+
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
   host: "smtp.hostinger.in",
@@ -301,6 +303,7 @@ const ActivationEmail = async (Email , id) => {
 }
 
 const WelcomeEmail = async (Email , APIUserInfo) => {
+  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   // send mail with defined transport object
   const {AESKey , APIClientID , APISecretKey , APICallLimit , _id } = APIUserInfo;
     let info = await transporter.sendMail({
@@ -561,7 +564,8 @@ const WelcomeEmail = async (Email , APIUserInfo) => {
       Email : Email},
       {
         $set: {
-          WelcomeMailId : WelcomeMailId
+          WelcomeMailId : WelcomeMailId,
+          ModifiedAt: date
         },
       },{new: true});
   }
