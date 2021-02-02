@@ -1,4 +1,6 @@
 const nodemailer = require("nodemailer");
+const RandomString = require('randomstring');
+const UserEmail = require('../../models/UserEmailSchema');
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
   host: "smtp.hostinger.in",
@@ -11,9 +13,13 @@ let transporter = nodemailer.createTransport({
 });
 
 // async..await is not allowed in global scope, must use a wrapper
-const ActivationEmail = async (Email , ActivationKey , id) => {
+const ActivationEmail = async (Email , id) => {
+  const ActivationKey = RandomString.generate({
+    length: 6,
+  });
+
   // send mail with defined transport object
-    await transporter.sendMail({
+    let info = await transporter.sendMail({
       from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
       to: Email, // list of receivers
       subject: "Raje Tech REST API Activation Link", // Subject line
@@ -282,12 +288,22 @@ const ActivationEmail = async (Email , ActivationKey , id) => {
       </body>
       </html>`, // html body
     });
+    
+    const ActivationMailId = info.messageId;
+    const Response = {
+      Email : Email,
+      ActivationMailId : ActivationMailId,
+      UserID : id,
+      ActivationKey : ActivationKey
+    }
+    await UserEmail.create(Response);
+    
 }
 
-const WelcomeEmail = async (Email , APIClient) => {
+const WelcomeEmail = async (Email , APIUserInfo) => {
   // send mail with defined transport object
-  const {AESKey , APIClientID , APISecretKey , APICallLimit} = APIClient;
-    await transporter.sendMail({
+  const {AESKey , APIClientID , APISecretKey , APICallLimit , _id } = APIUserInfo;
+    let info = await transporter.sendMail({
       from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
       to: Email, // list of receivers
       subject: "Welcome To RajeTech API", // Subject line
@@ -483,6 +499,7 @@ const WelcomeEmail = async (Email , APIClient) => {
               <p style="margin: 0;"><b>APIClientID :</b> ${APIClientID}</p> 
               <p style="margin: 0;"><b>APISecretKey :</b> ${APISecretKey}</p> 
               <p style="margin: 0;"><b>AESKey :</b> ${AESKey}</p> 
+              <p style="margin: 0;"><b>APILimit :</b> ${APICallLimit}</p> 
               </td></tr>
 
 
@@ -538,6 +555,15 @@ const WelcomeEmail = async (Email , APIClient) => {
       </body>
       </html>`
     })
+    const WelcomeMailId = info.messageId;
+    await UserEmail.findOneAndUpdate(
+      {UserID: _id,
+      Email : Email},
+      {
+        $set: {
+          WelcomeMailId : WelcomeMailId
+        },
+      },{new: true});
   }
 
 

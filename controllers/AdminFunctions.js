@@ -1,9 +1,9 @@
 const APILog = require('../models/APILogSchema');
 const APIUser = require('../models/APIUserSchema');
+const UserEmail = require('../models/UserEmailSchema');
 const moment = require('moment-timezone');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
-const RandomString = require('randomstring');
 const {ActivationEmail , WelcomeEmail} = require('./Email/SendMail')
 
 dotenv.config({ path: './config/config.env' });
@@ -48,20 +48,15 @@ exports.AddUser = async (req, res) => {
 
   if (reqKey == AdminAPIKey) {
     try {
-      const { Username, Email, Password  } = req.body;
-      const ActivationKey = RandomString.generate({
-        length: 6,
-      });
-      
+      const { Username, Email, Password  } = req.body;  
       const addUserReq =  {
         Username : Hash(Username),
         Email : Email,
         Password : Hash(Password),
-        ActivationKey : ActivationKey
       }
       const addUser = await APIUser.create(addUserReq);
-      const User = await APIUser.findById(addUser._id).select('-__v').select('-ActivationKey').select('-APICalls').select('-ActivationStatus').select('-Username').select('-Email').select('-Password');
-      ActivationEmail(Email, ActivationKey , addUser._id);
+      const User = await APIUser.findById(addUser._id).select('-__v').select('-APICalls').select('-ActivationStatus').select('-Username').select('-Email').select('-Password');
+      ActivationEmail(Email, addUser._id , IP);
       res.status(200).json({
         Status: 'Successful',
         Data: User,
@@ -219,21 +214,28 @@ if (APIClientValidation == null) {
     Message : "Key or User Query is Incorrect"})
 
 } else if(APIClientValidation.ActivationStatus === 0){
-  const APIClient = await APIUser.findOneAndUpdate(
+  const UserEmailinfo = await UserEmail.findOneAndUpdate(
     { ActivationKey: Key,
-      _id: User,},
+      UserID: User,},
     {
       $set: {
         ActivationStatus : 1
       },
     },{new: true});
 
-    if(APIClient){
+    if(UserEmailinfo){
+      const APIUserInfo = await APIUser.findOneAndUpdate(
+        {_id: User},
+        {
+          $set: {
+            ActivationStatus : 1
+          },
+        },{new: true});
       res.status(200).json({
         Status: "Successful",
         Message : "Your Account is verified "
       })
-      WelcomeEmail(APIClient.Email , APIClient)
+      WelcomeEmail(UserEmailinfo.Email , APIUserInfo)
     }else{
       res.status(404).json({
         Status : "Failed",
@@ -242,7 +244,6 @@ if (APIClientValidation == null) {
     }
 }
 else {
-  console.log(APIClientValidation.ActivationKey)
   res.status(400).json({
     status : "Failed",
     Message : "Your Account is already Activated"
