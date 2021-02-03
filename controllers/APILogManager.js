@@ -7,11 +7,11 @@ const EmployeeAPILog = require('../models/APILogSchema');
 
 // ! Log Add Delete Update Employee Requests and Response
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
-  if (process.env.LOG_MODE != "OFF" ) {
+  if (process.env.LOG_MODE != 'OFF') {
     try {
       var LogDate = moment()
-  .tz('Asia/Kolkata')
-  .format('MMMM Do YYYY, hh:mm:ss A');
+        .tz('Asia/Kolkata')
+        .format('MMMM Do YYYY, hh:mm:ss A');
       var FileDate = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
       const ReqResLogLocal = {
         ReqBody: req,
@@ -22,8 +22,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
         LoggedAt: LogDate,
       };
 
-
-      if (process.env.LOG_MODE == "Cloud" || process.env.LOG_MODE == "ALL")  {
+      if (process.env.LOG_MODE == 'Cloud' || process.env.LOG_MODE == 'ALL') {
         const ReqResLogCloud = {
           ReqBody: req,
           EncKey: key,
@@ -32,30 +31,28 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
           APIClientID: reqKey,
           ClientIP: IP,
         };
-          // ? Log API request in MongoDB Database -> apilogs
-          EmployeeAPILog.create(ReqResLogCloud);
+        // ? Log API request in MongoDB Database -> apilogs
+        EmployeeAPILog.create(ReqResLogCloud);
       }
 
-      if (process.env.LOG_MODE == "Internal" || process.env.LOG_MODE == "ALL" ) {
-      //console.log(ReqRes);
-      var LogedinDB = JSON.stringify(ReqResLogLocal);
-      //console.log('Log' + LogedinDB);
-      var LogData = '|' + LogDate + '|' + LogedinDB;
-  
-      let filename = process.env.LOG_FILE + '-' + FileDate + '.log';
-  
-      fs.appendFile(filename, LogData + '\n', function (err) {
-        if (err) throw err;
-      });
-      }  
+      if (process.env.LOG_MODE == 'Internal' || process.env.LOG_MODE == 'ALL') {
+        //console.log(ReqRes);
+        var LogedinDB = JSON.stringify(ReqResLogLocal);
+        //console.log('Log' + LogedinDB);
+        var LogData = '|' + LogDate + '|' + LogedinDB;
 
+        let filename = process.env.LOG_FILE + '-' + FileDate + '.log';
+
+        fs.appendFile(filename, LogData + '\n', function (err) {
+          if (err) throw err;
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   } else {
     //Pass
-  } 
-  
+  }
 };
 
 // ! Create Log Dir if it is not exist

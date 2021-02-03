@@ -2,9 +2,9 @@ const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
-const helmet = require("helmet")
+const helmet = require('helmet');
 const { CreatePath } = require('./controllers/APILogManager');
-const rateLimit = require("express-rate-limit");
+const rateLimit = require('express-rate-limit');
 
 dotenv.config({ path: './config/Config.env' });
 const ConnectDB = require('./config/DB');
@@ -14,32 +14,32 @@ CreatePath(process.env.LOG_DIR);
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended : false}));
+app.use(express.urlencoded({ extended: false }));
 
 if (process.env.NODE_ENV == 'Dev') {
   app.use(morgan('dev'));
 }
-app.use(helmet())
+app.use(helmet());
 app.set('view engine', 'ejs');
 
-if (process.env.RATELIMIT_MODE == "ON") {
+if (process.env.RATELIMIT_MODE == 'ON') {
   // app.set('trust proxy', 1);
-const limiter = rateLimit({
-  windowMs: process.env.RATELIMIT_WINDOW * 60 * 1000, // 1 minutes
-  max: process.env.RATELIMIT // limit each IP to 100 requests per windowMs
-});
-//  apply to all requests
-app.use(limiter);
+  const limiter = rateLimit({
+    windowMs: process.env.RATELIMIT_WINDOW * 60 * 1000, // 1 minutes
+    max: process.env.RATELIMIT, // limit each IP to 100 requests per windowMs
+  });
+  //  apply to all requests
+  app.use(limiter);
 }
 
 //Web render Route
 if (process.env.WEBUI == 'ON') {
   const webroute = require('./routes/Web');
-  app.use('/', webroute); 
-}else {
-  app.get("/" , (req,resp,next) => {
-    resp.status(200).send("Raje Tech Solutions Employee API")
-  })
+  app.use('/', webroute);
+} else {
+  app.get('/', (req, resp, next) => {
+    resp.status(200).send('Raje Tech Solutions Employee API');
+  });
 }
 
 //Admin API Route

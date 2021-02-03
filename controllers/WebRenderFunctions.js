@@ -89,19 +89,20 @@ exports.UpdateRenderEmployee = async (req, res, next) => {
     ) {
       res.render('updateemployee', { messages: 'Employee _id is not found' });
     } else {
-        const employee = await Employee.findOneAndUpdate(
-          { _id: req.body.EmpRefNo },
-          {
-            $set: {
-              Name: req.body.Name,
-              PhoneNo: req.body.PhoneNo,
-              Age: req.body.Age,
-              Department: req.body.Department,
-              Salary: req.body.Salary,
-              ModifiedAt: date,
-            },
-          },{new: true}
-        ).select('-__v');
+      const employee = await Employee.findOneAndUpdate(
+        { _id: req.body.EmpRefNo },
+        {
+          $set: {
+            Name: req.body.Name,
+            PhoneNo: req.body.PhoneNo,
+            Age: req.body.Age,
+            Department: req.body.Department,
+            Salary: req.body.Salary,
+            ModifiedAt: date,
+          },
+        },
+        { new: true }
+      ).select('-__v');
 
       if (!employee) {
         const messages = {
@@ -161,7 +162,7 @@ exports.encryptAPI = async (req, res, next) => {
     };
     const aresponse = JSON.stringify(response);
     //console.log(aresponse);
-    res.render('encdec', { enresponse: aresponse , encHash : Hash });
+    res.render('encdec', { enresponse: aresponse, encHash: Hash });
   } catch (err) {
     //console.log(err);
     res.render('encdec', { messages: 'Internal Server Error' });
@@ -183,7 +184,7 @@ exports.decryptAPI = async (req, res, next) => {
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     const response = decrypted.toString();
     const Hash = crypto.createHash('sha256').update(response).digest('hex');
-    res.render('encdec', { deresponse: response , decHash : Hash });
+    res.render('encdec', { deresponse: response, decHash: Hash });
   } catch (error) {
     console.log(error);
     res.render('encdec', { messages: 'Internal Server Error' });

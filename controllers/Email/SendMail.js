@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 const RandomString = require('randomstring');
 const UserEmail = require('../../models/UserEmailSchema');
 const moment = require('moment-timezone');
@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: './config/config.env' });
 
 // async..await is not allowed in global scope, must use a wrapper
-const ActivationEmail = async (Email , id) => {
+const ActivationEmail = async (Email, id) => {
   const ActivationKey = RandomString.generate({
     length: 12,
   });
@@ -26,7 +26,7 @@ const ActivationEmail = async (Email , id) => {
     let info = await transporter.sendMail({
       from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
       to: Email, // list of receivers
-      subject: "Raje Tech REST API Activation Link", // Subject line
+      subject: 'Raje Tech REST API Activation Link', // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
       html: `<!DOCTYPE html>
       <html>
@@ -292,33 +292,33 @@ const ActivationEmail = async (Email , id) => {
       </body>
       </html>`, // html body
     });
-    
+
     const ActivationMailId = info.messageId;
     const Response = {
-      Email : Email,
-      ActivationMailId : ActivationMailId,
-      UserID : id,
-      ActivationKey : ActivationKey
-    }
+      Email: Email,
+      ActivationMailId: ActivationMailId,
+      UserID: id,
+      ActivationKey: ActivationKey,
+    };
     await UserEmail.create(Response);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     const Error = {
-      Error : error,
-      Email : Email,
-      UserID : id
-    }
+      Error: error,
+      Email: Email,
+      UserID: id,
+    };
     await UserEmail.create(Error);
-  } 
-}
+  }
+};
 
-const WelcomeEmail = async (Email , APIUserInfo) => {
+const WelcomeEmail = async (Email, APIUserInfo) => {
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   // send mail with defined transport object
-  const {AESKey , APIClientID , APISecretKey , APICallLimit , _id } = APIUserInfo;
+  const { AESKey, APIClientID, APISecretKey, APICallLimit, _id } = APIUserInfo;
 
   try {
-        let transporter = nodemailer.createTransport({
+    let transporter = nodemailer.createTransport({
       host: process.env.SMTP_SERVER,
       port: 587,
       secure: false, // true for 465, false for other ports
@@ -330,7 +330,7 @@ const WelcomeEmail = async (Email , APIUserInfo) => {
     let info = await transporter.sendMail({
       from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
       to: Email, // list of receivers
-      subject: "Welcome To RajeTech API", // Subject line
+      subject: 'Welcome To RajeTech API', // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
       html: `<!DOCTYPE html>
       <html>
@@ -577,29 +577,28 @@ const WelcomeEmail = async (Email , APIUserInfo) => {
         <!-- end body -->
       
       </body>
-      </html>`
-    })
+      </html>`,
+    });
     const WelcomeMailId = info.messageId;
     await UserEmail.findOneAndUpdate(
-      {UserID: _id,
-      Email : Email},
+      { UserID: _id, Email: Email },
       {
         $set: {
-          WelcomeMailId : WelcomeMailId,
-          ModifiedAt: date
+          WelcomeMailId: WelcomeMailId,
+          ModifiedAt: date,
         },
-      },{new: true});
+      },
+      { new: true }
+    );
   } catch (error) {
-    console.log(error)
+    console.log(error);
     const Error = {
-      Error : error,
-      Email : Email,
-      UserID : _id
-    }
+      Error: error,
+      Email: Email,
+      UserID: _id,
+    };
     await UserEmail.create(Error);
   }
-    
-  }
+};
 
-
-module.exports = { ActivationEmail , WelcomeEmail };
+module.exports = { ActivationEmail, WelcomeEmail };

@@ -4,7 +4,7 @@ const UserEmail = require('../models/UserEmailSchema');
 const moment = require('moment-timezone');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
-const {ActivationEmail , WelcomeEmail} = require('./Email/SendMail')
+const { ActivationEmail, WelcomeEmail } = require('./Email/SendMail');
 
 dotenv.config({ path: './config/config.env' });
 
@@ -13,7 +13,7 @@ const AdminAPIKey = process.env.AdminAPIKey;
 //@dec      Hash Function for converting sensitive user information to SHA hash
 var Hash = (string) => {
   return crypto.createHash(process.env.HASH_ALGO).update(string).digest('hex');
-}
+};
 
 //@dec      Get API Logs
 //@route    /apiadmin/log
@@ -48,15 +48,21 @@ exports.AddUser = async (req, res) => {
 
   if (reqKey == AdminAPIKey) {
     try {
-      const { Username, Email, Password  } = req.body;  
-      const addUserReq =  {
-        Username : Hash(Username),
-        Email : Email,
-        Password : Hash(Password),
-      }
+      const { Username, Email, Password } = req.body;
+      const addUserReq = {
+        Username: Hash(Username),
+        Email: Email,
+        Password: Hash(Password),
+      };
       const addUser = await APIUser.create(addUserReq);
-      const User = await APIUser.findById(addUser._id).select('-__v').select('-APICalls').select('-ActivationStatus').select('-Username').select('-Email').select('-Password');
-      ActivationEmail(Email, addUser._id , IP);
+      const User = await APIUser.findById(addUser._id)
+        .select('-__v')
+        .select('-APICalls')
+        .select('-ActivationStatus')
+        .select('-Username')
+        .select('-Email')
+        .select('-Password');
+      ActivationEmail(Email, addUser._id, IP);
       res.status(200).json({
         Status: 'Successful',
         Data: User,
@@ -89,53 +95,53 @@ exports.UpdateUser = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
 
   if (reqKey == AdminAPIKey) {
-    
-      if (req.body.Username == null) {
-        //Send Error
-        const Response = {
-          Error: {
-            message: 'UserName not present in request body',
-          },
-        };
-        //Send Response
-        res.status(400).json(Response);
-      }
+    if (req.body.Username == null) {
+      //Send Error
+      const Response = {
+        Error: {
+          message: 'UserName not present in request body',
+        },
+      };
+      //Send Response
+      res.status(400).json(Response);
+    }
 
-      const APIClientInfo = await APIUser.findOne({
-        Username: Hash(req.body.Username),
-        Password: Hash(req.body.Password),
-      });
-      if(APIClientInfo) {
+    const APIClientInfo = await APIUser.findOne({
+      Username: Hash(req.body.Username),
+      Password: Hash(req.body.Password),
+    });
+    if (APIClientInfo) {
       try {
-      //Update Key Inf
-      const updateKey = await APIUser.updateOne(
-        { Username: Hash(req.body.Username), Password: Hash(req.body.Password)},
-        {
-          $set: {
-            APISecretKey: req.body.APISecretKey,
-            ModifiedAt: date,
+        //Update Key Inf
+        const updateKey = await APIUser.updateOne(
+          {
+            Username: Hash(req.body.Username),
+            Password: Hash(req.body.Password),
           },
-        }
-      ).select('-__v');
-      //console.log(updateKey)
+          {
+            $set: {
+              APISecretKey: req.body.APISecretKey,
+              ModifiedAt: date,
+            },
+          }
+        ).select('-__v');
+        //console.log(updateKey)
         const Response = {
           Status: 'Success',
           Data: req.body,
           Message: 'Successfully! Key has been updated.',
         };
         res.status(200).json(Response);
+      } catch (err) {
+        var Response = {
+          Error: {
+            message: 'Internal Server Error',
+            info: err,
+          },
+        };
+        res.status(500).json(Response);
       }
-     catch (err) {
-      var Response = {
-        Error: {
-          message: 'Internal Server Error',
-          info: err,
-        },
-      };
-      res.status(500).json(Response);
-    }
-  }
-    else {
+    } else {
       const Responsefailed = {
         Status: 'Failed',
         Message: 'Username or Password is not Valid!.',
@@ -157,32 +163,33 @@ exports.UpdateUser = async (req, res) => {
 //@access   Public
 exports.UserStatus = async (req, res, next) => {
   try {
-    const {Username , Password} = req.body;
+    const { Username, Password } = req.body;
     if (Username != undefined && Password != undefined) {
       const APIClientResponse = await APIUser.findOne({
         Username: Hash(Username),
         Password: Hash(Password),
-      }).select('-Username').select('-Password');
+      })
+        .select('-Username')
+        .select('-Password');
       if (APIClientResponse == null) {
         const Response = {
           Error: {
             message: 'User Credentials are Incorrect or Not Found',
-          }
-        }
+          },
+        };
         res.status(404).json(Response);
       } else {
         const Response = {
-          APIStatus : APIClientResponse
-        }
+          APIStatus: APIClientResponse,
+        };
         res.status(200).json(Response);
       }
-
     } else {
       res.status(400).json({
         Error: {
           message: 'Username or Password is missing',
         },
-      })
+      });
     }
   } catch (err) {
     console.log(err);
@@ -199,66 +206,65 @@ exports.UserStatus = async (req, res, next) => {
 //@dec      Get Account Activation link
 //@route    /api/activation
 //@access   Public
-exports.AccountActivation = async(req,res,next) => {
+exports.AccountActivation = async (req, res, next) => {
   const Key = req.query.Key;
   const User = req.query.User;
   try {
     if (Key != null && User != null) {
-
-      const APIClientValidation = await APIUser.findById(User).select(
-        '-__v'
-      );
-if (APIClientValidation == null) {
-  res.status(404).json({
-    status : "Failed",
-    Message : "Key or User Query is Incorrect"})
-
-} else if(APIClientValidation.ActivationStatus === 0){
-  const UserEmailinfo = await UserEmail.findOneAndUpdate(
-    { ActivationKey: Key,
-      UserID: User,},
-    {
-      $set: {
-        ActivationStatus : 1
-      },
-    },{new: true});
-
-    if(UserEmailinfo){
-      const APIUserInfo = await APIUser.findOneAndUpdate(
-        {_id: User},
-        {
-          $set: {
-            ActivationStatus : 1
+      const APIClientValidation = await APIUser.findById(User).select('-__v');
+      if (APIClientValidation == null) {
+        res.status(404).json({
+          status: 'Failed',
+          Message: 'Key or User Query is Incorrect',
+        });
+      } else if (APIClientValidation.ActivationStatus === 0) {
+        const UserEmailinfo = await UserEmail.findOneAndUpdate(
+          { ActivationKey: Key, UserID: User },
+          {
+            $set: {
+              ActivationStatus: 1,
+            },
           },
-        },{new: true});
-      res.status(200).json({
-        Status: "Successful",
-        Message : "Your Account is verified "
-      })
-      WelcomeEmail(UserEmailinfo.Email , APIUserInfo)
-    }else{
+          { new: true }
+        );
+
+        if (UserEmailinfo) {
+          const APIUserInfo = await APIUser.findOneAndUpdate(
+            { _id: User },
+            {
+              $set: {
+                ActivationStatus: 1,
+              },
+            },
+            { new: true }
+          );
+          res.status(200).json({
+            Status: 'Successful',
+            Message: 'Your Account is verified ',
+          });
+          WelcomeEmail(UserEmailinfo.Email, APIUserInfo);
+        } else {
+          res.status(404).json({
+            Status: 'Failed',
+            Message: 'Account not found',
+          });
+        }
+      } else {
+        res.status(400).json({
+          status: 'Failed',
+          Message: 'Your Account is already Activated',
+        });
+      }
+    } else {
       res.status(404).json({
-        Status : "Failed",
-        Message : "Account not found"
-      })
+        status: 'Failed',
+        Message: 'Key or User Query is missing from URL',
+      });
     }
-}
-else {
-  res.status(400).json({
-    status : "Failed",
-    Message : "Your Account is already Activated"
-  })
-}
-} else {
-  res.status(404).json({
-    status : "Failed",
-    Message : "Key or User Query is missing from URL"})
-}
-    
   } catch (error) {
     res.status(500).json({
-      status : "Failed",
-      info : error
-    })
+      status: 'Failed',
+      info: error,
+    });
   }
-}
+};

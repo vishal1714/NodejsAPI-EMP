@@ -8,7 +8,7 @@ const UserEmailSchema = new mongoose.Schema({
     default: uuid.v4,
   },
   Email: {
-    type: String
+    type: String,
   },
   UserID: {
     type: String,
@@ -27,9 +27,7 @@ const UserEmailSchema = new mongoose.Schema({
   WelcomeMailId: {
     type: String,
   },
-  Error: {
-    
-  },
+  Error: {},
   CreatedAt: {
     type: String,
     default: function () {

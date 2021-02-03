@@ -82,7 +82,7 @@ exports.AddEmployee = async (req, res, next) => {
         Data: addemployee,
         Message: 'Successfully! Record has been inserted.',
       };
-      
+
       APIClientInfo.APICalls++;
       await APIClientInfo.save();
 
@@ -163,9 +163,9 @@ exports.DelEmployeeByID = async (req, res, next) => {
           Data: delemployee,
           Message: 'Successfully! Record has been deleted.',
         };
-        
-      APIClientInfo.APICalls++;
-      await APIClientInfo.save();
+
+        APIClientInfo.APICalls++;
+        await APIClientInfo.save();
 
         //Send Response
         res.status(200).json(Response);
@@ -247,7 +247,8 @@ exports.UpdateEmployee = async (req, res, next) => {
               Salary: Salary,
               ModifiedAt: date,
             },
-          },{new: true}
+          },
+          { new: true }
         ).select('-__v');
 
         if (!updateemployee) {
@@ -270,9 +271,9 @@ exports.UpdateEmployee = async (req, res, next) => {
             Data: updateemployee,
             Message: 'Successfully! Record has been updated.',
           };
-          
-      APIClientInfo.APICalls++;
-      await APIClientInfo.save();
+
+          APIClientInfo.APICalls++;
+          await APIClientInfo.save();
           //Send Success Response
           res.status(200).json(Response);
           //Log

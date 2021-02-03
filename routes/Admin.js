@@ -5,7 +5,7 @@ const {
   AddUser,
   UpdateUser,
   UserStatus,
-  AccountActivation
+  AccountActivation,
 } = require('../controllers/AdminFunctions');
 
 const Route = express.Router();
