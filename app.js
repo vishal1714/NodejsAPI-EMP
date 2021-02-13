@@ -3,8 +3,8 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
 const helmet = require('helmet');
-const { CreatePath } = require('./controllers/APILogManager');
 const rateLimit = require('express-rate-limit');
+const { CreatePath } = require('./controllers/APILogManager');
 
 dotenv.config({ path: './config/Config.env' });
 const ConnectDB = require('./config/DB');

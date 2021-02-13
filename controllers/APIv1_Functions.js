@@ -2,19 +2,36 @@ const Employee = require('../models/EmployeeSchema');
 const APIUser = require('../models/APIUserSchema');
 const { Log } = require('./APILogManager');
 const moment = require('moment-timezone');
+const { getCacheAsync , setCacheAsync} = require('../config/Cache')
 
+//@dec      Get All Employees
 //@dec      Get All Employees
 //@route    GET /api/v1/employees
 //@access   Public
 exports.GetEmployees = async (req, res, next) => {
   try {
-    const getemployee = await Employee.find().select('-__v');
-    //Send Success Response
-    res.status(200).json({
+    const getEmployeesfromCache = await getCacheAsync('Employees');
+    if (getEmployeesfromCache){
+      //console.log('Loding from Cacahe')
+      const data = JSON.parse(getEmployeesfromCache);
+      const Resposne = {
+        Status: 'Success',
+        Count: data.length,
+        Data: data,
+      }
+      res.status(200).json(Resposne);
+      return
+    }
+    const getemployees = await Employee.find().select('-__v');
+    const setData = await setCacheAsync('Employees',JSON.stringify(getemployees) , 'EX' , 10);
+    //console.log('Data Saved in  Cache')
+    const Resposne = {
       Status: 'Success',
-      Count: getemployee.length,
-      Data: getemployee,
-    });
+      Count: getemployees.length,
+      Data: getemployees,
+    }
+    //Send Success Response
+    res.status(200).json(Resposne);
   } catch (err) {
     console.log(err);
     //Send Error

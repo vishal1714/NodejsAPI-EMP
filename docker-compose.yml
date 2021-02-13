@@ -11,6 +11,7 @@ services:
     restart: always
     depends_on:
       - mongo
+      - redis
   mongo:
     image: mongo
     container_name: mongo
@@ -26,4 +27,9 @@ services:
     ports:
       - '8091:8081'
     depends_on:
-      - mongo      
+      - mongo  
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - '6379'    

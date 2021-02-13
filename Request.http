@@ -1,6 +1,6 @@
 
 //List all Employees details
-GET https://api.raje.tech/api/v1/employee
+GET http://raje.tech:5001/api/v1/employees
 
 // List Employee by ID
 //GET  https://rajeapi.herokuapp.com/api/v1/employee/{ID} 
