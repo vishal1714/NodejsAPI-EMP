@@ -11,7 +11,7 @@ services:
     restart: always
     depends_on:
       - mongo
-      - redis
+      - rediscache
   mongo:
     image: mongo
     container_name: mongo
