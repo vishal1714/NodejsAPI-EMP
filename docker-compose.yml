@@ -28,8 +28,8 @@ services:
       - '8091:8081'
     depends_on:
       - mongo  
-  redis:
+  rediscache:
     image: redis
-    container_name: redis-cache
+    container_name: rediscache
     ports:
       - '6379:6379'    
