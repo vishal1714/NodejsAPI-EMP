@@ -24,7 +24,7 @@ const ActivationEmail = async (Email, id) => {
     });
 
     let info = await transporter.sendMail({
-      from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
+      from: `"RajeTech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
       subject: 'Raje Tech REST API Activation Link', // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
@@ -293,10 +293,10 @@ const ActivationEmail = async (Email, id) => {
       </html>`, // html body
     });
 
-    const ActivationMailId = info.messageId;
+    const ActivationMessageId = info.messageId;
     const Response = {
       Email: Email,
-      ActivationMailId: ActivationMailId,
+      ActivationMessageId: ActivationMessageId,
       UserID: id,
       ActivationKey: ActivationKey,
     };
@@ -312,9 +312,10 @@ const ActivationEmail = async (Email, id) => {
   }
 };
 
-const WelcomeEmail = async (Email, APIUserInfo) => {
+const WelcomeEmail = async (Email, APIUserInfo, IP) => {
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   // send mail with defined transport object
+  console.log(IP);
   const { AESKey, APIClientID, APISecretKey, APICallLimit, _id } = APIUserInfo;
 
   try {
@@ -328,7 +329,7 @@ const WelcomeEmail = async (Email, APIUserInfo) => {
       },
     });
     let info = await transporter.sendMail({
-      from: '"RajeTech API Admin" <bot@byraje.com>', // sender address
+      from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
       subject: 'Welcome To RajeTech API', // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
@@ -579,13 +580,14 @@ const WelcomeEmail = async (Email, APIUserInfo) => {
       </body>
       </html>`,
     });
-    const WelcomeMailId = info.messageId;
+    const WelcomeMessageId = info.messageId;
     await UserEmail.findOneAndUpdate(
       { UserID: _id, Email: Email },
       {
         $set: {
-          WelcomeMailId: WelcomeMailId,
+          WelcomeMessageId: WelcomeMessageId,
           ModifiedAt: date,
+          UserIP: IP,
         },
       },
       { new: true }

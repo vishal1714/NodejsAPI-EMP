@@ -207,6 +207,7 @@ exports.UserStatus = async (req, res, next) => {
 //@route    /api/activation
 //@access   Public
 exports.AccountActivation = async (req, res, next) => {
+  var IP = req.header('X-Real-IP');
   const Key = req.query.Key;
   const User = req.query.User;
   try {
@@ -242,7 +243,8 @@ exports.AccountActivation = async (req, res, next) => {
             Status: 'Successful',
             Message: 'Your Account is verified ',
           });
-          WelcomeEmail(UserEmailinfo.Email, APIUserInfo);
+          console.log(IP);
+          WelcomeEmail(UserEmailinfo.Email, APIUserInfo, IP);
         } else {
           res.status(404).json({
             Status: 'Failed',

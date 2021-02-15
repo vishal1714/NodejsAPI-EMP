@@ -17,14 +17,17 @@ const UserEmailSchema = new mongoose.Schema({
     type: String,
     index: { unique: true },
   },
-  ActivationMailId: {
+  ActivationMessageId: {
     type: String,
   },
   ActivationStatus: {
     type: Number,
     default: 0,
   },
-  WelcomeMailId: {
+  WelcomeMessageId: {
+    type: String,
+  },
+  UserIP: {
     type: String,
   },
   Error: {},
