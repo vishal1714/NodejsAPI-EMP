@@ -10,8 +10,7 @@ const UserSchema = new mongoose.Schema({
   },
   Username: {
     type: String,
-    lowercase: true,
-    index: { unique: true },
+    index: { unique: true, lowercase: true },
     required: [true, 'Please Enter Your UserName'],
   },
   Password: {
@@ -20,8 +19,7 @@ const UserSchema = new mongoose.Schema({
   },
   Email: {
     type: String,
-    lowercase: true,
-    index: { unique: true },
+    index: { unique: true, lowercase: true },
     required: [true, 'Please Enter Your Email ID'],
   },
   APIClientID: {
