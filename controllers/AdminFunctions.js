@@ -301,10 +301,11 @@ exports.EmailLogs = async (req, res) => {
   var IP = req.header('X-Real-IP');
   const { Date , Email} = req.body;
   try {
-    await SendLogs(Date,Email);
+    let IDD = await SendLogs(Date,Email);
     res.status(200).json({
       Status : "Successful",
-      Message : `Log Report has been sent to Email ID - ${Email}`
+      Message : `Log Report has been sent to Email ID - ${Email}`,
+      RefNo : IDD
     })
   } catch (error) {
     res.status(500).json({

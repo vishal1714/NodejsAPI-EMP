@@ -631,6 +631,7 @@ const SendLogs = async (Date, Email) => {
       ],
   })
 
+  return info.messageId;
     }catch(error){
       console.log(error)
     }
