@@ -603,9 +603,6 @@ const WelcomeEmail = async (Email, APIUserInfo, IP) => {
   }
 };
 
-
-
-
 const SendLogs = async (Date, Email) => {
   try {
     let transporter = nodemailer.createTransport({
