@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
   },
   Username: {
     type: String,
+    lowercase: true,
     index: { unique: true },
     required: [true, 'Please Enter Your UserName'],
   },
@@ -19,6 +20,7 @@ const UserSchema = new mongoose.Schema({
   },
   Email: {
     type: String,
+    lowercase: true,
     index: { unique: true },
     required: [true, 'Please Enter Your Email ID'],
   },
