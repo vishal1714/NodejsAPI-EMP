@@ -607,7 +607,6 @@ const WelcomeEmail = async (Email, APIUserInfo, IP) => {
 
 
 const SendLogs = async (Date, Email) => {
-
   try {
     let transporter = nodemailer.createTransport({
       host: process.env.SMTP_SERVER,
@@ -618,22 +617,22 @@ const SendLogs = async (Date, Email) => {
         pass: process.env.SMTP_PASSWORD, // generated ethereal password
       },
     });
-
     let info = await transporter.sendMail({
       from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
       subject: 'Raje Tech REST API Log File', // Subject line
-      //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
+      html: `<br>As Requested Please Find Below API Log Report - <br> <br> For More information Kindly Contact Admin <br>- admin@byraje.com`, // plain text body
       attachments: [
         {
-          filename: '',
+          filename: `APILog-${Date}.log`,
           path: `../../Logs/APILog-${Date}.log`,
+          //path:`D:\\NodeAPI\\EMPAPI\\Logs\\APILog-${Date}.log`
         },
       ],
   })
 
     }catch(error){
-return error
+      console.log(error)
     }
   }
 
