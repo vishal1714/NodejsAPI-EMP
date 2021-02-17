@@ -213,7 +213,7 @@ exports.SecAddEmployee = async (req, res, next) => {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        STatus: 401,
+        Status: 401,
         Message: 'Unauthorized',
       },
     });
