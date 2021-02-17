@@ -32,8 +32,9 @@ exports.GetAPIlog = async (req, res, next) => {
     //Send Error
     res.status(500).json({
       Error: {
-        message: 'Internal Server Error',
-        info: err,
+        Status: 500,
+        Message: 'Internal Server Error',
+        Info: err,
       },
     });
   }
@@ -72,8 +73,9 @@ exports.AddUser = async (req, res) => {
       //console.log(err);
       res.status(500).json({
         Error: {
-          message: 'Internal Server Error',
-          info: err.message,
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err.message,
         },
       });
     }
@@ -81,7 +83,8 @@ exports.AddUser = async (req, res) => {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized ( Who are you Dude ?)',
+        Status: 401,
+        Message: 'Unauthorized ( Who are you Dude ?)',
       },
     });
   }
@@ -99,7 +102,8 @@ exports.UpdateUser = async (req, res) => {
       //Send Error
       const Response = {
         Error: {
-          message: 'UserName not present in request body',
+          Status: 400,
+          Message: 'UserName not present in request body',
         },
       };
       //Send Response
@@ -135,24 +139,26 @@ exports.UpdateUser = async (req, res) => {
       } catch (err) {
         var Response = {
           Error: {
-            message: 'Internal Server Error',
-            info: err,
+            Status: 500,
+            Message: 'Internal Server Error',
+            Info: err,
           },
         };
         res.status(500).json(Response);
       }
     } else {
       const Responsefailed = {
-        Status: 'Failed',
+        Status: 401,
         Message: 'Username or Password is not Valid!.',
       };
-      res.status(400).json(Responsefailed);
+      res.status(401).json(Responsefailed);
     }
   } else {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }
@@ -174,7 +180,8 @@ exports.UserStatus = async (req, res, next) => {
       if (APIClientResponse == null) {
         const Response = {
           Error: {
-            message: 'User Credentials are Incorrect or Not Found',
+            Status: 404,
+            Message: 'User Credentials are Incorrect or Not Found',
           },
         };
         res.status(404).json(Response);
@@ -185,9 +192,10 @@ exports.UserStatus = async (req, res, next) => {
         res.status(200).json(Response);
       }
     } else {
-      res.status(400).json({
+      res.status(404).json({
         Error: {
-          message: 'Username or Password is missing',
+          Status: 404,
+          Message: 'Username or Password is missing',
         },
       });
     }
@@ -196,8 +204,9 @@ exports.UserStatus = async (req, res, next) => {
     //Send Error
     res.status(500).json({
       Error: {
-        message: 'Internal Server Error',
-        info: err,
+        Status: 500,
+        Message: 'Internal Server Error',
+        Info: err,
       },
     });
   }
@@ -214,8 +223,8 @@ exports.AccountActivation = async (req, res, next) => {
     if (Key != null && User != null) {
       const APIClientValidation = await APIUser.findById(User).select('-__v');
       if (APIClientValidation == null) {
-        res.status(404).json({
-          status: 'Failed',
+        res.status(400).json({
+          Status: 400,
           Message: 'Key or User Query is Incorrect',
         });
       } else if (APIClientValidation.ActivationStatus === 0) {
@@ -247,26 +256,27 @@ exports.AccountActivation = async (req, res, next) => {
           WelcomeEmail(UserEmailinfo.Email, APIUserInfo, IP);
         } else {
           res.status(404).json({
-            Status: 'Failed',
+            Status: 404,
             Message: 'Account not found',
           });
         }
       } else {
         res.status(400).json({
-          status: 'Failed',
+          Status: 400,
           Message: 'Your Account is already Activated',
         });
       }
     } else {
       res.status(404).json({
-        status: 'Failed',
+        Status: 404,
         Message: 'Key or User Query is missing from URL',
       });
     }
   } catch (error) {
     res.status(500).json({
-      status: 'Failed',
-      info: error,
+      Status: 500,
+      Message: 'Internal Server Error',
+      Info: error,
     });
   }
 };

@@ -2,7 +2,7 @@ const Employee = require('../models/EmployeeSchema');
 const APIUser = require('../models/APIUserSchema');
 const { Log } = require('./APILogManager');
 const moment = require('moment-timezone');
-const { getCacheAsync , setCacheAsync} = require('../config/Cache')
+const { getCacheAsync, setCacheAsync } = require('../config/Cache');
 
 //@dec      Get All Employees
 //@dec      Get All Employees
@@ -11,25 +11,30 @@ const { getCacheAsync , setCacheAsync} = require('../config/Cache')
 exports.GetEmployees = async (req, res, next) => {
   try {
     const getEmployeesfromCache = await getCacheAsync('Employees');
-    if (getEmployeesfromCache){
+    if (getEmployeesfromCache) {
       //console.log('Loding from Cacahe')
       const data = JSON.parse(getEmployeesfromCache);
       const Resposne = {
         Status: 'Success',
         Count: data.length,
         Data: data,
-      }
+      };
       res.status(200).json(Resposne);
-      return
+      return;
     }
     const getemployees = await Employee.find().select('-__v');
-    const setData = await setCacheAsync('Employees',JSON.stringify(getemployees) , 'EX' , 10);
+    const setData = await setCacheAsync(
+      'Employees',
+      JSON.stringify(getemployees),
+      'EX',
+      10
+    );
     //console.log('Data Saved in  Cache')
     const Resposne = {
       Status: 'Success',
       Count: getemployees.length,
       Data: getemployees,
-    }
+    };
     //Send Success Response
     res.status(200).json(Resposne);
   } catch (err) {
@@ -37,7 +42,8 @@ exports.GetEmployees = async (req, res, next) => {
     //Send Error
     res.status(500).json({
       Error: {
-        message: 'Internal Server Error',
+        Status: 500,
+        Message: 'Internal Server Error',
         info: err,
       },
     });
@@ -57,7 +63,8 @@ exports.GetEmployeeByID = async (req, res, next) => {
     if (!getemployeebyid) {
       res.status(404).json({
         Error: {
-          message: 'Employee not found',
+          Status: 404,
+          Message: 'Employee not found',
         },
       });
     } else {
@@ -72,8 +79,9 @@ exports.GetEmployeeByID = async (req, res, next) => {
     //Send Error
     res.status(500).json({
       Error: {
-        message: 'Internal Server Error',
-        info: err,
+        Status: 500,
+        Message: 'Internal Server Error',
+        Info: err,
       },
     });
   }
@@ -114,7 +122,9 @@ exports.AddEmployee = async (req, res, next) => {
         const messages = Object.values(err.errors).map((val) => val.message);
         const Response = {
           Error: {
-            message: messages,
+            Status: 400,
+            Message: 'Bad Request',
+            Info: messages,
           },
         };
         res.status(400).json(Response);
@@ -122,7 +132,8 @@ exports.AddEmployee = async (req, res, next) => {
       } else {
         const Response = {
           Error: {
-            message: 'Internal Server Error',
+            Status: 500,
+            Message: 'Internal Server Error',
           },
         };
         res.status(500).json(Response);
@@ -134,7 +145,8 @@ exports.AddEmployee = async (req, res, next) => {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }
@@ -160,7 +172,8 @@ exports.DelEmployeeByID = async (req, res, next) => {
       if (!delemployee) {
         const Response = {
           Error: {
-            message: 'Employee Not Found',
+            Status: 404,
+            Message: 'Employee Not Found',
           },
         };
         //Send Response
@@ -198,8 +211,9 @@ exports.DelEmployeeByID = async (req, res, next) => {
     } catch (err) {
       const Response = {
         Error: {
-          message: 'Internal Server Error',
-          info: err,
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err,
         },
       };
       //Send Error
@@ -211,7 +225,8 @@ exports.DelEmployeeByID = async (req, res, next) => {
     //if APi-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }
@@ -244,7 +259,8 @@ exports.UpdateEmployee = async (req, res, next) => {
         //Send Error
         const Response = {
           Error: {
-            message: 'Some fileds are not present in request body',
+            Status: 400,
+            Message: 'Some fields are not present in request body',
           },
         };
         //Send Response
@@ -270,7 +286,7 @@ exports.UpdateEmployee = async (req, res, next) => {
 
         if (!updateemployee) {
           const Response = {
-            Status: 'Failed',
+            Status: 400,
             Message: 'Something went wrong',
           };
           res.status(400).json(Response);
@@ -307,8 +323,9 @@ exports.UpdateEmployee = async (req, res, next) => {
       //send Error
       var Response = {
         Error: {
-          message: 'Internal Server Error',
-          info: err,
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err,
         },
       };
       res.status(500).json(Response);
@@ -318,7 +335,8 @@ exports.UpdateEmployee = async (req, res, next) => {
     //API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }

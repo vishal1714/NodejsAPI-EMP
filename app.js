@@ -65,7 +65,8 @@ app.use((error, req, resp, next) => {
   resp.status(error.status || 500);
   resp.json({
     Error: {
-      message: error.message,
+      Status: error.status,
+      Message: error.message,
     },
   });
 });

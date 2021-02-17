@@ -61,7 +61,8 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
       if (!getemployeebyid) {
         const Response = {
           Error: {
-            message: 'Employee not found',
+            Status: 404,
+            Message: 'Employee not found',
           },
         };
         res.status(404).json(Response);
@@ -94,8 +95,9 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
     } catch (err) {
       const Response = {
         Error: {
-          message: 'Internal Server Error',
-          info: err,
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err,
         },
       };
       //Send Error
@@ -113,7 +115,8 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }
@@ -149,7 +152,8 @@ exports.SecAddEmployee = async (req, res, next) => {
         //Send Error
         const Response = {
           Error: {
-            message: 'Some fields are not present in encrypted request body',
+            Status: 400,
+            Message: 'Some fields are not present in encrypted request body',
           },
         };
         //Send Response
@@ -190,8 +194,9 @@ exports.SecAddEmployee = async (req, res, next) => {
     } catch (err) {
       const Response = {
         Error: {
-          message: 'Internal Server Error',
-          info: err,
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err,
         },
       };
       res.status(500).json(Response);
@@ -208,7 +213,8 @@ exports.SecAddEmployee = async (req, res, next) => {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        STatus: 401,
+        Message: 'Unauthorized',
       },
     });
   }
@@ -234,7 +240,8 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
       if (!delemployee) {
         const Response = {
           Error: {
-            message: 'Employee Not Found',
+            Status: 404,
+            Message: 'Employee Not Found',
           },
         };
         //Send Response
@@ -275,8 +282,9 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
     } catch (err) {
       const Response = {
         Error: {
-          message: 'Internal Server Error',
-          info: err,
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err,
         },
       };
       //Send Error
@@ -295,7 +303,8 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
     //if APi-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }
@@ -331,7 +340,8 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         //Send Error
         const Response = {
           Error: {
-            message: 'Some fields are not present in encrypted request body',
+            Status: 400,
+            Message: 'Some fields are not present in encrypted request body',
           },
         };
         //Send Response
@@ -365,7 +375,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
 
         if (!updateemployee) {
           const Response = {
-            Status: 'Failed',
+            Status: 400,
             Message: 'Something went wrong',
           };
 
@@ -408,8 +418,9 @@ exports.SecUpdateEmployee = async (req, res, next) => {
       //send Error
       var Response = {
         Error: {
-          message: 'Internal Server Error',
-          info: err,
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err,
         },
       };
       res.status(500).json(Response);
@@ -426,7 +437,8 @@ exports.SecUpdateEmployee = async (req, res, next) => {
     //API-Key is not valid
     res.status(401).json({
       Error: {
-        message: 'Unauthorized',
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }
@@ -452,7 +464,8 @@ exports.encryptAPI = (req, res) => {
   } catch (error) {
     res.status(500).json({
       Error: {
-        message: 'Internal Server Error',
+        Status: 500,
+        Message: 'Internal Server Error',
         Info: error,
       },
     });
@@ -476,7 +489,8 @@ exports.decryptAPI = (req, res) => {
   } catch (error) {
     res.status(500).json({
       Error: {
-        message: 'Internal Server Error',
+        Status: 500,
+        Message: 'Internal Server Error',
         Info: error,
       },
     });
