@@ -603,4 +603,38 @@ const WelcomeEmail = async (Email, APIUserInfo, IP) => {
   }
 };
 
-module.exports = { ActivationEmail, WelcomeEmail };
+
+
+
+const SendLogs = async (Date, Email) => {
+
+  try {
+    let transporter = nodemailer.createTransport({
+      host: process.env.SMTP_SERVER,
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USERNAME, // generated ethereal user
+        pass: process.env.SMTP_PASSWORD, // generated ethereal password
+      },
+    });
+
+    let info = await transporter.sendMail({
+      from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
+      to: Email, // list of receivers
+      subject: 'Raje Tech REST API Log File', // Subject line
+      //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
+      attachments: [
+        {
+          filename: '',
+          path: `../../Logs/APILog-${Date}.log`,
+        },
+      ],
+  })
+
+    }catch(error){
+return error
+    }
+  }
+
+module.exports = { ActivationEmail, WelcomeEmail , SendLogs };

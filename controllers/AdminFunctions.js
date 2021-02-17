@@ -4,7 +4,7 @@ const UserEmail = require('../models/UserEmailSchema');
 const moment = require('moment-timezone');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
-const { ActivationEmail, WelcomeEmail } = require('./Email/SendMail');
+const { ActivationEmail, WelcomeEmail , SendLogs } = require('./Email/SendMail');
 
 dotenv.config({ path: './config/config.env' });
 
@@ -16,7 +16,7 @@ var Hash = (string) => {
 };
 
 //@dec      Get API Logs
-//@route    /apiadmin/log
+//@route    /api/admin/log
 //@access   Private (Admin Only with API-KEY)
 exports.GetAPIlog = async (req, res, next) => {
   try {
@@ -41,7 +41,7 @@ exports.GetAPIlog = async (req, res, next) => {
 };
 
 //@dec      Add API Client with Key
-//@route    POST /APIUser/createKey
+//@route    POST /api/admin/createuser
 //@access   Private (Admin Only with API-KEY)
 exports.AddUser = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
@@ -50,32 +50,44 @@ exports.AddUser = async (req, res) => {
   if (reqKey == AdminAPIKey) {
     try {
       const { Username, Email, Password } = req.body;
-      const addUserReq = {
-        Username: Hash(Username),
-        Email: Email,
-        Password: Hash(Password),
-      };
-      const addUser = await APIUser.create(addUserReq);
-      const User = await APIUser.findById(addUser._id)
-        .select('-__v')
-        .select('-APICalls')
-        .select('-ActivationStatus')
-        .select('-Username')
-        .select('-Email')
-        .select('-Password');
-      ActivationEmail(Email, addUser._id, IP);
-      res.status(200).json({
-        Status: 'Successful',
-        Data: User,
-        Message: 'API user has been created',
-      });
+      if (Username == null || Email == null || Password == null) {
+        //Send Error
+        const Response = {
+          Error: {
+            Status: 400,
+            Message: 'Some fields are not present in request body',
+          },
+        };
+        //Send Response
+        res.status(400).json(Response);
+      } else {
+        const addUserReq = {
+          Username: Hash(Username),
+          Email: Email,
+          Password: Hash(Password),
+        };
+        const addUser = await APIUser.create(addUserReq);
+        const User = await APIUser.findById(addUser._id)
+          .select('-__v')
+          .select('-APICalls')
+          .select('-ActivationStatus')
+          .select('-Username')
+          .select('-Email')
+          .select('-Password');
+        ActivationEmail(Email, addUser._id, IP);
+        res.status(200).json({
+          Status: 'Successful',
+          Data: User,
+          Message: 'API user has been created',
+        });
+      }
     } catch (err) {
       //console.log(err);
       res.status(500).json({
         Error: {
           Status: 500,
           Message: 'Internal Server Error',
-          Info: err.message,
+          Info: 'Username or Email Id is already registered',
         },
       });
     }
@@ -91,7 +103,7 @@ exports.AddUser = async (req, res) => {
 };
 
 //@dec      Update API Client with Key
-//@route    POST /APIUser/updateUserKey
+//@route    POST /api/admin/updateUser
 //@access   Private (Admin Only with API-KEY)
 exports.UpdateUser = async (req, res) => {
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
@@ -165,7 +177,7 @@ exports.UpdateUser = async (req, res) => {
 };
 
 //@dec      Get API Client Status
-//@route    /apiadmin/apiStatus
+//@route    /api/admin/apiStatus
 //@access   Public
 exports.UserStatus = async (req, res, next) => {
   try {
@@ -280,3 +292,27 @@ exports.AccountActivation = async (req, res, next) => {
     });
   }
 };
+
+//@dec      Get Logs of specific Day on mail
+//@route    /api/activation
+//@access   Public
+exports.EmailLogs = async (req, res) => {
+  var reqKey = req.header('API-Admin-Key');
+  var IP = req.header('X-Real-IP');
+  const { Date , Email} = req.body;
+  try {
+    await SendLogs(Date,Email);
+    res.status(200).json({
+      Status : "Successful",
+      Message : `Log Report has been sent to Email ID - ${Email}`
+    })
+  } catch (error) {
+    res.status(500).json({
+      Status : 500,
+      Message : `Internal Server Error`,
+      Info : error
+    })
+  }
+  
+
+}
