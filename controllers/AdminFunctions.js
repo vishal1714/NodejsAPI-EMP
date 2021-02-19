@@ -4,15 +4,21 @@ const UserEmail = require('../models/UserEmailSchema');
 const moment = require('moment-timezone');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
-const { ActivationEmail, WelcomeEmail , SendLogs } = require('./Email/SendMail');
+const { ActivationEmail, WelcomeEmail, SendLogs } = require('./Email/SendMail');
 
 dotenv.config({ path: './config/config.env' });
-
-const AdminAPIKey = process.env.AdminAPIKey;
 
 //@dec      Hash Function for converting sensitive user information to SHA hash
 var Hash = (string) => {
   return crypto.createHash(process.env.HASH_ALGO).update(string).digest('hex');
+};
+
+//@dec      API Admin Time base Password Generator
+var AdminPasswordGenerator = () => {
+  var TimeBasePassword = moment().tz('Asia/Kolkata').format('DDMMYYYYhh');
+  var pass = TimeBasePassword * 2;
+  //console.log(pass);
+  return pass.toString();
 };
 
 //@dec      Get API Logs
@@ -46,8 +52,9 @@ exports.GetAPIlog = async (req, res, next) => {
 exports.AddUser = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
   var IP = req.header('X-Real-IP');
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
 
-  if (reqKey == AdminAPIKey) {
+  if (AdminAPIKey.includes(reqKey)) {
     try {
       const { Username, Email, Password } = req.body;
       if (Username == null || Email == null || Password == null) {
@@ -108,8 +115,9 @@ exports.AddUser = async (req, res) => {
 exports.UpdateUser = async (req, res) => {
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   var reqKey = req.header('API-Admin-Key');
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
 
-  if (reqKey == AdminAPIKey) {
+  if (AdminAPIKey.includes(reqKey)) {
     if (req.body.Username == null) {
       //Send Error
       const Response = {
@@ -299,28 +307,26 @@ exports.AccountActivation = async (req, res, next) => {
 exports.EmailLogs = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
   var IP = req.header('X-Real-IP');
-  const { Date , Email} = req.body;
+  const { Date, Email } = req.body;
   try {
-    const IDD = await SendLogs(Date,Email);
+    const IDD = await SendLogs(Date, Email);
     if (IDD) {
       res.status(200).json({
-        Status : "Successful",
-        Message : `Log Report has been sent to Email ID - ${Email}`,
-        RefNo : IDD
-      })
+        Status: 'Successful',
+        Message: `Log Report has been sent to Email ID - ${Email}`,
+        RefNo: IDD,
+      });
     } else {
       res.status(500).json({
-        Status : 500,
-        Message : `Something went wrong`,
-      })
+        Status: 500,
+        Message: `Something went wrong`,
+      });
     }
   } catch (error) {
     res.status(500).json({
-      Status : 500,
-      Message : `Internal Server Error`,
-      Info : error
-    })
+      Status: 500,
+      Message: `Internal Server Error`,
+      Info: error,
+    });
   }
-  
-
-}
+};
