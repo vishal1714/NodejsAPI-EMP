@@ -8,7 +8,6 @@ dotenv.config({ path: './config/config.env' });
 
 const path = require('path');
 
-
 // async..await is not allowed in global scope, must use a wrapper
 const ActivationEmail = async (Email, id) => {
   const ActivationKey = RandomString.generate({
@@ -617,8 +616,8 @@ const SendLogs = async (Date, Email) => {
         pass: process.env.SMTP_PASSWORD, // generated ethereal password
       },
     });
-	let LogFileName = `APILog-${Date}.log`;
-	let configFilename = path.join(__dirname, "../../Logs/", LogFileName);
+    let LogFileName = `APILog-${Date}.log`;
+    let configFilename = path.join(__dirname, '../../Logs/', LogFileName);
     let info = await transporter.sendMail({
       from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
@@ -628,15 +627,15 @@ const SendLogs = async (Date, Email) => {
         {
           filename: `${LogFileName}`,
           path: configFilename,
-          //path:`D:\\NodeAPI\\EMPAPI\\Logs\\APILog-${Date}.log`
+          //path: `D:\\NodeAPI\\EMPAPI\\Logs\\${LogFileName}`,
         },
       ],
-  })
+    });
 
-  return info.messageId;
-    }catch(error){
-      console.log(error)
-    }
+    return info.messageId;
+  } catch (error) {
+    console.log(error);
   }
+};
 
-module.exports = { ActivationEmail, WelcomeEmail , SendLogs };
+module.exports = { ActivationEmail, WelcomeEmail, SendLogs };

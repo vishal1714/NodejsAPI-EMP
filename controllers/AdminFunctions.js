@@ -308,25 +308,44 @@ exports.EmailLogs = async (req, res) => {
   var reqKey = req.header('API-Admin-Key');
   var IP = req.header('X-Real-IP');
   const { Date, Email } = req.body;
-  try {
-    const IDD = await SendLogs(Date, Email);
-    if (IDD) {
-      res.status(200).json({
-        Status: 'Successful',
-        Message: `Log Report has been sent to Email ID - ${Email}`,
-        RefNo: IDD,
-      });
-    } else {
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
+
+  if (AdminAPIKey.includes(reqKey)) {
+    try {
+      if (Date != null && Email != null) {
+        const IDD = await SendLogs(Date, Email);
+        if (IDD) {
+          res.status(200).json({
+            Status: 'Successful',
+            Message: `Log Report has been sent to Email ID - ${Email}`,
+            EmailRefNo: IDD,
+          });
+        } else {
+          res.status(500).json({
+            Status: 500,
+            Message: `Something went wrong`,
+          });
+        }
+      } else {
+        res.status(400).json({
+          Status: 400,
+          Message: `Email or Date filed is missing`,
+        });
+      }
+    } catch (error) {
       res.status(500).json({
         Status: 500,
-        Message: `Something went wrong`,
+        Message: `Internal Server Error`,
+        Info: error,
       });
     }
-  } catch (error) {
-    res.status(500).json({
-      Status: 500,
-      Message: `Internal Server Error`,
-      Info: error,
+  } else {
+    //if API-Key is not valid
+    res.status(401).json({
+      Error: {
+        Status: 401,
+        Message: 'Unauthorized',
+      },
     });
   }
 };
