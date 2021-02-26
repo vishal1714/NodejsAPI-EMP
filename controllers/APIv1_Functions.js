@@ -10,33 +10,44 @@ const { getCacheAsync, setCacheAsync } = require('../config/Cache');
 //@access   Public
 exports.GetEmployees = async (req, res, next) => {
   try {
-    const getEmployeesfromCache = await getCacheAsync('Employees');
-    if (getEmployeesfromCache) {
-      //console.log('Loding from Cacahe')
-      const data = JSON.parse(getEmployeesfromCache);
+    if (process.env.CACHE == 'ON') {
+      const getEmployeesfromCache = await getCacheAsync('Employees');
+      if (getEmployeesfromCache) {
+        //console.log('Loding from Cacahe')
+        const data = JSON.parse(getEmployeesfromCache);
+        const Resposne = {
+          Status: 'Success',
+          Count: data.length,
+          Data: data,
+        };
+        res.status(200).json(Resposne);
+        return;
+      }
+      const getemployees = await Employee.find().select('-__v');
+      const setData = await setCacheAsync(
+        'Employees',
+        JSON.stringify(getemployees),
+        'EX',
+        10
+      );
+      //console.log('Data Saved in  Cache')
       const Resposne = {
         Status: 'Success',
-        Count: data.length,
-        Data: data,
+        Count: getemployees.length,
+        Data: getemployees,
       };
+      //Send Success Response
       res.status(200).json(Resposne);
-      return;
+    } else {
+      const getemployees = await Employee.find().select('-__v');
+      const Resposne = {
+        Status: 'Success',
+        Count: getemployees.length,
+        Data: getemployees,
+      };
+      //Send Success Response
+      res.status(200).json(Resposne);
     }
-    const getemployees = await Employee.find().select('-__v');
-    const setData = await setCacheAsync(
-      'Employees',
-      JSON.stringify(getemployees),
-      'EX',
-      10
-    );
-    //console.log('Data Saved in  Cache')
-    const Resposne = {
-      Status: 'Success',
-      Count: getemployees.length,
-      Data: getemployees,
-    };
-    //Send Success Response
-    res.status(200).json(Resposne);
   } catch (err) {
     console.log(err);
     //Send Error
