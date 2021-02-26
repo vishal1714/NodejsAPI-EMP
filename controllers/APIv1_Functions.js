@@ -2,7 +2,10 @@ const Employee = require('../models/EmployeeSchema');
 const APIUser = require('../models/APIUserSchema');
 const { Log } = require('./APILogManager');
 const moment = require('moment-timezone');
-const { getCacheAsync, setCacheAsync } = require('../config/Cache');
+
+/*if (process.env.CACHE == 'ON') {
+  const { getCacheAsync, setCacheAsync } = require('../config/Cache');
+}*/
 
 //@dec      Get All Employees
 //@dec      Get All Employees
@@ -10,7 +13,7 @@ const { getCacheAsync, setCacheAsync } = require('../config/Cache');
 //@access   Public
 exports.GetEmployees = async (req, res, next) => {
   try {
-    if (process.env.CACHE == 'ON') {
+    /*if (process.env.CACHE == 'ON') {
       const getEmployeesfromCache = await getCacheAsync('Employees');
       if (getEmployeesfromCache) {
         //console.log('Loding from Cacahe')
@@ -38,16 +41,15 @@ exports.GetEmployees = async (req, res, next) => {
       };
       //Send Success Response
       res.status(200).json(Resposne);
-    } else {
-      const getemployees = await Employee.find().select('-__v');
-      const Resposne = {
-        Status: 'Success',
-        Count: getemployees.length,
-        Data: getemployees,
-      };
-      //Send Success Response
-      res.status(200).json(Resposne);
-    }
+    } else {}*/
+    const getemployees = await Employee.find().select('-__v');
+    const Resposne = {
+      Status: 'Success',
+      Count: getemployees.length,
+      Data: getemployees,
+    };
+    //Send Success Response
+    res.status(200).json(Resposne);
   } catch (err) {
     console.log(err);
     //Send Error
