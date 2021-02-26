@@ -11,6 +11,7 @@ services:
     restart: always
     depends_on:
       - mongo
+      - rediscache
   mongo:
     image: mongo
     container_name: mongo
@@ -27,3 +28,8 @@ services:
       - '8091:8081'
     depends_on:
       - mongo
+  rediscache:
+    image: redis
+    container_name: redis
+    ports:
+      - '6379:6379'
