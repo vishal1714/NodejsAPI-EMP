@@ -4,14 +4,13 @@ services:
     container_name: empapi
     build: .
     ports:
-      - "5000:5000"
+      - '5000:5000'
     environment:
-     - NODE_ENV=Production
-     - MONGOURI=mongodb://mongo:27017   
+      - NODE_ENV=Production
+      - MONGOURI=mongodb://mongo:27017
     restart: always
     depends_on:
       - mongo
-      - rediscache
   mongo:
     image: mongo
     container_name: mongo
@@ -19,7 +18,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - /home/vishal/Mongodbdata:/data/db
+      - /root/Mongodbdata:/data/db
   mongoexpress:
     image: mongo-express
     container_name: mongoadmin
@@ -27,9 +26,4 @@ services:
     ports:
       - '8091:8081'
     depends_on:
-      - mongo  
-  rediscache:
-    image: redis
-    container_name: rediscache
-    ports:
-      - '6379:6379'    
+      - mongo
