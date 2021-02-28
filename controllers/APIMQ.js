@@ -1,10 +1,14 @@
 const cron = require('node-cron');
 const amqp = require('amqplib/callback_api');
 const dotenv = require('dotenv');
+const moment = require('moment-timezone');
 const EmployeeAPILog = require('../models/APILogSchema');
 dotenv.config({ path: '../config/Config.env' });
 
 cron.schedule('*/5 * * * *', function () {
+  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+  console.log(`--------------------- Cron Job Running --------------------`);
+  console.log(`Date & Time - ${date} `);
   ReceiverMQ('APILog', EmployeeAPILog);
 });
 
@@ -41,11 +45,13 @@ const ReceiverMQ = (Queue, MongoSchemaObject) => {
       channel.assertQueue(Queue, {
         durable: false,
       });
+      var i = 0;
       channel.consume(
         Queue,
         (msg) => {
           const Message = JSON.parse(msg.content.toString());
           const test = MongoSchemaObject.create(Message);
+          i++;
         },
         {
           noAck: true,
@@ -53,6 +59,7 @@ const ReceiverMQ = (Queue, MongoSchemaObject) => {
       );
       setTimeout(function () {
         conn.close();
+        console.log(`MQ Receiver Processed Requests => ${i}`);
       }, 20000);
     });
   });
