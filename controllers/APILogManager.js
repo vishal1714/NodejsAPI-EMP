@@ -1,12 +1,17 @@
 var fs = require('fs');
 const moment = require('moment');
 const dotenv = require('dotenv');
+const { createGzip } = require('zlib');
+const { pipeline } = require('stream');
+const { createReadStream, createWriteStream } = require('fs');
+const { promisify } = require('util');
+const pipe = promisify(pipeline);
 
 dotenv.config({ path: './config/config.env' });
 const EmployeeAPILog = require('../models/APILogSchema');
 const { SendMQ } = require('./APIMQ');
 
-// ! Log Add Delete Update Employee Requests and Response
+// ! Log Add Delete Update Employee Requests and Response in MongoDB and LocalSystem
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
   if (process.env.LOG_MODE != 'OFF') {
     try {
@@ -34,7 +39,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
           LoggedAt: LogDate,
         };
         // ? Log API request in MongoDB Database -> apilogs
-        //EmployeeAPILog.create(ReqResLogCloud);
+        EmployeeAPILog.create(ReqResLogCloud);
         SendMQ('APILog', ReqResLogCloud);
       }
 
@@ -66,4 +71,16 @@ function CreatePath(filePath) {
   }
 }
 
-module.exports = { Log, CreatePath };
+// ! Gzip File Function
+const dogzip = async (input, output) => {
+  try {
+    const gzip = createGzip();
+    const source = createReadStream(input);
+    const destination = createWriteStream(output);
+    await pipe(source, gzip, destination);
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
+};
+
+module.exports = { Log, CreatePath, dogzip };

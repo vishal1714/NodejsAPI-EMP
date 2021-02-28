@@ -2,11 +2,11 @@ const nodemailer = require('nodemailer');
 const RandomString = require('randomstring');
 const UserEmail = require('../../models/UserEmailSchema');
 const moment = require('moment-timezone');
-const dotenv = require('dotenv');
-
-dotenv.config({ path: './config/config.env' });
-
 const path = require('path');
+const dotenv = require('dotenv');
+const fs = require('fs');
+const { dogzip } = require('../APILogManager');
+dotenv.config({ path: './config/config.env' });
 
 // async..await is not allowed in global scope, must use a wrapper
 const ActivationEmail = async (Email, id) => {
@@ -616,8 +616,26 @@ const SendLogs = async (Date, Email) => {
         pass: process.env.SMTP_PASSWORD, // generated ethereal password
       },
     });
+
     let LogFileName = `APILog-${Date}.log`;
-    let configFilename = path.join(__dirname, '../../Logs/', LogFileName);
+    let ZipLogFileName = `APILog-${Date}.log.gz`;
+    let inputFile = path.join(
+      __dirname,
+      `../../${process.env.LOG_DIR}/`,
+      LogFileName
+    );
+    let outputFile = path.join(
+      __dirname,
+      `../../${process.env.LOG_DIR}/`,
+      ZipLogFileName
+    );
+
+    if (fs.existsSync(outputFile)) {
+      //don nothing
+    } else {
+      dogzip(inputFile, outputFile);
+    }
+
     let info = await transporter.sendMail({
       from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
@@ -625,8 +643,8 @@ const SendLogs = async (Date, Email) => {
       html: `<br>As Requested Please Find Below API Log Report - <br> <br> For More information Kindly Contact Admin <br>- admin@byraje.com`, // plain text body
       attachments: [
         {
-          filename: `${LogFileName}`,
-          path: configFilename,
+          filename: `${ZipLogFileName}`,
+          path: outputFile,
           //path: `D:\\NodeAPI\\EMPAPI\\Logs\\${LogFileName}`,
         },
       ],

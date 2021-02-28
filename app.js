@@ -5,6 +5,7 @@ const colors = require('colors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { CreatePath } = require('./controllers/APILogManager');
+const Cron = require('./controllers/Cron');
 
 dotenv.config({ path: './config/Config.env' });
 const ConnectDB = require('./config/DB');
