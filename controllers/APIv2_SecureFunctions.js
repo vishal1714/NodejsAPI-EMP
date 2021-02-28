@@ -175,8 +175,17 @@ exports.SecAddEmployee = async (req, res, next) => {
           Message: 'Successfully! Record has been inserted.',
         };
 
-        APIClientInfo.APICalls++;
-        await APIClientInfo.save();
+        await APIUser.updateOne(
+          {
+            APIClientID: req.header('API-Client-ID'),
+            APISecretKey: req.header('API-Secret-Key'),
+          },
+          {
+            $inc: {
+              APICalls: 1,
+            },
+          }
+        );
 
         const inc = encrypt(Response, APIClientInfo.AESKey);
         //Send Response
@@ -263,8 +272,17 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
           Message: 'Successfully! Record has been deleted.',
         };
 
-        APIClientInfo.APICalls++;
-        await APIClientInfo.save();
+        await APIUser.updateOne(
+          {
+            APIClientID: req.header('API-Client-ID'),
+            APISecretKey: req.header('API-Secret-Key'),
+          },
+          {
+            $inc: {
+              APICalls: 1,
+            },
+          }
+        );
 
         const inc = encrypt(Response, APIClientInfo.AESKey);
         //Send Response
@@ -396,8 +414,17 @@ exports.SecUpdateEmployee = async (req, res, next) => {
             Message: 'Successfully! Record has been updated.',
           };
 
-          APIClientInfo.APICalls++;
-          await APIClientInfo.save();
+          await APIUser.updateOne(
+            {
+              APIClientID: req.header('API-Client-ID'),
+              APISecretKey: req.header('API-Secret-Key'),
+            },
+            {
+              $inc: {
+                APICalls: 1,
+              },
+            }
+          );
 
           const inc = encrypt(Response, APIClientInfo.AESKey);
           //Send Success Response

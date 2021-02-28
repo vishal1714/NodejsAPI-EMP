@@ -121,8 +121,17 @@ exports.AddEmployee = async (req, res, next) => {
         Message: 'Successfully! Record has been inserted.',
       };
 
-      APIClientInfo.APICalls++;
-      await APIClientInfo.save();
+      await APIUser.updateOne(
+        {
+          APIClientID: req.header('API-Client-ID'),
+          APISecretKey: req.header('API-Secret-Key'),
+        },
+        {
+          $inc: {
+            APICalls: 1,
+          },
+        }
+      );
 
       //Send Response
       res.status(201).json(Response);
@@ -207,8 +216,17 @@ exports.DelEmployeeByID = async (req, res, next) => {
           Message: 'Successfully! Record has been deleted.',
         };
 
-        APIClientInfo.APICalls++;
-        await APIClientInfo.save();
+        await APIUser.updateOne(
+          {
+            APIClientID: req.header('API-Client-ID'),
+            APISecretKey: req.header('API-Secret-Key'),
+          },
+          {
+            $inc: {
+              APICalls: 1,
+            },
+          }
+        );
 
         //Send Response
         res.status(200).json(Response);
@@ -318,8 +336,17 @@ exports.UpdateEmployee = async (req, res, next) => {
             Message: 'Successfully! Record has been updated.',
           };
 
-          APIClientInfo.APICalls++;
-          await APIClientInfo.save();
+          await APIUser.updateOne(
+            {
+              APIClientID: req.header('API-Client-ID'),
+              APISecretKey: req.header('API-Secret-Key'),
+            },
+            {
+              $inc: {
+                APICalls: 1,
+              },
+            }
+          );
           //Send Success Response
           res.status(200).json(Response);
           //Log

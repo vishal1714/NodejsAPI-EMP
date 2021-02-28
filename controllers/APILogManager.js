@@ -5,6 +5,7 @@ const { createGzip } = require('zlib');
 const { pipeline } = require('stream');
 const { createReadStream, createWriteStream } = require('fs');
 const { promisify } = require('util');
+const { createCipheriv, createDecipheriv } = require('crypto');
 const pipe = promisify(pipeline);
 
 dotenv.config({ path: './config/config.env' });
@@ -75,6 +76,11 @@ function CreatePath(filePath) {
 const dogzip = async (input, output) => {
   try {
     const gzip = createGzip();
+    /*const Enc = createCipheriv(
+      'aes-256-cbc',
+      process.env.AdminAESKey,
+      process.env.AdminIV
+    );*/
     const source = createReadStream(input);
     const destination = createWriteStream(output);
     await pipe(source, gzip, destination);

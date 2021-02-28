@@ -11,6 +11,7 @@ const { ReceiverMQ } = require('./APIMQ');
 const { dogzip } = require('./APILogManager');
 
 cron.schedule('59 */23 * * *', function () {
+  //59 */23 * * *
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   console.log(`--------------------- Cron Job Running --------------------`);
   console.log(`Date & Time - ${date} `);
