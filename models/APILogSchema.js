@@ -116,4 +116,4 @@ APISchemaLog.set('toJSON', {
     delete ret.__v;
   },
 });
-module.exports = mongoose.model('APILog', APISchemaLog);
+module.exports = mongoose.model('APILogs', APISchemaLog);

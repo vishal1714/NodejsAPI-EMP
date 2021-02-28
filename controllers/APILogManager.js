@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: './config/config.env' });
 const EmployeeAPILog = require('../models/APILogSchema');
+const { SendMQ } = require('./APIMQ');
 
 // ! Log Add Delete Update Employee Requests and Response
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
@@ -30,9 +31,11 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
           Method: reqmethod,
           APIClientID: reqKey,
           ClientIP: IP,
+          LoggedAt: LogDate,
         };
         // ? Log API request in MongoDB Database -> apilogs
-        EmployeeAPILog.create(ReqResLogCloud);
+        //EmployeeAPILog.create(ReqResLogCloud);
+        SendMQ('APILog', ReqResLogCloud);
       }
 
       if (process.env.LOG_MODE == 'Internal' || process.env.LOG_MODE == 'ALL') {
