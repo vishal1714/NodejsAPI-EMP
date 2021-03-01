@@ -50,7 +50,7 @@ const ReceiverMQ = (Queue, MongoSchemaObject) => {
       setTimeout(function () {
         conn.close();
         console.log(`MQ Receiver Processed ${i} Requests`);
-      }, 20000);
+      }, 300000);
     });
   });
 };
