@@ -25,22 +25,36 @@ var AdminPasswordGenerator = () => {
 //@route    /api/admin/log
 //@access   Private (Admin Only with API-KEY)
 exports.GetAPIlog = async (req, res, next) => {
-  try {
-    const getapilog = await APILog.find().select('-__v');
-    //Send Success Response
-    res.status(200).json({
-      Status: 'Success',
-      Count: getapilog.length,
-      Log: getapilog,
-    });
-  } catch (err) {
-    console.log(err);
-    //Send Error
-    res.status(500).json({
+  var reqKey = req.header('API-Admin-Key');
+  var IP = req.header('X-Real-IP');
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
+
+  if (AdminAPIKey.includes(reqKey)) {
+    try {
+      const getapilog = await APILog.find().select('-__v');
+      //Send Success Response
+      res.status(200).json({
+        Status: 'Success',
+        Count: getapilog.length,
+        Log: getapilog,
+      });
+    } catch (err) {
+      console.log(err);
+      //Send Error
+      res.status(500).json({
+        Error: {
+          Status: 500,
+          Message: 'Internal Server Error',
+          Info: err,
+        },
+      });
+    }
+  } else {
+    //if API-Key is not valid
+    res.status(401).json({
       Error: {
-        Status: 500,
-        Message: 'Internal Server Error',
-        Info: err,
+        Status: 401,
+        Message: 'Unauthorized',
       },
     });
   }
