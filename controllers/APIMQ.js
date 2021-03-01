@@ -15,8 +15,6 @@ const SendMQ = (Queue, msg) => {
       channel.assertQueue(Queue, {
         durable: true,
       });
-      var properties = channel.CreateBasicProperties();
-      properties.SetPersistent(true);
       channel.sendToQueue(Queue, Buffer.from(Message));
       setTimeout(function () {
         conn.close();

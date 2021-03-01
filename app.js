@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 if (process.env.NODE_ENV == 'Dev') {
   app.use(morgan('dev'));
 }
-app.use(helmet());
+//app.use(helmet());
 app.set('view engine', 'ejs');
 
 if (process.env.RATELIMIT_MODE == 'ON') {
