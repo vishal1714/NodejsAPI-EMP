@@ -13,7 +13,7 @@ const SendMQ = (Queue, msg) => {
       }
       var Message = JSON.stringify(msg);
       channel.assertQueue(Queue, {
-        durable: false,
+        durable: true,
       });
       channel.sendToQueue(Queue, Buffer.from(Message));
       setTimeout(function () {
@@ -33,7 +33,7 @@ const ReceiverMQ = (Queue, MongoSchemaObject) => {
         throw error1;
       }
       channel.assertQueue(Queue, {
-        durable: false,
+        durable: true,
       });
       var i = 0;
       channel.consume(
