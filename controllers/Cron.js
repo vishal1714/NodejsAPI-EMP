@@ -19,6 +19,7 @@ cron.schedule('59 */23 * * *', function () {
   //ReceiverMQ('APILog', EmployeeAPILog);
   //2.
   LogGZIP();
+  console.log(`------ Finish ------`);
 });
 
 const LogGZIP = async () => {
@@ -38,7 +39,7 @@ const LogGZIP = async () => {
 
   if (fs.existsSync(inputFile)) {
     await dogzip(inputFile, outputFile);
-    fs.unlinkSync(inputFile);
+    await fs.unlinkSync(inputFile);
   } else {
     //do nothing
   }

@@ -15,7 +15,7 @@ const SendMQ = (Queue, msg) => {
       channel.assertQueue(Queue, {
         durable: true,
       });
-      channel.sendToQueue(Queue, Buffer.from(Message));
+      channel.sendToQueue(Queue, Buffer.from(Message), { persistent: false });
       setTimeout(function () {
         conn.close();
       }, 500);
