@@ -16,7 +16,7 @@ cron.schedule('59 */23 * * *', function () {
   console.log(`--------------------- Cron Job Running --------------------`);
   console.log(`Date & Time - ${date} `);
   //1.
-  //ReceiverMQ('APILog', EmployeeAPILog);
+  ReceiverMQ('APILog', EmployeeAPILog);
   //2.
   LogGZIP();
   console.log(`------ Finish ------`);
@@ -38,10 +38,8 @@ const LogGZIP = async () => {
   );
 
   if (fs.existsSync(inputFile)) {
-    await dogzip(inputFile, outputFile);
-    await fs.unlinkSync(inputFile);
-  } else {
-    //do nothing
+    await dogzip(inputFile, outputFile).then(fs.unlinkSync(inputFile));
+    console.log('GZIP is done');
   }
 };
 
