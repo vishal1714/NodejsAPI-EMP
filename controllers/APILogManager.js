@@ -40,7 +40,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
           LoggedAt: LogDate,
         };
         // ? Log API request in MongoDB Database -> apilogs
-        EmployeeAPILog.create(ReqResLogCloud);
+        //EmployeeAPILog.create(ReqResLogCloud);
         SendMQ('APILog', ReqResLogCloud);
       }
 
