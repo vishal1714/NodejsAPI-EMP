@@ -25,7 +25,7 @@ const APISchemaLog = new mongoose.Schema({
     Refno: {
       type: 'String',
     },
-    Data: {
+    EncData: {
       type: 'String',
     },
     _id: {
@@ -59,7 +59,7 @@ const APISchemaLog = new mongoose.Schema({
     Refno: {
       type: 'String',
     },
-    Data: {
+    EncData: {
       type: 'String',
     },
     Status: {

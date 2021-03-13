@@ -20,7 +20,7 @@ const encrypt = (text1, apikey) => {
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   const Response = {
     Refno: iv.toString('hex'),
-    Data: encrypted.toString('hex'),
+    EncData: encrypted.toString('hex'),
   };
   return Response;
 };
@@ -28,10 +28,10 @@ const encrypt = (text1, apikey) => {
 //! Decrypt Function
 const decrypt = (req, apikey) => {
   const key = apikey;
-  const { Refno, Data } = req;
+  const { Refno, EncData } = req;
   //console.log(key);
   let iv = Buffer.from(Refno, 'hex');
-  let encryptedText = Buffer.from(Data, 'hex');
+  let encryptedText = Buffer.from(EncData, 'hex');
   let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -485,7 +485,7 @@ exports.encryptAPI = (req, res) => {
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const Response = {
       Refno: iv.toString('hex'),
-      Data: encrypted.toString('hex'),
+      EncData: encrypted.toString('hex'),
     };
     res.status(200).json(Response);
   } catch (error) {
@@ -505,9 +505,9 @@ exports.encryptAPI = (req, res) => {
 exports.decryptAPI = (req, res) => {
   try {
     const key = req.header('AES-Key');
-    const { Refno, Data } = req.body;
+    const { Refno, EncData } = req.body;
     let iv = Buffer.from(Refno, 'hex');
-    let encryptedText = Buffer.from(Data, 'hex');
+    let encryptedText = Buffer.from(EncData, 'hex');
     let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
