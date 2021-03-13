@@ -1,4 +1,4 @@
-var fs = require('fs');
+const fs = require('fs');
 const moment = require('moment');
 const dotenv = require('dotenv');
 const { createGzip } = require('zlib');
@@ -6,11 +6,12 @@ const { pipeline } = require('stream');
 const { createReadStream, createWriteStream } = require('fs');
 const { promisify } = require('util');
 const { createCipheriv, createDecipheriv } = require('crypto');
-const pipe = promisify(pipeline);
 
-dotenv.config({ path: './config/config.env' });
 const EmployeeAPILog = require('../models/APILogSchema');
 const { SendMQ } = require('./APIMQ');
+
+const pipe = promisify(pipeline);
+dotenv.config({ path: './config/config.env' });
 
 // ! Log Add Delete Update Employee Requests and Response in MongoDB and LocalSystem
 const Log = (req, Response, IP, reqKey, reqmethod, key) => {
@@ -51,10 +52,9 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
         var LogData = '|' + LogDate + '|' + LogedinDB;
 
         let filename = process.env.LOG_FILE + '-' + FileDate + '.log';
-
-        fs.appendFile(filename, LogData + '\n', function (err) {
-          if (err) throw err;
-        });
+        var logStream = fs.createWriteStream(filename, { flags: 'a' });
+        // use {flags: 'a'} to append and {flags: 'w'} to erase and write a new file
+        logStream.write(LogData + '\n');
       }
     } catch (error) {
       console.log(error);
