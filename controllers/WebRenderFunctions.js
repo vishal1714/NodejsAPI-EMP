@@ -158,7 +158,7 @@ exports.encryptAPI = async (req, res, next) => {
     const Hash = crypto.createHash('sha256').update(plaintext).digest('hex');
     const response = {
       Refno: iv.toString('hex'),
-      Data: encrypted.toString('hex'),
+      EncData: encrypted.toString('hex'),
     };
     const aresponse = JSON.stringify(response);
     //console.log(aresponse);
@@ -176,9 +176,9 @@ exports.decryptAPI = async (req, res, next) => {
   try {
     const { plaintext, key } = req.body;
     const text = JSON.parse(plaintext);
-    const { Refno, Data } = text;
+    const { Refno, EncData } = text;
     let iv = Buffer.from(Refno, 'hex');
-    let encryptedText = Buffer.from(Data, 'hex');
+    let encryptedText = Buffer.from(EncData, 'hex');
     let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
