@@ -4,7 +4,7 @@ const moment = require('moment-timezone');
 
 const APISchemaLog = new mongoose.Schema({
   _id: {
-    type: String,
+    type: 'String',
     default: uuid.v4,
   },
   EncKey: {
