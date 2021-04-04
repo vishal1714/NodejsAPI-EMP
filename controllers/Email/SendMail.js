@@ -5,7 +5,7 @@ const moment = require('moment-timezone');
 const path = require('path');
 const dotenv = require('dotenv');
 const fs = require('fs');
-const { dogzip } = require('../APILogManager');
+const { dogzip, CreatePath } = require('../APILogManager');
 dotenv.config({ path: './config/config.env' });
 
 // async..await is not allowed in global scope, must use a wrapper
@@ -619,6 +619,7 @@ const SendLogs = async (Date, Email) => {
 
     let LogFileName = `APILog-${Date}.log`;
     let ZipLogFileName = `APILog-${Date}.log.gz`;
+    CreatePath(process.env.ZIP_LOG_DIR);
     let inputFile = path.join(
       __dirname,
       `../../${process.env.LOG_DIR}/`,
@@ -626,31 +627,42 @@ const SendLogs = async (Date, Email) => {
     );
     let outputFile = path.join(
       __dirname,
-      `../../${process.env.LOG_DIR}/`,
+      `../../${process.env.ZIP_LOG_DIR}/`,
       ZipLogFileName
     );
-
+    //console.log('API Log Zip file request');
     if (fs.existsSync(outputFile)) {
       //don nothing
     } else {
-      dogzip(inputFile, outputFile);
+      await dogzip(inputFile, outputFile);
+      var stats = fs.statSync(outputFile);
+      var fileSizeInBytes = stats['size'];
+      //Convert the file size to megabytes (optional)
+      var fileSizeInMegabytes = fileSizeInBytes / 1000.0;
+      //console.log(fileSizeInMegabytes);
     }
 
-    let info = await transporter.sendMail({
-      from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
-      to: Email, // list of receivers
-      subject: 'Raje Tech REST API Log File', // Subject line
-      html: `<br>As Requested Please Find Below API Log Report - <br> <br> For More information Kindly Contact Admin <br>- admin@byraje.com`, // plain text body
-      attachments: [
-        {
-          filename: `${ZipLogFileName}`,
-          path: outputFile,
-          //path: `D:\\NodeAPI\\EMPAPI\\Logs\\${LogFileName}`,
-        },
-      ],
-    });
-
-    return info.messageId;
+    if (fileSizeInMegabytes < 25000) {
+      let info = await transporter.sendMail({
+        from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
+        to: Email, // list of receivers
+        subject: 'Raje Tech REST API Log File', // Subject line
+        html: `<br>As Requested Please Find Below API Log Report - <br> <br> For More information Kindly Contact Admin <br>- admin@byraje.com`, // plain text body
+        attachments: [
+          {
+            filename: `${ZipLogFileName}`,
+            path: outputFile,
+            //path: `D:\\NodeAPI\\EMPAPI\\Logs\\${LogFileName}`,
+          },
+        ],
+      });
+      console.log(
+        `Email Sent to ->${Email} Log File ->${ZipLogFileName} Date -> ${Date} EmailRefrenceNumber -> ${info.messageId}`
+      );
+      return info.messageId;
+    } else {
+      return 'SizeError';
+    }
   } catch (error) {
     console.log(error);
   }

@@ -3,6 +3,7 @@ var fs = require('fs');
 const dotenv = require('dotenv');
 const moment = require('moment-timezone');
 const path = require('path');
+const { CreatePath } = require('./APILogManager');
 dotenv.config({ path: '../config/Config.env' });
 
 // Imports for Cron
@@ -23,6 +24,7 @@ cron.schedule('59 */23 * * *', function () {
 });
 
 const LogGZIP = async () => {
+  CreatePath(process.env.ZIP_LOG_DIR);
   var FileDate = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
   let LogFileName = `APILog-${FileDate}.log`;
   let ZipLogFileName = `APILog-${FileDate}.log.gz`;
@@ -33,7 +35,7 @@ const LogGZIP = async () => {
   );
   let outputFile = path.join(
     __dirname,
-    `../${process.env.LOG_DIR}/`,
+    `../${process.env.ZIP_LOG_DIR}/`,
     ZipLogFileName
   );
 

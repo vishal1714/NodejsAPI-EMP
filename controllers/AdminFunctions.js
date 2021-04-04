@@ -328,16 +328,16 @@ exports.EmailLogs = async (req, res) => {
     try {
       if (Date != null && Email != null) {
         const IDD = await SendLogs(Date, Email);
-        if (IDD) {
-          res.status(200).json({
-            Status: 'Successful',
-            Message: `Log Report has been sent to Email ID - ${Email}`,
-            EmailRefNo: IDD,
+        if (IDD == 'SizeError') {
+          res.status(500).json({
+            Status: 'Failed',
+            Message: `Log File Size is more than 25MB`,
           });
         } else {
-          res.status(500).json({
-            Status: 500,
-            Message: `Something went wrong`,
+          res.status(200).json({
+            Status: 'Success',
+            Message: `It will take some time to send API Logs`,
+            EmailRefNo: IDD,
           });
         }
       } else {
