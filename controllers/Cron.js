@@ -10,7 +10,7 @@ const EmployeeAPILog = require('../models/APILogSchema');
 const { ReceiverMQ } = require('./APIMQ');
 const { dogzip } = require('./APILogManager');
 
-cron.schedule('* * * * *', function () {
+cron.schedule('59 */23 * * *', function () {
   //59 */23 * * *
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   console.log(`--------------------- Cron Job Running --------------------`);
