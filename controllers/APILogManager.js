@@ -52,9 +52,13 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
         var LogData = '|' + LogDate + '|' + LogedinDB;
 
         let filename = process.env.LOG_FILE + '-' + FileDate + '.log';
-        var logStream = fs.createWriteStream(filename, { flags: 'a' });
+        // var logStream = fs.createWriteStream(filename, { flags: 'a' });
         // use {flags: 'a'} to append and {flags: 'w'} to erase and write a new file
-        logStream.write(LogData + '\n');
+        // logStream.write(LogData + '\n');
+
+        fs.appendFile(filename, LogData + '\n', function (err) {
+          if (err) throw err;
+        });
       }
     } catch (error) {
       console.log(error);

@@ -10,13 +10,13 @@ const EmployeeAPILog = require('../models/APILogSchema');
 const { ReceiverMQ } = require('./APIMQ');
 const { dogzip } = require('./APILogManager');
 
-cron.schedule('59 */23 * * *', function () {
+cron.schedule('* * * * *', function () {
   //59 */23 * * *
   var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
   console.log(`--------------------- Cron Job Running --------------------`);
   console.log(`Date & Time - ${date} `);
   //1.
-  ReceiverMQ('APILog', EmployeeAPILog);
+  //ReceiverMQ('APILog', EmployeeAPILog);
   //2.
   LogGZIP();
   console.log(`------ Finish ------`);
@@ -38,7 +38,7 @@ const LogGZIP = async () => {
   );
 
   if (fs.existsSync(inputFile)) {
-    await dogzip(inputFile, outputFile).then(fs.unlinkSync(inputFile));
+    await dogzip(inputFile, outputFile).then(await fs.unlinkSync(inputFile));
     console.log('GZIP is done');
   }
 };
