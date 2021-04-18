@@ -17,7 +17,7 @@ cron.schedule('59 */23 * * *git ', function () {
   console.log(`--------------------- Cron Job Running --------------------`);
   console.log(`Date & Time - ${date} `);
   //1.
-  ReceiverMQ('APILogDB', EmployeeAPILog);
+  //ReceiverMQ('APILogDB', EmployeeAPILog);
   //2.
   LogGZIP();
   console.log(`------ Finish ------`);
