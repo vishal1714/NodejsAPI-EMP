@@ -22,9 +22,6 @@ const APISchemaLog = new mongoose.Schema({
     },
   },
   ReqBody: {
-    Refno: {
-      type: 'String',
-    },
     EncData: {
       type: 'String',
     },
@@ -55,9 +52,6 @@ const APISchemaLog = new mongoose.Schema({
       Info: {
         type: 'String',
       },
-    },
-    Refno: {
-      type: 'String',
     },
     EncData: {
       type: 'String',
