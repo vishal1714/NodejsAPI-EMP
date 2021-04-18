@@ -19,8 +19,7 @@ const encrypt = (text1, apikey) => {
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   const Response = {
-    Refno: iv.toString('hex'),
-    EncData: encrypted.toString('hex'),
+    EncData: iv.toString('hex')+encrypted.toString('hex')
   };
   return Response;
 };
@@ -28,10 +27,12 @@ const encrypt = (text1, apikey) => {
 //! Decrypt Function
 const decrypt = (req, apikey) => {
   const key = apikey;
-  const { Refno, EncData } = req;
+  const { EncData} = req;
   //console.log(key);
+  const Refno = EncData.slice(0,32);
+  const Data = EncData.slice(32);
   let iv = Buffer.from(Refno, 'hex');
-  let encryptedText = Buffer.from(EncData, 'hex');
+  let encryptedText = Buffer.from(Data, 'hex');
   let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -135,6 +136,7 @@ exports.SecAddEmployee = async (req, res, next) => {
   if (
     APIClientInfo &&
     APIClientInfo.APICallLimit != APIClientInfo.APICalls &&
+    APIClientInfo.APICallLimit >= APIClientInfo.APICalls &&
     APIClientInfo.ActivationStatus === 1
   ) {
     try {
@@ -242,7 +244,7 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
     APISecretKey: req.header('API-Secret-Key'),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo && APIClientInfo.ActivationStatus === 1) {
+  if (APIClientInfo && APIClientInfo.ActivationStatus === 1 && APIClientInfo.APICallLimit >= APIClientInfo.APICalls) {
     try {
       const delemployee = await Employee.findById(req.params.id).select('-__v');
       //if Employee not found in DB
@@ -340,12 +342,12 @@ exports.SecUpdateEmployee = async (req, res, next) => {
     APISecretKey: req.header('API-Secret-Key'),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo && APIClientInfo.ActivationStatus === 1) {
+  if (APIClientInfo &&   APIClientInfo.APICallLimit >= APIClientInfo.APICalls && APIClientInfo.ActivationStatus === 1) {
     try {
       const dec = decrypt(req.body, APIClientInfo.AESKey);
       //Capture Request Body
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = dec;
-      console.log(dec);
+      //console.log(dec);
       //if _id is not present in RequestBody
       if (
         EmpRefNo == null ||
@@ -477,17 +479,30 @@ exports.SecUpdateEmployee = async (req, res, next) => {
 exports.encryptAPI = (req, res) => {
   try {
     const key = req.header('AES-Key');
-    const { Name, PhoneNo, Department, Age, Salary } = req.body;
-    const iv = crypto.randomBytes(16);
-    let plaintext = JSON.stringify(req.body);
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(plaintext);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    const Response = {
-      Refno: iv.toString('hex'),
-      EncData: encrypted.toString('hex'),
-    };
-    res.status(200).json(Response);
+    console.log(req.body)
+    //const { Name, PhoneNo, Department, Age, Salary } = req.body;
+    if(req.body){
+
+      const iv = crypto.randomBytes(16);
+      let plaintext = JSON.stringify(req.body);
+      let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+      let encrypted = cipher.update(plaintext);
+      encrypted = Buffer.concat([encrypted, cipher.final()]);
+      console.log(iv.toString('hex'))
+      const Response = {
+        EncData : iv.toString('hex')+encrypted.toString('hex')
+      };
+      res.status(200).json(Response);
+      
+    }else{
+      res.status(400).json({
+        Error: {
+          Status: 400,
+          Message: 'Request body is not found',
+        }
+      })
+    }
+   
   } catch (error) {
     res.status(500).json({
       Error: {
@@ -505,14 +520,27 @@ exports.encryptAPI = (req, res) => {
 exports.decryptAPI = (req, res) => {
   try {
     const key = req.header('AES-Key');
-    const { Refno, EncData } = req.body;
+    const { EncData } = req.body;
+    if(req.body.EncData){
+    const Refno = EncData.slice(0,32);
+    const Data = EncData.slice(32);
+    console.log(Refno)
+    console.log(Data)
     let iv = Buffer.from(Refno, 'hex');
-    let encryptedText = Buffer.from(EncData, 'hex');
+    let encryptedText = Buffer.from(Data, 'hex');
     let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     const DecData = JSON.parse(decrypted.toString());
     res.status(200).json(DecData);
+    }else{
+      res.status(400).json({
+        Error: {
+          Status: 400,
+          Message: 'Request body is not found',
+        }
+      })
+    }
   } catch (error) {
     res.status(500).json({
       Error: {
