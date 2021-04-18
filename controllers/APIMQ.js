@@ -35,6 +35,8 @@ const SendMQ = (exchange, msg) => {
       channel.assertQueue(Queue2, {
         durable: true,
       });
+      channel.bindQueue(Queue1, exchange, '');
+      channel.bindQueue(Queue2, exchange, '');
       channel.publish(exchange, '', Buffer.from(Message));
       i++;
       /*
