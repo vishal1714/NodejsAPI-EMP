@@ -1,19 +1,19 @@
-const cron = require('node-cron');
-var fs = require('fs');
-const dotenv = require('dotenv');
-const moment = require('moment-timezone');
-const path = require('path');
-const { CreatePath } = require('./APILogManager');
-dotenv.config({ path: '../config/Config.env' });
+const cron = require("node-cron");
+var fs = require("fs");
+const dotenv = require("dotenv");
+const moment = require("moment-timezone");
+const path = require("path");
+const { CreatePath } = require("./APILogManager");
+dotenv.config({ path: "../config/Config.env" });
 
 // Imports for Cron
-const EmployeeAPILog = require('../models/APILogSchema');
-const { ReceiverMQ } = require('./APIMQ');
-const { dogzip } = require('./APILogManager');
+const EmployeeAPILog = require("../models/APILogSchema");
+const { ReceiverMQ } = require("./APIMQ");
+const { dogzip } = require("./APILogManager");
 
-cron.schedule('59 */23 * * *', function () {
+cron.schedule("59 */23 * * *", function () {
   //59 */23 * * *
-  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+  var date = moment().tz("Asia/Kolkata").format("MMMM Do YYYY, hh:mm:ss A");
   console.log(`--------------------- Cron Job Running --------------------`);
   console.log(`Date & Time - ${date} `);
   //1.
@@ -25,9 +25,10 @@ cron.schedule('59 */23 * * *', function () {
 
 const LogGZIP = async () => {
   CreatePath(process.env.ZIP_LOG_DIR);
-  var FileDate = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
+  var FileDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
+  var ZipFileDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD-hhmm");
   let LogFileName = `APILog-${FileDate}.log`;
-  let ZipLogFileName = `APILog-${FileDate}.log.gz`;
+  let ZipLogFileName = `APILog-${ZipFileDate}.log.gz`;
   let inputFile = path.join(
     __dirname,
     `../${process.env.LOG_DIR}/`,
@@ -41,7 +42,7 @@ const LogGZIP = async () => {
 
   if (fs.existsSync(inputFile)) {
     await dogzip(inputFile, outputFile).then(await fs.unlinkSync(inputFile));
-    console.log('GZIP is done');
+    console.log("GZIP is done");
   }
 };
 
