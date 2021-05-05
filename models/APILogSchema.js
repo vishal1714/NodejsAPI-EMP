@@ -1,113 +1,116 @@
-const mongoose = require('mongoose');
-const uuid = require('uuid');
-const moment = require('moment-timezone');
+const mongoose = require("mongoose");
+const uuid = require("uuid");
+const moment = require("moment-timezone");
 
 const APISchemaLog = new mongoose.Schema({
   _id: {
-    type: 'String',
+    type: "String",
     default: uuid.v4,
   },
   EncKey: {
-    type: 'String',
+    type: "String",
   },
   Method: {
-    type: 'String',
+    type: "String",
   },
   APIClientID: {
-    type: 'String',
+    type: "String",
   },
   ReqPath: {
     _id: {
-      type: 'String',
+      type: "String",
     },
   },
   ReqBody: {
     EncData: {
-      type: 'String',
+      type: "String",
     },
     _id: {
-      type: 'String',
+      type: "String",
     },
     Name: {
-      type: 'String',
+      type: "String",
     },
     Department: {
-      type: 'String',
+      type: "String",
     },
     Age: {
-      type: 'String',
+      type: "String",
     },
     Salary: {
-      type: 'String',
+      type: "String",
     },
     PhoneNo: {
-      type: 'String',
+      type: "String",
     },
   },
   ResBody: {
     Error: {
       message: {
-        type: 'String',
+        type: "String",
       },
       Info: {
-        type: 'String',
+        type: "String",
       },
     },
     EncData: {
-      type: 'String',
+      type: "String",
     },
     Status: {
-      type: 'String',
+      type: "String",
     },
     Data: {
       Name: {
-        type: 'String',
+        type: "String",
       },
       Department: {
-        type: 'String',
+        type: "String",
       },
       Age: {
-        type: 'String',
+        type: "String",
       },
       Salary: {
-        type: 'String',
+        type: "String",
       },
       PhoneNo: {
-        type: 'String',
+        type: "String",
       },
       _id: {
-        type: 'String',
+        type: "String",
       },
       CreatedAt: {
-        type: 'String',
+        type: "String",
       },
       ModifiedAt: {
-        type: 'String',
+        type: "String",
       },
       __v: {
-        type: 'Number',
+        type: "Number",
       },
     },
     Message: {
-      type: 'String',
+      type: "String",
     },
   },
-  loggedAt: {
-    type: 'String',
+  DBLoggedAt: {
+    type: "String",
     default: function () {
-      return moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+      return moment().tz("Asia/Kolkata").format("MMMM Do YYYY, hh:mm:ss A");
     },
   },
   ClientIP: {
-    type: 'String',
+    type: "String",
+  },
+  LoggedAt: {
+    type: "String",
   },
 });
 
-APISchemaLog.set('toJSON', {
+APISchemaLog.set("toJSON", {
   transform: function (doc, ret, options) {
     ret.RajeRefNo = ret._id;
     delete ret._id;
     delete ret.__v;
   },
 });
-module.exports = mongoose.model('APILogs', APISchemaLog);
+module.exports = mongoose.model("APILogs", APISchemaLog);

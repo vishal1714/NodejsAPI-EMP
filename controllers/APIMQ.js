@@ -1,8 +1,8 @@
-const amqp = require('amqplib/callback_api');
-const dotenv = require('dotenv');
-const moment = require('moment');
-var os = require("os");
-dotenv.config({ path: '../config/Config.env' });
+const amqp = require("amqplib/callback_api");
+const dotenv = require("dotenv");
+const moment = require("moment");
+const RandomString = require("randomstring");
+dotenv.config({ path: "../config/Config.env" });
 
 let i = 0;
 
@@ -15,18 +15,23 @@ const SendMQ = (exchange, msg) => {
       if (error1) {
         throw error1;
       }
-      var hostname = os.hostname();
-      var DayID = moment().tz('Asia/Kolkata').format('YYYYMMDD-');
+      function Random() {
+        return RandomString.generate({
+          length: 3,
+          charset: "numeric",
+        });
+      }
+      var DayID = moment().tz("Asia/Kolkata").format("YYYYMMDDhhmmss");
       var ModifiedMessage = {
         Data: msg,
-        MQ_ID: DayID+hostname+"-"+i
-      }
+        MQ_ID: DayID + Random() + i,
+      };
       var Message = JSON.stringify(ModifiedMessage);
 
-      const Queue1 = 'APILogFile';
-      const Queue2 = 'APILogDB';
+      const Queue1 = "APILogFile";
+      const Queue2 = "APILogDB";
 
-      channel.assertExchange(exchange, 'fanout', {
+      channel.assertExchange(exchange, "fanout", {
         durable: true,
       });
       channel.assertQueue(Queue1, {
@@ -35,9 +40,9 @@ const SendMQ = (exchange, msg) => {
       channel.assertQueue(Queue2, {
         durable: true,
       });
-      channel.bindQueue(Queue1, exchange, '');
-      channel.bindQueue(Queue2, exchange, '');
-      channel.publish(exchange, '', Buffer.from(Message));
+      channel.bindQueue(Queue1, exchange, "");
+      channel.bindQueue(Queue2, exchange, "");
+      channel.publish(exchange, "", Buffer.from(Message));
       i++;
       /*
       channel.assertQueue(Queue, {
@@ -74,7 +79,6 @@ const ReceiverMQ = (Queue, MongoSchemaObject) => {
           console.log(
             `Queue Name -> ${Queue} | Published| MQ ID -> ${Message.MQ_ID} | Meesage Logged Date -> ${Message.Data.LoggedAt}`
           );
-
         },
         {
           noAck: true,
