@@ -479,7 +479,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
 exports.encryptAPI = (req, res) => {
   try {
     const key = req.header('AES-Key');
-    console.log(req.body)
+    //console.log(req.body)
     //const { Name, PhoneNo, Department, Age, Salary } = req.body;
     if(req.body){
 
@@ -524,8 +524,8 @@ exports.decryptAPI = (req, res) => {
     if(req.body.EncData){
     const Refno = EncData.slice(0,32);
     const Data = EncData.slice(32);
-    console.log(Refno)
-    console.log(Data)
+    //console.log(Refno)
+    //console.log(Data)
     let iv = Buffer.from(Refno, 'hex');
     let encryptedText = Buffer.from(Data, 'hex');
     let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
