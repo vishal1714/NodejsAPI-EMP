@@ -159,7 +159,7 @@ exports.UpdateUser = async (req, res) => {
           },
           {
             $set: {
-              APISecretKey: req.body.APISecretKey,
+              APISecretKey: req.body.Key,
               APICalls: req.body.APICalls,
               ModifiedAt: date,
             },
