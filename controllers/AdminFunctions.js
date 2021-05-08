@@ -83,8 +83,8 @@ exports.AddUser = async (req, res) => {
         res.status(400).json(Response);
       } else {
         const addUserReq = {
-          Username: Hash(Username),
-          Email: Hash(Email),
+          Username: Hash(Username.toLowerCase()),
+          Email: Hash(Email.toLowerCase()),
           Password: Hash(Password),
           APICalls: APICalls,
         };
@@ -146,7 +146,7 @@ exports.UpdateUser = async (req, res) => {
     }
 
     const APIClientInfo = await APIUser.findOne({
-      Username: Hash(req.body.Username),
+      Username: Hash(req.body.Username.toLowerCase()),
       Password: Hash(req.body.Password),
     });
     if (APIClientInfo) {
@@ -208,7 +208,7 @@ exports.UserStatus = async (req, res, next) => {
     const { Username, Password } = req.body;
     if (Username != undefined && Password != undefined) {
       const APIClientResponse = await APIUser.findOne({
-        Username: Hash(Username),
+        Username: Hash(Username.toLowerCase()),
         Password: Hash(Password),
       })
         .select("-Username")
