@@ -70,7 +70,7 @@ exports.AddUser = async (req, res) => {
 
   if (AdminAPIKey.includes(reqKey)) {
     try {
-      const { Username, Email, Password } = req.body;
+      const { Username, Email, Password, APICalls } = req.body;
       if (Username == null || Email == null || Password == null) {
         //Send Error
         const Response = {
@@ -86,6 +86,7 @@ exports.AddUser = async (req, res) => {
           Username: Hash(Username),
           Email: Hash(Email),
           Password: Hash(Password),
+          APICalls: APICalls,
         };
         const addUser = await APIUser.create(addUserReq);
         const User = await APIUser.findById(addUser._id)
