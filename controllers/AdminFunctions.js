@@ -1,21 +1,21 @@
-const APILog = require('../models/APILogSchema');
-const APIUser = require('../models/APIUserSchema');
-const UserEmail = require('../models/UserEmailSchema');
-const moment = require('moment-timezone');
-const crypto = require('crypto');
-const dotenv = require('dotenv');
-const { ActivationEmail, WelcomeEmail, SendLogs } = require('./Email/SendMail');
+const APILog = require("../models/APILogSchema");
+const APIUser = require("../models/APIUserSchema");
+const UserEmail = require("../models/UserEmailSchema");
+const moment = require("moment-timezone");
+const crypto = require("crypto");
+const dotenv = require("dotenv");
+const { ActivationEmail, WelcomeEmail, SendLogs } = require("./Email/SendMail");
 
-dotenv.config({ path: './config/config.env' });
+dotenv.config({ path: "./config/config.env" });
 
 //@dec      Hash Function for converting sensitive user information to SHA hash
 var Hash = (string) => {
-  return crypto.createHash(process.env.HASH_ALGO).update(string).digest('hex');
+  return crypto.createHash(process.env.HASH_ALGO).update(string).digest("hex");
 };
 
 //@dec      API Admin Time base Password Generator
 var AdminPasswordGenerator = () => {
-  var TimeBasePassword = moment().tz('Asia/Kolkata').format('DDMMYYYYhh');
+  var TimeBasePassword = moment().tz("Asia/Kolkata").format("DDMMYYYYhh");
   var pass = TimeBasePassword * 2;
   //console.log(pass);
   return pass.toString();
@@ -25,16 +25,16 @@ var AdminPasswordGenerator = () => {
 //@route    /api/admin/log
 //@access   Private (Admin Only with API-KEY)
 exports.GetAPIlog = async (req, res, next) => {
-  var reqKey = req.header('API-Admin-Key');
-  var IP = req.header('X-Real-IP');
+  var reqKey = req.header("API-Admin-Key");
+  var IP = req.header("X-Real-IP");
   var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
 
   if (AdminAPIKey.includes(reqKey)) {
     try {
-      const getapilog = await APILog.find().select('-__v');
+      const getapilog = await APILog.find().select("-__v");
       //Send Success Response
       res.status(200).json({
-        Status: 'Success',
+        Status: "Success",
         Count: getapilog.length,
         Log: getapilog,
       });
@@ -44,7 +44,7 @@ exports.GetAPIlog = async (req, res, next) => {
       res.status(500).json({
         Error: {
           Status: 500,
-          Message: 'Internal Server Error',
+          Message: "Internal Server Error",
           Info: err,
         },
       });
@@ -54,7 +54,7 @@ exports.GetAPIlog = async (req, res, next) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
@@ -64,8 +64,8 @@ exports.GetAPIlog = async (req, res, next) => {
 //@route    POST /api/admin/createuser
 //@access   Private (Admin Only with API-KEY)
 exports.AddUser = async (req, res) => {
-  var reqKey = req.header('API-Admin-Key');
-  var IP = req.header('X-Real-IP');
+  var reqKey = req.header("API-Admin-Key");
+  var IP = req.header("X-Real-IP");
   var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
 
   if (AdminAPIKey.includes(reqKey)) {
@@ -76,7 +76,7 @@ exports.AddUser = async (req, res) => {
         const Response = {
           Error: {
             Status: 400,
-            Message: 'Some fields are not present in request body',
+            Message: "Some fields are not present in request body",
           },
         };
         //Send Response
@@ -84,22 +84,22 @@ exports.AddUser = async (req, res) => {
       } else {
         const addUserReq = {
           Username: Hash(Username),
-          Email: Email,
+          Email: Hash(Email),
           Password: Hash(Password),
         };
         const addUser = await APIUser.create(addUserReq);
         const User = await APIUser.findById(addUser._id)
-          .select('-__v')
-          .select('-APICalls')
-          .select('-ActivationStatus')
-          .select('-Username')
-          .select('-Email')
-          .select('-Password');
+          .select("-__v")
+          .select("-APICalls")
+          .select("-ActivationStatus")
+          .select("-Username")
+          .select("-Email")
+          .select("-Password");
         ActivationEmail(Email, addUser._id, IP);
         res.status(200).json({
-          Status: 'Successful',
+          Status: "Successful",
           Data: User,
-          Message: 'API user has been created',
+          Message: "API user has been created",
         });
       }
     } catch (err) {
@@ -107,8 +107,8 @@ exports.AddUser = async (req, res) => {
       res.status(500).json({
         Error: {
           Status: 500,
-          Message: 'Internal Server Error',
-          Info: 'Username or Email Id is already registered',
+          Message: "Internal Server Error",
+          Info: "Username or Email Id is already registered",
         },
       });
     }
@@ -117,7 +117,7 @@ exports.AddUser = async (req, res) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized ( Who are you Dude ?)',
+        Message: "Unauthorized ( Who are you Dude ?)",
       },
     });
   }
@@ -127,8 +127,8 @@ exports.AddUser = async (req, res) => {
 //@route    POST /api/admin/updateUser
 //@access   Private (Admin Only with API-KEY)
 exports.UpdateUser = async (req, res) => {
-  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
-  var reqKey = req.header('API-Admin-Key');
+  var date = moment().tz("Asia/Kolkata").format("MMMM Do YYYY, hh:mm:ss A");
+  var reqKey = req.header("API-Admin-Key");
   var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
 
   if (AdminAPIKey.includes(reqKey)) {
@@ -137,7 +137,7 @@ exports.UpdateUser = async (req, res) => {
       const Response = {
         Error: {
           Status: 400,
-          Message: 'UserName not present in request body',
+          Message: "UserName not present in request body",
         },
       };
       //Send Response
@@ -162,19 +162,19 @@ exports.UpdateUser = async (req, res) => {
               ModifiedAt: date,
             },
           }
-        ).select('-__v');
+        ).select("-__v");
         //console.log(updateKey)
         const Response = {
-          Status: 'Success',
+          Status: "Success",
           Data: req.body,
-          Message: 'Successfully! Key has been updated.',
+          Message: "Successfully! Key has been updated.",
         };
         res.status(200).json(Response);
       } catch (err) {
         var Response = {
           Error: {
             Status: 500,
-            Message: 'Internal Server Error',
+            Message: "Internal Server Error",
             Info: err,
           },
         };
@@ -183,7 +183,7 @@ exports.UpdateUser = async (req, res) => {
     } else {
       const Responsefailed = {
         Status: 401,
-        Message: 'Username or Password is not Valid!.',
+        Message: "Username or Password is not Valid!.",
       };
       res.status(401).json(Responsefailed);
     }
@@ -192,7 +192,7 @@ exports.UpdateUser = async (req, res) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
@@ -209,13 +209,13 @@ exports.UserStatus = async (req, res, next) => {
         Username: Hash(Username),
         Password: Hash(Password),
       })
-        .select('-Username')
-        .select('-Password');
+        .select("-Username")
+        .select("-Password");
       if (APIClientResponse == null) {
         const Response = {
           Error: {
             Status: 404,
-            Message: 'User Credentials are Incorrect or Not Found',
+            Message: "User Credentials are Incorrect or Not Found",
           },
         };
         res.status(404).json(Response);
@@ -229,7 +229,7 @@ exports.UserStatus = async (req, res, next) => {
       res.status(404).json({
         Error: {
           Status: 404,
-          Message: 'Username or Password is missing',
+          Message: "Username or Password is missing",
         },
       });
     }
@@ -239,7 +239,7 @@ exports.UserStatus = async (req, res, next) => {
     res.status(500).json({
       Error: {
         Status: 500,
-        Message: 'Internal Server Error',
+        Message: "Internal Server Error",
         Info: err,
       },
     });
@@ -250,16 +250,16 @@ exports.UserStatus = async (req, res, next) => {
 //@route    /api/activation
 //@access   Public
 exports.AccountActivation = async (req, res, next) => {
-  var IP = req.header('X-Real-IP');
+  var IP = req.header("X-Real-IP");
   const Key = req.query.Key;
   const User = req.query.User;
   try {
     if (Key != null && User != null) {
-      const APIClientValidation = await APIUser.findById(User).select('-__v');
+      const APIClientValidation = await APIUser.findById(User).select("-__v");
       if (APIClientValidation == null) {
         res.status(400).json({
           Status: 400,
-          Message: 'Key or User Query is Incorrect',
+          Message: "Key or User Query is Incorrect",
         });
       } else if (APIClientValidation.ActivationStatus === 0) {
         const UserEmailinfo = await UserEmail.findOneAndUpdate(
@@ -283,33 +283,33 @@ exports.AccountActivation = async (req, res, next) => {
             { new: true }
           );
           res.status(200).json({
-            Status: 'Successful',
-            Message: 'Your Account is verified ',
+            Status: "Successful",
+            Message: "Your Account is verified ",
           });
           console.log(IP);
           WelcomeEmail(UserEmailinfo.Email, APIUserInfo, IP);
         } else {
           res.status(404).json({
             Status: 404,
-            Message: 'Account not found',
+            Message: "Account not found",
           });
         }
       } else {
         res.status(400).json({
           Status: 400,
-          Message: 'Your Account is already Activated',
+          Message: "Your Account is already Activated",
         });
       }
     } else {
       res.status(404).json({
         Status: 404,
-        Message: 'Key or User Query is missing from URL',
+        Message: "Key or User Query is missing from URL",
       });
     }
   } catch (error) {
     res.status(500).json({
       Status: 500,
-      Message: 'Internal Server Error',
+      Message: "Internal Server Error",
       Info: error,
     });
   }
@@ -319,8 +319,8 @@ exports.AccountActivation = async (req, res, next) => {
 //@route    /api/activation
 //@access   Public
 exports.EmailLogs = async (req, res) => {
-  var reqKey = req.header('API-Admin-Key');
-  var IP = req.header('X-Real-IP');
+  var reqKey = req.header("API-Admin-Key");
+  var IP = req.header("X-Real-IP");
   const { Date, Email } = req.body;
   var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
 
@@ -328,14 +328,14 @@ exports.EmailLogs = async (req, res) => {
     try {
       if (Date != null && Email != null) {
         const IDD = await SendLogs(Date, Email);
-        if (IDD == 'SizeError') {
+        if (IDD == "SizeError") {
           res.status(500).json({
-            Status: 'Failed',
+            Status: "Failed",
             Message: `Log File Size is more than 25MB`,
           });
         } else {
           res.status(200).json({
-            Status: 'Success',
+            Status: "Success",
             Message: `It will take some time to send API Logs`,
             EmailRefNo: IDD,
           });
@@ -358,7 +358,7 @@ exports.EmailLogs = async (req, res) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
