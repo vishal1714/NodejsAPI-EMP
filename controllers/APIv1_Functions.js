@@ -1,382 +1,367 @@
-const Employee = require('../models/EmployeeSchema');
-const APIUser = require('../models/APIUserSchema');
-const { Log } = require('./APILogManager');
-const moment = require('moment-timezone');
+const APILog = require("../models/APILogSchema");
+const APIUser = require("../models/APIUserSchema");
+const UserEmail = require("../models/UserEmailSchema");
+const moment = require("moment-timezone");
+const crypto = require("crypto");
+const dotenv = require("dotenv");
+const { ActivationEmail, WelcomeEmail, SendLogs } = require("./Email/SendMail");
 
-/*if (process.env.CACHE == 'ON') {
-  const { getCacheAsync, setCacheAsync } = require('../config/Cache');
-}*/
+dotenv.config({ path: "./config/config.env" });
 
-//@dec      Get All Employees
-//@dec      Get All Employees
-//@route    GET /api/v1/employees
-//@access   Public
-exports.GetEmployees = async (req, res, next) => {
-  try {
-    /*if (process.env.CACHE == 'ON') {
-      const getEmployeesfromCache = await getCacheAsync('Employees');
-      if (getEmployeesfromCache) {
-        //console.log('Loding from Cacahe')
-        const data = JSON.parse(getEmployeesfromCache);
-        const Resposne = {
-          Status: 'Success',
-          Count: data.length,
-          Data: data,
-        };
-        res.status(200).json(Resposne);
-        return;
-      }
-      const getemployees = await Employee.find().select('-__v');
-      const setData = await setCacheAsync(
-        'Employees',
-        JSON.stringify(getemployees),
-        'EX',
-        10
-      );
-      //console.log('Data Saved in  Cache')
-      const Resposne = {
-        Status: 'Success',
-        Count: getemployees.length,
-        Data: getemployees,
-      };
-      //Send Success Response
-      res.status(200).json(Resposne);
-    } else {}*/
-    const getemployees = await Employee.find().select('-__v');
-    const Resposne = {
-      Status: 'Success',
-      Count: getemployees.length,
-      Data: getemployees,
-    };
-    //Send Success Response
-    res.status(200).json(Resposne);
-  } catch (err) {
-    console.log(err);
-    //Send Error
-    res.status(500).json({
-      Error: {
-        Status: 500,
-        Message: 'Internal Server Error',
-        info: err,
-      },
-    });
-  }
+//@dec      Hash Function for converting sensitive user information to SHA hash
+var Hash = (string) => {
+  return crypto.createHash(process.env.HASH_ALGO).update(string).digest("hex");
 };
 
-//@dec      Get Employee By Employee ID
-//@route    GET /api/v1/employee/:id
-//@access   Public
-exports.GetEmployeeByID = async (req, res, next) => {
-  try {
-    const getemployeebyid = await Employee.findById(req.params.id).select(
-      '-__v'
-    );
-
-    //id Employee not found in DB
-    if (!getemployeebyid) {
-      res.status(404).json({
-        Error: {
-          Status: 404,
-          Message: 'Employee not found',
-        },
-      });
-    } else {
-      //Send Success Response
-      return res.status(200).json({
-        Status: 'Success',
-        Data: getemployeebyid,
-        Message: 'Successfully! Record has been fetched.',
-      });
-    }
-  } catch (err) {
-    //Send Error
-    res.status(500).json({
-      Error: {
-        Status: 500,
-        Message: 'Internal Server Error',
-        Info: err,
-      },
-    });
-  }
+//@dec      API Admin Time base Password Generator
+var AdminPasswordGenerator = () => {
+  var TimeBasePassword = moment().tz("Asia/Kolkata").format("DDMMYYYYhh");
+  var pass = TimeBasePassword * 2;
+  //console.log(pass);
+  return pass.toString();
 };
 
-//@dec      Add Employee in DB
-//@route    POST /api/v1/employee/add
-//@access   Private (Client API-KEY)
-exports.AddEmployee = async (req, res, next) => {
-  var IP = req.header('X-Real-IP');
-  const APIClientInfo = await APIUser.findOne({
-    APIClientID: req.header('API-Client-ID'),
-    APISecretKey: req.header('API-Secret-Key'),
-  });
-  //console.log(APIClientInfo);
-  if (APIClientInfo) {
+//@dec      Get API Logs
+//@route    /api/admin/log
+//@access   Private (Admin Only with API-KEY)
+exports.GetAPIlog = async (req, res, next) => {
+  var reqKey = req.header("API-Admin-Key");
+  var IP = req.header("X-Real-IP");
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
+
+  if (AdminAPIKey.includes(reqKey)) {
     try {
-      //Copturaing API Request
-      const { Name, PhoneNo, Age, Department, Salary } = req.body;
-      const addemployee = await Employee.create(req.body);
-      const Response = {
-        Status: 'Success',
-        Data: addemployee,
-        Message: 'Successfully! Record has been inserted.',
-      };
-
-      await APIUser.updateOne(
-        {
-          APIClientID: req.header('API-Client-ID'),
-          APISecretKey: req.header('API-Secret-Key'),
-        },
-        {
-          $inc: {
-            APICalls: 1,
-          },
-        }
-      );
-
-      //Send Response
-      res.status(201).json(Response);
-
-      //Log
-      Log(req.body, Response, IP, APIClientInfo.APIClientID, 'Add Employee');
+      const getapilog = await APILog.find().select("-__v");
+      //Send Success Response
+      res.status(200).json({
+        Status: "Success",
+        Count: getapilog.length,
+        Log: getapilog,
+      });
     } catch (err) {
-      //if Valid Error Found
-      if (err.name == 'ValidationError') {
-        const messages = Object.values(err.errors).map((val) => val.message);
-        const Response = {
-          Error: {
-            Status: 400,
-            Message: 'Bad Request',
-            Info: messages,
-          },
-        };
-        res.status(400).json(Response);
-        Log(req.body, Response, IP, APIClientInfo.APIClientID, 'Add Employee');
-      } else {
-        const Response = {
-          Error: {
-            Status: 500,
-            Message: 'Internal Server Error',
-          },
-        };
-        res.status(500).json(Response);
-        //Send Error
-        Log(req.body, Response, IP, APIClientInfo.APIClientID, 'Add Employee');
-      }
+      console.log(err);
+      //Send Error
+      res.status(500).json({
+        Error: {
+          Status: 500,
+          Message: "Internal Server Error",
+          Info: err,
+        },
+      });
     }
   } else {
     //if API-Key is not valid
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
 };
 
-//@dec      Delete Employee using Employee ID
-//@route    DELETE /api/v1/employee/:id
-//@access   Private (Client API-KEY)
-exports.DelEmployeeByID = async (req, res, next) => {
-  var IP = req.header('X-Real-IP');
-  const APIClientInfo = await APIUser.findOne({
-    APIClientID: req.header('API-Client-ID'),
-    APISecretKey: req.header('API-Secret-Key'),
-  });
-  //Validate API-Key
-  if (APIClientInfo) {
+//@dec      Add API Client with Key
+//@route    POST /api/admin/createuser
+//@access   Private (Admin Only with API-KEY)
+exports.AddUser = async (req, res) => {
+  var reqKey = req.header("API-Admin-Key");
+  var IP = req.header("X-Real-IP");
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
+
+  if (AdminAPIKey.includes(reqKey)) {
     try {
-      const delemployee = await Employee.findById(req.params.id).select('-__v');
-      const reqbody = {
-        _id: req.params.id,
-      };
-      //if Employee not found in DB
-      if (!delemployee) {
-        const Response = {
-          Error: {
-            Status: 404,
-            Message: 'Employee Not Found',
-          },
-        };
-        //Send Response
-        Log(
-          reqbody,
-          Response,
-          IP,
-          APIClientInfo.APIClientID,
-          'Delete Employee'
-        );
-        return res.status(404).json(Response);
-      } else {
-        //Remove Employee
-        await delemployee.remove();
-        const Response = {
-          Status: 'Success',
-          Data: delemployee,
-          Message: 'Successfully! Record has been deleted.',
-        };
-
-        await APIUser.updateOne(
-          {
-            APIClientID: req.header('API-Client-ID'),
-            APISecretKey: req.header('API-Secret-Key'),
-          },
-          {
-            $inc: {
-              APICalls: 1,
-            },
-          }
-        );
-
-        //Send Response
-        res.status(200).json(Response);
-        //Log
-        Log(
-          reqbody,
-          Response,
-          IP,
-          APIClientInfo.APIClientID,
-          'Delete Employee'
-        );
-      }
-    } catch (err) {
-      const Response = {
-        Error: {
-          Status: 500,
-          Message: 'Internal Server Error',
-          Info: err,
-        },
-      };
-      //Send Error
-      res.status(500).json(Response);
-      //Log
-      Log(reqbody, Response, IP, APIClientInfo.APIClientID, 'Delete Employee');
-    }
-  } else {
-    //if APi-Key is not valid
-    res.status(401).json({
-      Error: {
-        Status: 401,
-        Message: 'Unauthorized',
-      },
-    });
-  }
-};
-
-//@dec      Update Employee
-//@route    PATCH /api/v1/employee/update
-//@access   Private (Client API-KEY)
-exports.UpdateEmployee = async (req, res, next) => {
-  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
-  var IP = req.header('X-Real-IP');
-  const APIClientInfo = await APIUser.findOne({
-    APIClientID: req.header('API-Client-ID'),
-    APISecretKey: req.header('API-Secret-Key'),
-  });
-  //Validate API-Key
-  if (APIClientInfo) {
-    try {
-      //Capture Request Body
-      const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = req.body;
-      //if _id is not present in RequestBody
-      if (
-        EmpRefNo == null ||
-        Name == null ||
-        PhoneNo == null ||
-        Age == null ||
-        Department == null ||
-        Salary == null
-      ) {
+      const { Username, Email, Password, APICalls } = req.body;
+      if (Username == null || Email == null || Password == null) {
         //Send Error
         const Response = {
           Error: {
             Status: 400,
-            Message: 'Some fields are not present in request body',
+            Message: "Some fields are not present in request body",
           },
         };
         //Send Response
         res.status(400).json(Response);
-        //Log
-        Log(req.body, Response, IP, APIClientInfo.APIClientID, 'Update Method');
       } else {
-        //Update Emplyee Info
-        const updateemployee = await Employee.findOneAndUpdate(
-          { _id: EmpRefNo },
+        const addUserReq = {
+          Username: Hash(Username.toLowerCase()),
+          Email: Hash(Email.toLowerCase()),
+          Password: Hash(Password),
+          APICalls: APICalls,
+        };
+        const addUser = await APIUser.create(addUserReq);
+        const User = await APIUser.findById(addUser._id)
+          .select("-__v")
+          .select("-APICalls")
+          .select("-ActivationStatus")
+          .select("-Username")
+          .select("-Email")
+          .select("-Password");
+        ActivationEmail(Email, addUser._id, IP);
+        res.status(200).json({
+          Status: "Successful",
+          Data: User,
+          Message: "API user has been created",
+        });
+      }
+    } catch (err) {
+      //console.log(err);
+      res.status(500).json({
+        Error: {
+          Status: 500,
+          Message: "Internal Server Error",
+          Info: "Username or Email Id is already registered",
+        },
+      });
+    }
+  } else {
+    //if API-Key is not valid
+    res.status(401).json({
+      Error: {
+        Status: 401,
+        Message: "Unauthorized ( Who are you Dude ?)",
+      },
+    });
+  }
+};
+
+//@dec      Update API Client with Key
+//@route    POST /api/admin/updateUser
+//@access   Private (Admin Only with API-KEY)
+exports.UpdateUser = async (req, res) => {
+  var date = moment().tz("Asia/Kolkata").format("MMMM Do YYYY, hh:mm:ss A");
+  var reqKey = req.header("API-Admin-Key");
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
+
+  if (AdminAPIKey.includes(reqKey)) {
+    if (req.body.Username == null) {
+      //Send Error
+      const Response = {
+        Error: {
+          Status: 400,
+          Message: "UserName not present in request body",
+        },
+      };
+      //Send Response
+      res.status(400).json(Response);
+    }
+
+    const APIClientInfo = await APIUser.findOne({
+      Username: Hash(req.body.Username.toLowerCase()),
+      Password: Hash(req.body.Password),
+    });
+    if (APIClientInfo) {
+      try {
+        //Update Key Inf
+        const updateKey = await APIUser.findOneAndUpdate(
+          {
+            Username: Hash(req.body.Username.toLowerCase()),
+            Password: Hash(req.body.Password),
+          },
           {
             $set: {
-              Name: Name,
-              PhoneNo: PhoneNo,
-              Age: Age,
-              Department: Department,
-              Salary: Salary,
+              APISecretKey: req.body.APISecretKey,
+              APICallLimit: req.body.APICallLimit,
               ModifiedAt: date,
             },
           },
           { new: true }
-        ).select('-__v');
-
-        if (!updateemployee) {
-          const Response = {
-            Status: 400,
-            Message: 'Something went wrong',
-          };
-          res.status(400).json(Response);
-          //Log
-          Log(
-            req.body,
-            Response,
-            IP,
-            APIClientInfo.APIClientID,
-            'Update Method'
-          );
-        } else {
-          const Response = {
-            Status: 'Success',
-            Data: updateemployee,
-            Message: 'Successfully! Record has been updated.',
-          };
-
-          await APIUser.updateOne(
-            {
-              APIClientID: req.header('API-Client-ID'),
-              APISecretKey: req.header('API-Secret-Key'),
-            },
-            {
-              $inc: {
-                APICalls: 1,
-              },
-            }
-          );
-          //Send Success Response
-          res.status(200).json(Response);
-          //Log
-          Log(
-            req.body,
-            Response,
-            IP,
-            APIClientInfo.APIClientID,
-            'Update Method'
-          );
-        }
+        ).select("-__v");
+        console.log(updateKey);
+        const Response = {
+          Status: "Success",
+          Data: req.body,
+          Message: "Successfully! Key has been updated.",
+        };
+        res.status(200).json(Response);
+      } catch (err) {
+        var Response = {
+          Error: {
+            Status: 500,
+            Message: "Internal Server Error",
+            Info: err,
+          },
+        };
+        res.status(500).json(Response);
       }
-    } catch (err) {
-      //send Error
-      var Response = {
-        Error: {
-          Status: 500,
-          Message: 'Internal Server Error',
-          Info: err,
-        },
+    } else {
+      const Responsefailed = {
+        Status: 401,
+        Message: "Username or Password is not Valid!.",
       };
-      res.status(500).json(Response);
-      Log(req.body, Response, IP, APIClientInfo.APIClientID, 'Update Method');
+      res.status(401).json(Responsefailed);
     }
   } else {
-    //API-Key is not valid
+    //if API-Key is not valid
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
+      },
+    });
+  }
+};
+
+//@dec      Get API Client Status
+//@route    /api/admin/apiStatus
+//@access   Public
+exports.UserStatus = async (req, res, next) => {
+  try {
+    const { Username, Password } = req.body;
+    if (Username != undefined && Password != undefined) {
+      const APIClientResponse = await APIUser.findOne({
+        Username: Hash(Username.toLowerCase()),
+        Password: Hash(Password),
+      })
+        .select("-Username")
+        .select("-Password");
+      if (APIClientResponse == null) {
+        const Response = {
+          Error: {
+            Status: 404,
+            Message: "User Credentials are Incorrect or Not Found",
+          },
+        };
+        res.status(404).json(Response);
+      } else {
+        const Response = {
+          APIStatus: APIClientResponse,
+        };
+        res.status(200).json(Response);
+      }
+    } else {
+      res.status(404).json({
+        Error: {
+          Status: 404,
+          Message: "Username or Password is missing",
+        },
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    //Send Error
+    res.status(500).json({
+      Error: {
+        Status: 500,
+        Message: "Internal Server Error",
+        Info: err,
+      },
+    });
+  }
+};
+
+//@dec      Get Account Activation link
+//@route    /api/activation
+//@access   Public
+exports.AccountActivation = async (req, res, next) => {
+  var IP = req.header("X-Real-IP");
+  const Key = req.query.Key;
+  const User = req.query.User;
+  try {
+    if (Key != null && User != null) {
+      const APIClientValidation = await APIUser.findById(User).select("-__v");
+      if (APIClientValidation == null) {
+        res.status(400).json({
+          Status: 400,
+          Message: "Key or User Query is Incorrect",
+        });
+      } else if (APIClientValidation.ActivationStatus === 0) {
+        const UserEmailinfo = await UserEmail.findOneAndUpdate(
+          { ActivationKey: Key, UserID: User },
+          {
+            $set: {
+              ActivationStatus: 1,
+            },
+          },
+          { new: true }
+        );
+
+        if (UserEmailinfo) {
+          const APIUserInfo = await APIUser.findOneAndUpdate(
+            { _id: User },
+            {
+              $set: {
+                ActivationStatus: 1,
+              },
+            },
+            { new: true }
+          );
+          res.status(200).json({
+            Status: "Successful",
+            Message: "Your Account is verified ",
+          });
+          console.log(IP);
+          WelcomeEmail(UserEmailinfo.Email, APIUserInfo, IP);
+        } else {
+          res.status(404).json({
+            Status: 404,
+            Message: "Account not found",
+          });
+        }
+      } else {
+        res.status(400).json({
+          Status: 400,
+          Message: "Your Account is already Activated",
+        });
+      }
+    } else {
+      res.status(404).json({
+        Status: 404,
+        Message: "Key or User Query is missing from URL",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      Status: 500,
+      Message: "Internal Server Error",
+      Info: error,
+    });
+  }
+};
+
+//@dec      Get Logs of specific Day on mail
+//@route    /api/activation
+//@access   Public
+exports.EmailLogs = async (req, res) => {
+  var reqKey = req.header("API-Admin-Key");
+  var IP = req.header("X-Real-IP");
+  const { Date, Email } = req.body;
+  var AdminAPIKey = [process.env.AdminAPIKey, AdminPasswordGenerator()];
+
+  if (AdminAPIKey.includes(reqKey)) {
+    try {
+      if (Date != null && Email != null) {
+        const IDD = await SendLogs(Date, Email);
+        if (IDD == "SizeError") {
+          res.status(500).json({
+            Status: "Failed",
+            Message: `Log File Size is more than 25MB`,
+          });
+        } else {
+          res.status(200).json({
+            Status: "Success",
+            Message: `It will take some time to send API Logs`,
+            EmailRefNo: IDD,
+          });
+        }
+      } else {
+        res.status(400).json({
+          Status: 400,
+          Message: `Email or Date filed is missing`,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        Status: 500,
+        Message: `Internal Server Error`,
+        Info: error,
+      });
+    }
+  } else {
+    //if API-Key is not valid
+    res.status(401).json({
+      Error: {
+        Status: 401,
+        Message: "Unauthorized",
       },
     });
   }
