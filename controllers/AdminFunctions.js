@@ -152,20 +152,21 @@ exports.UpdateUser = async (req, res) => {
     if (APIClientInfo) {
       try {
         //Update Key Inf
-        const updateKey = await APIUser.updateOne(
+        const updateKey = await APIUser.findOneAndUpdate(
           {
-            Username: Hash(req.body.Username),
+            Username: Hash(req.body.Username.toLowerCase()),
             Password: Hash(req.body.Password),
           },
           {
             $set: {
-              APISecretKey: req.body.Key,
-              APICalls: req.body.APICalls,
+              APISecretKey: req.body.APISecretKey,
+              APICallLimit: req.body.APICallLimit,
               ModifiedAt: date,
             },
-          }
+          },
+          { new: true }
         ).select("-__v");
-        //console.log(updateKey)
+        console.log(updateKey);
         const Response = {
           Status: "Success",
           Data: req.body,
