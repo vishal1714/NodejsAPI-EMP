@@ -11,22 +11,26 @@ const EmployeeAPILog = require("../models/APILogSchema");
 const { ReceiverMQ } = require("./APIMQ");
 const { dogzip } = require("./APILogManager");
 
-cron.schedule("59 */23 * * *", function () {
+cron.schedule("0 3 * * *", function () {
   //59 */23 * * *
-  var date = moment().tz("Asia/Kolkata").format("MMMM Do YYYY, hh:mm:ss A");
+  var Currentdate = moment()
+    .tz("Asia/Kolkata")
+    .format("MMMM Do YYYY, hh:mm:ss A");
   console.log(`--------------------- Cron Job Running --------------------`);
-  console.log(`Date & Time - ${date} `);
+  console.log(`Date & Time - ${Currentdate} `);
   //1.
   //ReceiverMQ('APILogDB', EmployeeAPILog);
   //2.
+  console.log(`GZIP process is started`);
   LogGZIP();
   console.log(`------ Finish ------`);
 });
 
 const LogGZIP = async () => {
+  let yesterday = moment().add(-1, "days");
   CreatePath(process.env.ZIP_LOG_DIR);
-  var FileDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
-  var ZipFileDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD-hhmm");
+  var FileDate = yesterday.tz("Asia/Kolkata").format("YYYY-MM-DD");
+  var ZipFileDate = yesterday.tz("Asia/Kolkata").format("YYYY-MM-DD");
   let LogFileName = `APILog-${FileDate}.log`;
   let ZipLogFileName = `APILog-${ZipFileDate}.log.gz`;
   let inputFile = path.join(
@@ -42,7 +46,7 @@ const LogGZIP = async () => {
 
   if (fs.existsSync(inputFile)) {
     await dogzip(inputFile, outputFile).then(await fs.unlinkSync(inputFile));
-    console.log("GZIP is done");
+    console.log(`GZIP is done -> ${ZipLogFileName}`);
   }
 };
 
