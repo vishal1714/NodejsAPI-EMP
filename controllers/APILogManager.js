@@ -41,7 +41,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
 
       if (process.env.LOG_MODE == "Cloud" || process.env.LOG_MODE == "ALL") {
         const ReqResLogCloud = {
-          ReqBody: req.body || { _id: req.parms._id },
+          ReqBody: reqBoday(req),
           ReqHeaders: req.headers,
           EncKey: key,
           ResBody: Response,
