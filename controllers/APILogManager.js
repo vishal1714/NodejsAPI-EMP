@@ -21,8 +21,17 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
         .tz("Asia/Kolkata")
         .format("MMMM Do YYYY, hh:mm:ss A");
       var FileDate = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
+      const reqBoday = (req) => {
+        if (req.params.id) {
+          const id = { _id: req.params.id };
+          return id;
+        } else {
+          return req.body;
+        }
+      };
       const ReqResLogLocal = {
-        ReqBody: req,
+        ReqBody: reqBoday(req),
+        ReqHeaders: req.headers,
         ResBody: Response,
         Method: reqmethod,
         APIClientID: reqKey,
@@ -32,7 +41,8 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
 
       if (process.env.LOG_MODE == "Cloud" || process.env.LOG_MODE == "ALL") {
         const ReqResLogCloud = {
-          ReqBody: req,
+          ReqBody: req.body || { _id: req.parms._id },
+          ReqHeaders: req.headers,
           EncKey: key,
           ResBody: Response,
           Method: reqmethod,

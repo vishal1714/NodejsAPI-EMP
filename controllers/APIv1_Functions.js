@@ -137,7 +137,7 @@ exports.AddEmployee = async (req, res, next) => {
       res.status(201).json(Response);
 
       //Log
-      Log(req.body, Response, IP, APIClientInfo.APIClientID, "Add Employee");
+      Log(req, Response, IP, APIClientInfo.APIClientID, "Add Employee");
     } catch (err) {
       //if Valid Error Found
       if (err.name == "ValidationError") {
@@ -150,7 +150,7 @@ exports.AddEmployee = async (req, res, next) => {
           },
         };
         res.status(400).json(Response);
-        Log(req.body, Response, IP, APIClientInfo.APIClientID, "Add Employee");
+        Log(req, Response, IP, APIClientInfo.APIClientID, "Add Employee");
       } else {
         const Response = {
           Error: {
@@ -160,7 +160,7 @@ exports.AddEmployee = async (req, res, next) => {
         };
         res.status(500).json(Response);
         //Send Error
-        Log(req.body, Response, IP, APIClientInfo.APIClientID, "Add Employee");
+        Log(req, Response, IP, APIClientInfo.APIClientID, "Add Employee");
       }
     }
   } else {
@@ -199,13 +199,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
           },
         };
         //Send Response
-        Log(
-          reqbody,
-          Response,
-          IP,
-          APIClientInfo.APIClientID,
-          "Delete Employee"
-        );
+        Log(req, Response, IP, APIClientInfo.APIClientID, "Delete Employee");
         return res.status(404).json(Response);
       } else {
         //Remove Employee
@@ -231,13 +225,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
         //Send Response
         res.status(200).json(Response);
         //Log
-        Log(
-          reqbody,
-          Response,
-          IP,
-          APIClientInfo.APIClientID,
-          "Delete Employee"
-        );
+        Log(req, Response, IP, APIClientInfo.APIClientID, "Delete Employee");
       }
     } catch (err) {
       const Response = {
@@ -250,7 +238,7 @@ exports.DelEmployeeByID = async (req, res, next) => {
       //Send Error
       res.status(500).json(Response);
       //Log
-      Log(reqbody, Response, IP, APIClientInfo.APIClientID, "Delete Employee");
+      Log(req, Response, IP, APIClientInfo.APIClientID, "Delete Employee");
     }
   } else {
     //if APi-Key is not valid
@@ -297,7 +285,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         //Send Response
         res.status(400).json(Response);
         //Log
-        Log(req.body, Response, IP, APIClientInfo.APIClientID, "Update Method");
+        Log(req, Response, IP, APIClientInfo.APIClientID, "Update Method");
       } else {
         //Update Emplyee Info
         const updateemployee = await Employee.findOneAndUpdate(
@@ -322,13 +310,7 @@ exports.UpdateEmployee = async (req, res, next) => {
           };
           res.status(400).json(Response);
           //Log
-          Log(
-            req.body,
-            Response,
-            IP,
-            APIClientInfo.APIClientID,
-            "Update Method"
-          );
+          Log(req, Response, IP, APIClientInfo.APIClientID, "Update Method");
         } else {
           const Response = {
             Status: "Success",
@@ -350,13 +332,7 @@ exports.UpdateEmployee = async (req, res, next) => {
           //Send Success Response
           res.status(200).json(Response);
           //Log
-          Log(
-            req.body,
-            Response,
-            IP,
-            APIClientInfo.APIClientID,
-            "Update Method"
-          );
+          Log(req, Response, IP, APIClientInfo.APIClientID, "Update Method");
         }
       }
     } catch (err) {
@@ -369,7 +345,7 @@ exports.UpdateEmployee = async (req, res, next) => {
         },
       };
       res.status(500).json(Response);
-      Log(req.body, Response, IP, APIClientInfo.APIClientID, "Update Method");
+      Log(req, Response, IP, APIClientInfo.APIClientID, "Update Method");
     }
   } else {
     //API-Key is not valid

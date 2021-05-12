@@ -1,13 +1,13 @@
-const Employee = require('../models/EmployeeSchema');
-const APIUser = require('../models/APIUserSchema');
-const crypto = require('crypto');
-const { Log } = require('./APILogManager');
-const moment = require('moment-timezone');
+const Employee = require("../models/EmployeeSchema");
+const APIUser = require("../models/APIUserSchema");
+const crypto = require("crypto");
+const { Log } = require("./APILogManager");
+const moment = require("moment-timezone");
 
-const dotenv = require('dotenv');
-dotenv.config({ path: './config.env' });
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
 
-const algorithm = 'aes-256-cbc';
+const algorithm = "aes-256-cbc";
 
 /*  Functions  */
 //! Encrypt Function
@@ -19,7 +19,7 @@ const encrypt = (text1, apikey) => {
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   const Response = {
-    EncData: iv.toString('hex')+encrypted.toString('hex')
+    EncData: iv.toString("hex") + encrypted.toString("hex"),
   };
   return Response;
 };
@@ -27,12 +27,12 @@ const encrypt = (text1, apikey) => {
 //! Decrypt Function
 const decrypt = (req, apikey) => {
   const key = apikey;
-  const { EncData} = req;
+  const { EncData } = req;
   //console.log(key);
-  const Refno = EncData.slice(0,32);
+  const Refno = EncData.slice(0, 32);
   const Data = EncData.slice(32);
-  let iv = Buffer.from(Refno, 'hex');
-  let encryptedText = Buffer.from(Data, 'hex');
+  let iv = Buffer.from(Refno, "hex");
+  let encryptedText = Buffer.from(Data, "hex");
   let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -43,19 +43,19 @@ const decrypt = (req, apikey) => {
 //@route    GET /api/v2/employee/:id
 //@access   Private (AES-Key for Encryption/Decryption)
 exports.SecGetEmployeeByID = async (req, res, next) => {
-  var IP = req.header('X-Real-IP');
+  var IP = req.header("X-Real-IP");
   const reqbody = {
     _id: req.params.id,
   };
   const APIClientInfo = await APIUser.findOne({
-    APIClientID: req.header('API-Client-ID'),
-    APISecretKey: req.header('API-Secret-Key'),
+    APIClientID: req.header("API-Client-ID"),
+    APISecretKey: req.header("API-Secret-Key"),
   });
   //console.log(APIClientInfo);
   if (APIClientInfo && APIClientInfo.ActivationStatus === 1) {
     try {
       const getemployeebyid = await Employee.findById(req.params.id).select(
-        '-__v'
+        "-__v"
       );
 
       //if Employee ID not found in DB
@@ -63,33 +63,33 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
         const Response = {
           Error: {
             Status: 404,
-            Message: 'Employee not found',
+            Message: "Employee not found",
           },
         };
         res.status(404).json(Response);
         Log(
-          reqbody,
+          req,
           Response,
           IP,
           APIClientInfo.APIClientID,
-          'Get Employee',
+          "Get Employee",
           APIClientInfo.AESKey
         );
       } else {
         //Send Success Response
         const Response = {
-          Status: 'Success',
+          Status: "Success",
           Data: getemployeebyid,
-          Message: 'Successfully! Record has been fetched.',
+          Message: "Successfully! Record has been fetched.",
         };
         const inc = encrypt(Response, APIClientInfo.AESKey);
         res.status(200).json(inc);
         Log(
-          reqbody,
+          req,
           inc,
           IP,
           APIClientInfo.APIClientID,
-          'Get Employee',
+          "Get Employee",
           APIClientInfo.AESKey
         );
       }
@@ -97,18 +97,18 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
       const Response = {
         Error: {
           Status: 500,
-          Message: 'Internal Server Error',
+          Message: "Internal Server Error",
           Info: err,
         },
       };
       //Send Error
       res.status(500).json(Response);
       Log(
-        reqbody,
+        req,
         Response,
         IP,
         APIClientInfo.APIClientID,
-        'Get Employee',
+        "Get Employee",
         APIClientInfo.AESKey
       );
     }
@@ -117,7 +117,7 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
@@ -127,10 +127,10 @@ exports.SecGetEmployeeByID = async (req, res, next) => {
 //@route    POST /api/v2/employee/add
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecAddEmployee = async (req, res, next) => {
-  var IP = req.header('X-Real-IP');
+  var IP = req.header("X-Real-IP");
   const APIClientInfo = await APIUser.findOne({
-    APIClientID: req.header('API-Client-ID'),
-    APISecretKey: req.header('API-Secret-Key'),
+    APIClientID: req.header("API-Client-ID"),
+    APISecretKey: req.header("API-Secret-Key"),
   });
   //console.log(APIClientInfo);
   if (
@@ -155,32 +155,32 @@ exports.SecAddEmployee = async (req, res, next) => {
         const Response = {
           Error: {
             Status: 400,
-            Message: 'Some fields are not present in encrypted request body',
+            Message: "Some fields are not present in encrypted request body",
           },
         };
         //Send Response
         res.status(400).json(Response);
         //Log
         Log(
-          req.body,
+          req,
           Response,
           IP,
           APIClientInfo.APIClientID,
-          'Add Employee',
+          "Add Employee",
           APIClientInfo.AESKey
         );
       } else {
         const addemployee = await Employee.create(dec);
         const Response = {
-          Status: 'Success',
+          Status: "Success",
           Data: addemployee,
-          Message: 'Successfully! Record has been inserted.',
+          Message: "Successfully! Record has been inserted.",
         };
 
         await APIUser.updateOne(
           {
-            APIClientID: req.header('API-Client-ID'),
-            APISecretKey: req.header('API-Secret-Key'),
+            APIClientID: req.header("API-Client-ID"),
+            APISecretKey: req.header("API-Secret-Key"),
           },
           {
             $inc: {
@@ -194,11 +194,11 @@ exports.SecAddEmployee = async (req, res, next) => {
         res.status(201).json(inc);
         //Log
         Log(
-          req.body,
+          req,
           inc,
           IP,
           APIClientInfo.APIClientID,
-          'Add Employee',
+          "Add Employee",
           APIClientInfo.AESKey
         );
       }
@@ -206,17 +206,17 @@ exports.SecAddEmployee = async (req, res, next) => {
       const Response = {
         Error: {
           Status: 500,
-          Message: 'Internal Server Error',
+          Message: "Internal Server Error",
           Info: err,
         },
       };
       res.status(500).json(Response);
       Log(
-        req.body,
+        req,
         Response,
         IP,
         APIClientInfo.APIClientID,
-        'Add Employee',
+        "Add Employee",
         APIClientInfo.AESKey
       );
     }
@@ -225,7 +225,7 @@ exports.SecAddEmployee = async (req, res, next) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
@@ -235,49 +235,53 @@ exports.SecAddEmployee = async (req, res, next) => {
 //@route    DELETE /api/v2/employee/:id
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecDelEmployeeByID = async (req, res, next) => {
-  var IP = req.header('X-Real-IP');
+  var IP = req.header("X-Real-IP");
   const reqbody = {
     _id: req.params.id,
   };
   const APIClientInfo = await APIUser.findOne({
-    APIClientID: req.header('API-Client-ID'),
-    APISecretKey: req.header('API-Secret-Key'),
+    APIClientID: req.header("API-Client-ID"),
+    APISecretKey: req.header("API-Secret-Key"),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo && APIClientInfo.ActivationStatus === 1 && APIClientInfo.APICallLimit >= APIClientInfo.APICalls) {
+  if (
+    APIClientInfo &&
+    APIClientInfo.ActivationStatus === 1 &&
+    APIClientInfo.APICallLimit >= APIClientInfo.APICalls
+  ) {
     try {
-      const delemployee = await Employee.findById(req.params.id).select('-__v');
+      const delemployee = await Employee.findById(req.params.id).select("-__v");
       //if Employee not found in DB
       if (!delemployee) {
         const Response = {
           Error: {
             Status: 404,
-            Message: 'Employee Not Found',
+            Message: "Employee Not Found",
           },
         };
         //Send Response
         res.status(404).json(Response);
         Log(
-          reqbody,
+          req,
           Response,
           IP,
           APIClientInfo.APIClientID,
-          'Delete Employee',
+          "Delete Employee",
           APIClientInfo.AESKey
         );
       } else {
         //Remove Employee
         await delemployee.remove();
         const Response = {
-          Status: 'Success',
+          Status: "Success",
           Data: delemployee,
-          Message: 'Successfully! Record has been deleted.',
+          Message: "Successfully! Record has been deleted.",
         };
 
         await APIUser.updateOne(
           {
-            APIClientID: req.header('API-Client-ID'),
-            APISecretKey: req.header('API-Secret-Key'),
+            APIClientID: req.header("API-Client-ID"),
+            APISecretKey: req.header("API-Secret-Key"),
           },
           {
             $inc: {
@@ -291,11 +295,11 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
         res.status(200).json(inc);
         //Log
         Log(
-          reqbody,
+          req,
           inc,
           IP,
           APIClientInfo.APIClientID,
-          'Delete Employee',
+          "Delete Employee",
           APIClientInfo.AESKey
         );
       }
@@ -303,7 +307,7 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
       const Response = {
         Error: {
           Status: 500,
-          Message: 'Internal Server Error',
+          Message: "Internal Server Error",
           Info: err,
         },
       };
@@ -311,11 +315,11 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
       res.status(500).json(Response);
       //Log
       Log(
-        reqbody,
+        req,
         Response,
         IP,
         APIClientInfo.APIClientID,
-        'Delete Employee',
+        "Delete Employee",
         APIClientInfo.AESKey
       );
     }
@@ -324,7 +328,7 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
@@ -334,15 +338,19 @@ exports.SecDelEmployeeByID = async (req, res, next) => {
 //@route    POST /api/v2/employee/update
 //@access   Private (Client API Key and AES-Key for Encryption/Decryption)
 exports.SecUpdateEmployee = async (req, res, next) => {
-  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
-  var IP = req.header('X-Real-IP');
+  var date = moment().tz("Asia/Kolkata").format("MMMM Do YYYY, hh:mm:ss A");
+  var IP = req.header("X-Real-IP");
   //validate API-Key
   const APIClientInfo = await APIUser.findOne({
-    APIClientID: req.header('API-Client-ID'),
-    APISecretKey: req.header('API-Secret-Key'),
+    APIClientID: req.header("API-Client-ID"),
+    APISecretKey: req.header("API-Secret-Key"),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo &&   APIClientInfo.APICallLimit >= APIClientInfo.APICalls && APIClientInfo.ActivationStatus === 1) {
+  if (
+    APIClientInfo &&
+    APIClientInfo.APICallLimit >= APIClientInfo.APICalls &&
+    APIClientInfo.ActivationStatus === 1
+  ) {
     try {
       const dec = decrypt(req.body, APIClientInfo.AESKey);
       //Capture Request Body
@@ -361,18 +369,18 @@ exports.SecUpdateEmployee = async (req, res, next) => {
         const Response = {
           Error: {
             Status: 400,
-            Message: 'Some fields are not present in encrypted request body',
+            Message: "Some fields are not present in encrypted request body",
           },
         };
         //Send Response
         res.status(400).json(Response);
         //Log
         Log(
-          req.body,
+          req,
           Response,
           IP,
           APIClientInfo.APIClientID,
-          'Update Method',
+          "Update Method",
           APIClientInfo.AESKey
         );
       } else {
@@ -390,36 +398,36 @@ exports.SecUpdateEmployee = async (req, res, next) => {
             },
           },
           { new: true }
-        ).select('-__v');
+        ).select("-__v");
         //console.log(updateemployee);
 
         if (!updateemployee) {
           const Response = {
             Status: 400,
-            Message: 'Something went wrong',
+            Message: "Something went wrong",
           };
 
           res.status(400).json(Response);
           //Log
           Log(
-            req.body,
+            req,
             Response,
             IP,
             APIClientInfo.APIClientID,
-            'Update Method',
+            "Update Method",
             APIClientInfo.AESKey
           );
         } else {
           const Response = {
-            Status: 'Success',
+            Status: "Success",
             Data: updateemployee,
-            Message: 'Successfully! Record has been updated.',
+            Message: "Successfully! Record has been updated.",
           };
 
           await APIUser.updateOne(
             {
-              APIClientID: req.header('API-Client-ID'),
-              APISecretKey: req.header('API-Secret-Key'),
+              APIClientID: req.header("API-Client-ID"),
+              APISecretKey: req.header("API-Secret-Key"),
             },
             {
               $inc: {
@@ -433,11 +441,11 @@ exports.SecUpdateEmployee = async (req, res, next) => {
           res.status(200).json(inc);
           //Log
           Log(
-            req.body,
+            req,
             inc,
             IP,
             APIClientInfo.APIClientID,
-            'Update Method',
+            "Update Method",
             APIClientInfo.AESKey
           );
         }
@@ -448,17 +456,17 @@ exports.SecUpdateEmployee = async (req, res, next) => {
       var Response = {
         Error: {
           Status: 500,
-          Message: 'Internal Server Error',
+          Message: "Internal Server Error",
           Info: err,
         },
       };
       res.status(500).json(Response);
       Log(
-        req.body,
+        req,
         Response,
         IP,
         APIClientInfo.APIClientID,
-        'Update Method',
+        "Update Method",
         APIClientInfo.AESKey
       );
     }
@@ -467,7 +475,7 @@ exports.SecUpdateEmployee = async (req, res, next) => {
     res.status(401).json({
       Error: {
         Status: 401,
-        Message: 'Unauthorized',
+        Message: "Unauthorized",
       },
     });
   }
@@ -478,36 +486,33 @@ exports.SecUpdateEmployee = async (req, res, next) => {
 //@access   Private (AES-Key for Encryption)
 exports.encryptAPI = (req, res) => {
   try {
-    const key = req.header('AES-Key');
+    const key = req.header("AES-Key");
     //console.log(req.body)
     //const { Name, PhoneNo, Department, Age, Salary } = req.body;
-    if(req.body){
-
+    if (req.body) {
       const iv = crypto.randomBytes(16);
       let plaintext = JSON.stringify(req.body);
       let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
       let encrypted = cipher.update(plaintext);
       encrypted = Buffer.concat([encrypted, cipher.final()]);
-      console.log(iv.toString('hex'))
+      console.log(iv.toString("hex"));
       const Response = {
-        EncData : iv.toString('hex')+encrypted.toString('hex')
+        EncData: iv.toString("hex") + encrypted.toString("hex"),
       };
       res.status(200).json(Response);
-      
-    }else{
+    } else {
       res.status(400).json({
         Error: {
           Status: 400,
-          Message: 'Request body is not found',
-        }
-      })
+          Message: "Request body is not found",
+        },
+      });
     }
-   
   } catch (error) {
     res.status(500).json({
       Error: {
         Status: 500,
-        Message: 'Internal Server Error',
+        Message: "Internal Server Error",
         Info: error,
       },
     });
@@ -519,33 +524,33 @@ exports.encryptAPI = (req, res) => {
 //@access   Private (AES-Key for Decryption)
 exports.decryptAPI = (req, res) => {
   try {
-    const key = req.header('AES-Key');
+    const key = req.header("AES-Key");
     const { EncData } = req.body;
-    if(req.body.EncData){
-    const Refno = EncData.slice(0,32);
-    const Data = EncData.slice(32);
-    //console.log(Refno)
-    //console.log(Data)
-    let iv = Buffer.from(Refno, 'hex');
-    let encryptedText = Buffer.from(Data, 'hex');
-    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    const DecData = JSON.parse(decrypted.toString());
-    res.status(200).json(DecData);
-    }else{
+    if (req.body.EncData) {
+      const Refno = EncData.slice(0, 32);
+      const Data = EncData.slice(32);
+      //console.log(Refno)
+      //console.log(Data)
+      let iv = Buffer.from(Refno, "hex");
+      let encryptedText = Buffer.from(Data, "hex");
+      let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+      let decrypted = decipher.update(encryptedText);
+      decrypted = Buffer.concat([decrypted, decipher.final()]);
+      const DecData = JSON.parse(decrypted.toString());
+      res.status(200).json(DecData);
+    } else {
       res.status(400).json({
         Error: {
           Status: 400,
-          Message: 'Request body is not found',
-        }
-      })
+          Message: "Request body is not found",
+        },
+      });
     }
   } catch (error) {
     res.status(500).json({
       Error: {
         Status: 500,
-        Message: 'Internal Server Error',
+        Message: "Internal Server Error",
         Info: error,
       },
     });
