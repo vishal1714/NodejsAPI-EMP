@@ -109,7 +109,12 @@ exports.AddEmployee = async (req, res, next) => {
     APISecretKey: req.header("API-Secret-Key"),
   });
   //console.log(APIClientInfo);
-  if (APIClientInfo) {
+  if (
+    APIClientInfo &&
+    APIClientInfo.APICallLimit != APIClientInfo.APICalls &&
+    APIClientInfo.APICallLimit >= APIClientInfo.APICalls &&
+    APIClientInfo.ActivationStatus === 1
+  ) {
     try {
       //Copturaing API Request
       const { Name, PhoneNo, Age, Department, Salary } = req.body;
@@ -183,7 +188,12 @@ exports.DelEmployeeByID = async (req, res, next) => {
     APISecretKey: req.header("API-Secret-Key"),
   });
   //Validate API-Key
-  if (APIClientInfo) {
+  if (
+    APIClientInfo &&
+    APIClientInfo.APICallLimit != APIClientInfo.APICalls &&
+    APIClientInfo.APICallLimit >= APIClientInfo.APICalls &&
+    APIClientInfo.ActivationStatus === 1
+  ) {
     try {
       const delemployee = await Employee.findById(req.params.id).select("-__v");
       const reqbody = {
@@ -261,7 +271,12 @@ exports.UpdateEmployee = async (req, res, next) => {
     APISecretKey: req.header("API-Secret-Key"),
   });
   //Validate API-Key
-  if (APIClientInfo) {
+  if (
+    APIClientInfo &&
+    APIClientInfo.APICallLimit != APIClientInfo.APICalls &&
+    APIClientInfo.APICallLimit >= APIClientInfo.APICalls &&
+    APIClientInfo.ActivationStatus === 1
+  ) {
     try {
       //Capture Request Body
       const { EmpRefNo, Name, PhoneNo, Age, Department, Salary } = req.body;
