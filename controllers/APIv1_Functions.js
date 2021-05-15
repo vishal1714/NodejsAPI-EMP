@@ -2,10 +2,7 @@ const Employee = require("../models/EmployeeSchema");
 const APIUser = require("../models/APIUserSchema");
 const { Log } = require("./APILogManager");
 const moment = require("moment-timezone");
-
-/*if (process.env.CACHE == 'ON') {
-  const { getCacheAsync, setCacheAsync } = require('../config/Cache');
-}*/
+const { getCacheAsync, setCacheAsync } = require("../config/Cache");
 
 //@dec      Get All Employees
 //@dec      Get All Employees
@@ -13,43 +10,45 @@ const moment = require("moment-timezone");
 //@access   Public
 exports.GetEmployees = async (req, res, next) => {
   try {
-    /*if (process.env.CACHE == 'ON') {
-      const getEmployeesfromCache = await getCacheAsync('Employees');
+    if (process.env.CACHE == "ON") {
+      const getEmployeesfromCache = await getCacheAsync("EmployeesList");
       if (getEmployeesfromCache) {
-        //console.log('Loding from Cacahe')
+        //console.log("Loding from Cacahe");
         const data = JSON.parse(getEmployeesfromCache);
         const Resposne = {
-          Status: 'Success',
+          Status: "Success",
           Count: data.length,
           Data: data,
         };
         res.status(200).json(Resposne);
         return;
       }
-      const getemployees = await Employee.find().select('-__v');
+      const getemployees = await Employee.find().select("-__v");
       const setData = await setCacheAsync(
-        'Employees',
+        "EmployeesList",
         JSON.stringify(getemployees),
-        'EX',
+        "EX",
         10
       );
-      //console.log('Data Saved in  Cache')
+      //console.log("Refreshed Cache");
       const Resposne = {
-        Status: 'Success',
+        Status: "Success",
         Count: getemployees.length,
         Data: getemployees,
       };
       //Send Success Response
       res.status(200).json(Resposne);
-    } else {}*/
-    const getemployees = await Employee.find().select("-__v");
-    const Resposne = {
-      Status: "Success",
-      Count: getemployees.length,
-      Data: getemployees,
-    };
-    //Send Success Response
-    res.status(200).json(Resposne);
+    } else {
+      //console.log("Cache if Off");
+      const getemployees = await Employee.find().select("-__v");
+      const Resposne = {
+        Status: "Success",
+        Count: getemployees.length,
+        Data: getemployees,
+      };
+      //Send Success Response
+      res.status(200).json(Resposne);
+    }
   } catch (err) {
     console.log(err);
     //Send Error
