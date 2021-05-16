@@ -1,14 +1,14 @@
-const express = require('express');
-const morgan = require('morgan');
-const dotenv = require('dotenv');
-const colors = require('colors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const { CreatePath } = require('./controllers/APILogManager');
-const Cron = require('./controllers/Cron');
+const express = require("express");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const colors = require("colors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const { CreatePath } = require("./controllers/APILogManager");
+const Cron = require("./controllers/Cron");
 
-dotenv.config({ path: './config/Config.env' });
-const ConnectDB = require('./config/DB');
+dotenv.config({ path: "./config/Config.env" });
+const ConnectDB = require("./config/DB");
 
 ConnectDB();
 CreatePath(process.env.LOG_DIR);
@@ -17,14 +17,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-if (process.env.NODE_ENV == 'Dev') {
-  app.use(morgan('dev'));
+if (process.env.NODE_ENV == "Dev") {
+  app.use(morgan("dev"));
 }
 app.use(helmet());
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
-if (process.env.RATELIMIT_MODE == 'ON') {
-  // app.set('trust proxy', 1);
+if (process.env.RATELIMIT_MODE == "ON") {
+  //app.set("trust proxy", 1);
   const limiter = rateLimit({
     windowMs: process.env.RATELIMIT_WINDOW * 60 * 1000, // 1 minutes
     max: process.env.RATELIMIT, // limit each IP to 100 requests per windowMs
@@ -34,30 +34,30 @@ if (process.env.RATELIMIT_MODE == 'ON') {
 }
 
 //Web render Route
-if (process.env.WEBUI == 'ON') {
-  const webroute = require('./routes/Web');
-  app.use('/', webroute);
+if (process.env.WEBUI == "ON") {
+  const webroute = require("./routes/Web");
+  app.use("/", webroute);
 } else {
-  app.get('/', (req, resp, next) => {
-    resp.status(200).send('Raje Tech Solutions Employee API');
+  app.get("/", (req, resp, next) => {
+    resp.status(200).send("Raje Tech Solutions Employee API");
   });
 }
 
 //Admin API Route
-const adminroute = require('./routes/Admin');
-app.use('/api', adminroute);
+const adminroute = require("./routes/Admin");
+app.use("/api", adminroute);
 
 // Employee API Route
-const route = require('./routes/APIv1');
-app.use('/api/v1', route);
+const route = require("./routes/APIv1");
+app.use("/api/v1", route);
 
 // Employee Secure API Route
-const secureroute = require('./routes/APIv2Secure');
-app.use('/api/v2', secureroute);
+const secureroute = require("./routes/APIv2Secure");
+app.use("/api/v2", secureroute);
 
 // Error handling
 app.use((req, resp, next) => {
-  var error = new Error('Not Found ⛔ ');
+  var error = new Error("Not Found ⛔ ");
   error.status = 404;
   next(error);
 });

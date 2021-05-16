@@ -1,12 +1,12 @@
-const nodemailer = require('nodemailer');
-const RandomString = require('randomstring');
-const UserEmail = require('../../models/UserEmailSchema');
-const moment = require('moment-timezone');
-const path = require('path');
-const dotenv = require('dotenv');
-const fs = require('fs');
-const { dogzip, CreatePath } = require('../APILogManager');
-dotenv.config({ path: './config/config.env' });
+const nodemailer = require("nodemailer");
+const RandomString = require("randomstring");
+const UserEmail = require("../../models/UserEmailSchema");
+const moment = require("moment-timezone");
+const path = require("path");
+const dotenv = require("dotenv");
+const fs = require("fs");
+const { dogzip, CreatePath } = require("../APILogManager");
+dotenv.config({ path: "./config/config.env" });
 
 // async..await is not allowed in global scope, must use a wrapper
 const ActivationEmail = async (Email, id) => {
@@ -28,7 +28,7 @@ const ActivationEmail = async (Email, id) => {
     let info = await transporter.sendMail({
       from: `"RajeTech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
-      subject: 'Raje Tech REST API Activation Link', // Subject line
+      subject: "Raje Tech REST API Activation Link", // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
       html: `<!DOCTYPE html>
       <html>
@@ -315,7 +315,7 @@ const ActivationEmail = async (Email, id) => {
 };
 
 const WelcomeEmail = async (Email, APIUserInfo, IP) => {
-  var date = moment().tz('Asia/Kolkata').format('MMMM Do YYYY, hh:mm:ss A');
+  var date = moment().tz("Asia/Kolkata").format("MMMM Do YYYY, hh:mm:ss A");
   // send mail with defined transport object
   console.log(IP);
   const { AESKey, APIClientID, APISecretKey, APICallLimit, _id } = APIUserInfo;
@@ -333,7 +333,7 @@ const WelcomeEmail = async (Email, APIUserInfo, IP) => {
     let info = await transporter.sendMail({
       from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
-      subject: 'Welcome To RajeTech API', // Subject line
+      subject: "Welcome To RajeTech API", // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
       html: `<!DOCTYPE html>
       <html>
@@ -633,10 +633,15 @@ const SendLogs = async (Date, Email) => {
     //console.log('API Log Zip file request');
     if (fs.existsSync(outputFile)) {
       //don nothing
+      var stats = fs.statSync(outputFile);
+      var fileSizeInBytes = stats["size"];
+      //Convert the file size to megabytes (optional)
+      var fileSizeInMegabytes = fileSizeInBytes / 1000.0;
+      //console.log(fileSizeInMegabytes);
     } else {
       await dogzip(inputFile, outputFile);
       var stats = fs.statSync(outputFile);
-      var fileSizeInBytes = stats['size'];
+      var fileSizeInBytes = stats["size"];
       //Convert the file size to megabytes (optional)
       var fileSizeInMegabytes = fileSizeInBytes / 1000.0;
       //console.log(fileSizeInMegabytes);
@@ -646,7 +651,7 @@ const SendLogs = async (Date, Email) => {
       let info = await transporter.sendMail({
         from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
         to: Email, // list of receivers
-        subject: 'Raje Tech REST API Log File', // Subject line
+        subject: "Raje Tech REST API Log File", // Subject line
         html: `<br>As Requested Please Find Below API Log Report - <br> <br> For More information Kindly Contact Admin <br>- admin@byraje.com`, // plain text body
         attachments: [
           {
@@ -661,7 +666,7 @@ const SendLogs = async (Date, Email) => {
       );
       return info.messageId;
     } else {
-      return 'SizeError';
+      return "SizeError";
     }
   } catch (error) {
     console.log(error);
