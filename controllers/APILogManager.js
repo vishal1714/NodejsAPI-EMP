@@ -30,13 +30,16 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
         }
       };
       const ReqResLogLocal = {
-        ReqBody: reqBoday(req),
-        //ReqHeaders: req.headers,
-        ResBody: Response,
-        Method: reqmethod,
-        APIClientID: reqKey,
-        ClientIP: IP,
-        LoggedAt: LogDate,
+        Data: {
+          // This is to make MQ and Local Backup in Similare  Format Data -> Actual Data,MQ_ID -> MQ ID
+          ReqBody: reqBoday(req),
+          //ReqHeaders: req.headers,
+          ResBody: Response,
+          Method: reqmethod,
+          APIClientID: reqKey,
+          ClientIP: IP,
+          LoggedAt: LogDate,
+        },
       };
 
       if (process.env.LOG_MODE == "Cloud" || process.env.LOG_MODE == "ALL") {
