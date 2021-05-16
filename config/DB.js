@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-dotenv.config({ path: './Config.env' });
+dotenv.config({ path: "./Config.env" });
 
 const ConnectDB = async () => {
   try {
@@ -12,9 +12,9 @@ const ConnectDB = async () => {
       useFindAndModify: true,
     });
     const host = mongoose.connection.host;
-    console.log('MongoDB Connected :'.green.bold + host.yellow.bold);
+    console.log("MongoDB Connected :".green.bold + host.yellow.bold);
   } catch (err) {
-    console.log('MongoDB Connection Failed :' + err);
+    console.log("MongoDB Connection Failed :" + err);
     process.exit(1);
   }
 };

@@ -39,7 +39,7 @@ if (process.env.WEBUI == "ON") {
   app.use("/", webroute);
 } else {
   app.get("/", (req, resp, next) => {
-    resp.status(200).send("Raje Tech Solutions Employee API");
+    resp.status(200).send("Welcome to Raje Tech Solutions Employee API");
   });
 }
 
@@ -72,7 +72,7 @@ app.use((error, req, resp, next) => {
   });
 });
 
-//console.log = function(){};
+//console.log = function () {};
 const PORT = process.env.PORT || 5000;
 
 app.listen(
