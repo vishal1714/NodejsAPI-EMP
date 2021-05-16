@@ -43,7 +43,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
         const ReqResLogCloud = {
           ReqBody: reqBoday(req),
           //ReqHeaders: req.headers,
-          EncKey: key,
+          //EncKey: key,
           ResBody: Response,
           Method: reqmethod,
           APIClientID: reqKey,
