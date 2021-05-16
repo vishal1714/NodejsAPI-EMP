@@ -28,6 +28,7 @@ const ActivationEmail = async (Email, id) => {
     let info = await transporter.sendMail({
       from: `"RajeTech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
+      cc: process.env.SMTP_USERNAME,
       subject: "Raje Tech REST API Activation Link", // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
       html: `<!DOCTYPE html>
@@ -333,6 +334,7 @@ const WelcomeEmail = async (Email, APIUserInfo, IP) => {
     let info = await transporter.sendMail({
       from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
       to: Email, // list of receivers
+      cc: process.env.SMTP_USERNAME,
       subject: "Welcome To RajeTech API", // Subject line
       //html: `<br>Activation Link<br> <br> Activation Link - https://api.raje.tech/api/v2/activation/${ActivationKey}`, // plain text body
       html: `<!DOCTYPE html>
@@ -651,6 +653,7 @@ const SendLogs = async (Date, Email) => {
       let info = await transporter.sendMail({
         from: `"Raje Tech API Admin" <${process.env.SMTP_USERNAME}>`, // sender address
         to: Email, // list of receivers
+        cc: process.env.SMTP_USERNAME,
         subject: "Raje Tech REST API Log File", // Subject line
         html: `<br>As Requested Please Find Below API Log Report - <br> <br> For More information Kindly Contact Admin <br>- admin@byraje.com`, // plain text body
         attachments: [
