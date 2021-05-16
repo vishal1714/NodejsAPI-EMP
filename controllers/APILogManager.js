@@ -31,7 +31,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
       };
       const ReqResLogLocal = {
         ReqBody: reqBoday(req),
-        ReqHeaders: req.headers,
+        //ReqHeaders: req.headers,
         ResBody: Response,
         Method: reqmethod,
         APIClientID: reqKey,
@@ -42,7 +42,7 @@ const Log = (req, Response, IP, reqKey, reqmethod, key) => {
       if (process.env.LOG_MODE == "Cloud" || process.env.LOG_MODE == "ALL") {
         const ReqResLogCloud = {
           ReqBody: reqBoday(req),
-          ReqHeaders: req.headers,
+          //ReqHeaders: req.headers,
           EncKey: key,
           ResBody: Response,
           Method: reqmethod,
